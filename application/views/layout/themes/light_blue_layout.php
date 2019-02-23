@@ -5,7 +5,7 @@
 <html lang="en">
 <?php endif; ?>
     <head>
-        <title><?php if(isset($page_title)) : ?><?php echo $page_title ?> - <?php endif; ?><?php echo $this->settings->info->site_name ?></title>         
+        <title><?php if(isset($page_title)) : ?><?php echo $page_title ?> - <?php endif; ?><?php echo $this->settings->info->site_name ?></title>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- Bootstrap -->
@@ -15,10 +15,11 @@
          <!-- Styles -->
         <link href="<?php echo base_url();?>styles/layouts/light_blue/main.css" rel="stylesheet" type="text/css">
         <link href="<?php echo base_url();?>styles/layouts/light_blue/responsive.css" rel="stylesheet" type="text/css">
-        
+
         <link href="<?php echo base_url();?>styles/elements.css" rel="stylesheet" type="text/css">
         <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,500,550,600,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
         <!-- SCRIPTS -->
         <script type="text/javascript">
@@ -52,9 +53,9 @@
           });
         </script>
         <?php endif; ?>
-        
+
         <!-- CODE INCLUDES -->
-        <?php echo $cssincludes ?> 
+        <?php echo $cssincludes ?>
 
         <!-- Favicon: http://realfavicongenerator.net -->
         <link rel="apple-touch-icon" sizes="76x76" href="<?php echo base_url() ?>images/favicon/apple-touch-icon.png">
@@ -64,7 +65,16 @@
         <link rel="mask-icon" href="<?php echo base_url() ?>images/favicon/safari-pinned-tab.svg" color="#5bbad5">
         <meta name="theme-color" content="#ffffff">
 
+        <!-- Smart Forms - added by PM 2/22-->
+        <link rel="stylesheet" type="text/css"  href="<?php echo base_url();?>styles/smartForms/smart-forms.css">
+        <link rel="stylesheet" type="text/css"  href="<?php echo base_url();?>styles/smartForms/smart-addons.css">
 
+        <script type="text/javascript" src="<?php echo base_url();?>scripts/libraries/smartForms/jquery.steps.min.js"></script>
+        <script type="text/javascript" src="<?php echo base_url();?>scripts/libraries/smartForms/jquery-ui-custom.min.js"></script>
+        <script type="text/javascript" src="<?php echo base_url();?>scripts/libraries/smartForms/jquery.validate.min.js"></script>
+        <script type="text/javascript" src="<?php echo base_url();?>scripts/libraries/smartForms/additional-methods.min.js"></script>    
+        <script type="text/javascript" src="<?php echo base_url();?>scripts/libraries/smartForms/jquery.form.min.js"></script>
+        <script type="text/javascript" src="<?php echo base_url();?>scripts/libraries/smartForms/smart-form.js"></script>
 
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -73,7 +83,7 @@
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
-        
+
 
     </head>
     <body>
@@ -103,7 +113,7 @@
           <ul class="nav navbar-nav navbar-right">
           <?php if($this->user->loggedin) : ?>
             <li><a href="#" data-target="#" onclick="load_notifications()" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="noti-menu-drop"><span class="glyphicon glyphicon-bell notification-icon"></span><?php if($this->user->info->noti_count > 0) : ?><span class="badge notification-badge small-text"><?php echo $this->user->info->noti_count ?></span><?php endif; ?></a>
-        
+
             <ul class="dropdown-menu" aria-labelledby="noti-menu-drop">
             <li>
             <div class="notification-box-title">
@@ -148,7 +158,7 @@
     </div>
 
     <div id="main-content">
-    
+
         <?php include(APPPATH . "views/layout/mobile_links.php") ?>
 
         <?php if($this->settings->info->install) : ?>
@@ -180,7 +190,7 @@
     <script type="text/javascript">
       $.widget.bridge('uitooltip', $.ui.tooltip);
     </script>
-    
+
     <script src="<?php echo base_url();?>bootstrap/js/bootstrap.min.js"></script>
 
      <script type="text/javascript">
@@ -211,7 +221,7 @@
             resize_layout();
         });
 
-        function resize_layout() 
+        function resize_layout()
         {
           var sb_h = $('.sidebar').height();
           var mc_h = $('#main-content').height();
