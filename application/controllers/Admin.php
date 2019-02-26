@@ -1,9 +1,9 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Admin extends CI_Controller 
+class Admin extends CI_Controller
 {
 
-	public function __construct() 
+	public function __construct()
 	{
 		parent::__construct();
 		$this->load->model("admin_model");
@@ -17,9 +17,9 @@ class Admin extends CI_Controller
 	}
 
 
-	public function index() 
-	{	
-		$this->template->loadData("activeLink", 
+	public function index()
+	{
+		$this->template->loadData("activeLink",
 			array("admin" => array("general" => 1)));
 		$this->template->loadContent("admin/index.php", array(
 			)
@@ -27,20 +27,20 @@ class Admin extends CI_Controller
 
 	}
 
-	public function user_logs() 
+	public function user_logs()
 	{
 		if(!$this->common->has_permissions(array("admin",
 			"admin_members"), $this->user)) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("user_logs" => 1)));
 		$this->template->loadContent("admin/user_logs.php", array(
 			)
 		);
 	}
 
-	public function user_log_page() 
+	public function user_log_page()
 	{
 		$this->load->library("datatables");
 
@@ -65,24 +65,24 @@ class Admin extends CI_Controller
 		$logs = $this->admin_model->get_user_logs($this->datatables);
 
 		foreach($logs->result() as $r) {
-			 
+
 			$this->datatables->data[] = array(
 				$this->common->get_user_display(array("username" => $r->username, "avatar" => $r->avatar, "online_timestamp" => $r->online_timestamp, "first_name" => $r->first_name, "last_name" => $r->last_name)),
 				$r->message,
 				date($this->settings->info->date_format, $r->timestamp),
-				$r->IP . '<span class="glyphicon glyphicon-info-sign" title="'.$r->user_agent.'"></span>'
+				$r->IP . '<span class="fas fa-info-circle" title="'.$r->user_agent.'"></span>'
 			);
 		}
 		echo json_encode($this->datatables->process());
 	}
 
-	public function custom_fields() 
-	{	
+	public function custom_fields()
+	{
 		if(!$this->common->has_permissions(array("admin",
 			"admin_members"), $this->user)) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("custom_fields" => 1)));
 		$fields = $this->admin_model->get_custom_fields(array());
 		$this->template->loadContent("admin/custom_fields.php", array(
@@ -92,7 +92,7 @@ class Admin extends CI_Controller
 
 	}
 
-	public function add_custom_field_pro() 
+	public function add_custom_field_pro()
 	{
 		if(!$this->common->has_permissions(array("admin",
 			"admin_members"), $this->user)) {
@@ -140,13 +140,13 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/custom_fields"));
 	}
 
-	public function edit_custom_field($id) 
+	public function edit_custom_field($id)
 	{
 		if(!$this->common->has_permissions(array("admin",
 			"admin_members"), $this->user)) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("custom_fields" => 1)));
 		$id = intval($id);
 		$field = $this->admin_model->get_custom_field($id);
@@ -155,13 +155,14 @@ class Admin extends CI_Controller
 		}
 
 		$field = $field->row();
-		$this->template->loadContent("admin/edit_custom_field.php", array(
+				$this->template->layout = '/layout/themes/make_cents_template.php';
+		$this->template->loadContent("admin/bs4/edit_custom_field.php", array(
 			"field" => $field
 			)
 		);
 	}
 
-	public function edit_custom_field_pro($id) 
+	public function edit_custom_field_pro($id)
 	{
 		if(!$this->common->has_permissions(array("admin",
 			"admin_members"), $this->user)) {
@@ -218,7 +219,7 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/custom_fields"));
 	}
 
-	public function delete_custom_field($id, $hash) 
+	public function delete_custom_field($id, $hash)
 	{
 		if(!$this->common->has_permissions(array("admin",
 			"admin_members"), $this->user)) {
@@ -247,13 +248,13 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/custom_fields"));
 	}
 
-	public function premium_users($page=0) 
+	public function premium_users($page=0)
 	{
 		if(!$this->common->has_permissions(array("admin",
 			"admin_payment"), $this->user)) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("premium_users" => 1)));
 
 		$this->template->loadContent("admin/premium_users.php", array(
@@ -261,7 +262,7 @@ class Admin extends CI_Controller
 		);
 	}
 
-	public function premium_users_page() 
+	public function premium_users_page()
 	{
 		$this->load->library("datatables");
 
@@ -286,7 +287,7 @@ class Admin extends CI_Controller
 		$users = $this->admin_model->get_premium_users($this->datatables);
 
 		foreach($users->result() as $r) {
-			  $time = $this->common->convert_time($r->premium_time); 
+			  $time = $this->common->convert_time($r->premium_time);
 			  unset($time['mins']);
 			  unset($time['secs']);
 			$this->datatables->data[] = array(
@@ -296,16 +297,16 @@ class Admin extends CI_Controller
 				$r->name,
 				$this->common->get_time_string($time),
 				date($this->settings->info->date_format, $r->joined),
-				'<a href="' . site_url("admin/edit_member/" . $r->ID) .'" class="btn btn-warning btn-xs" title="'. lang("ctn_55").'"><span class="glyphicon glyphicon-cog"></span></a> <a href="' . site_url("admin/delete_member/" . $r->ID . "/" . $this->security->get_csrf_hash()) .'" onclick="return confirm(\'' . lang("ctn_86") . '\')" class="btn btn-danger btn-xs" title="'. lang("ctn_57") .'"><span class="glyphicon glyphicon-trash"></span></a>'
+				'<a href="' . site_url("admin/edit_member/" . $r->ID) .'" class="btn btn-warning btn-xs" title="'. lang("ctn_55").'"><span class="fas fa-cog"></span></a> <a href="' . site_url("admin/delete_member/" . $r->ID . "/" . $this->security->get_csrf_hash()) .'" onclick="return confirm(\'' . lang("ctn_86") . '\')" class="btn btn-danger btn-xs" title="'. lang("ctn_57") .'"><span class="fas fa-trash"></span></a>'
 			);
 		}
 		echo json_encode($this->datatables->process());
 	}
 
-	public function user_roles() 
+	public function user_roles()
 	{
 		if(!$this->user->info->admin) $this->template->error(lang("error_2"));
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("user_roles" => 1)));
 		$roles = $this->admin_model->get_user_roles();
 
@@ -318,7 +319,7 @@ class Admin extends CI_Controller
 		);
 	}
 
-	public function add_user_role_pro() 
+	public function add_user_role_pro()
 	{
 		if(!$this->user->info->admin) $this->template->error(lang("error_2"));
 
@@ -360,7 +361,7 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/user_roles"));
 	}
 
-	public function edit_user_role($id) 
+	public function edit_user_role($id)
 	{
 		if(!$this->user->info->admin) $this->template->error(lang("error_2"));
 		$id = intval($id);
@@ -368,7 +369,7 @@ class Admin extends CI_Controller
 		if ($role->num_rows() == 0) $this->template->error(lang("error_65"));
 
 		$role = $role->row();
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("user_roles" => 1)));
 
 		$permissions = $this->get_default_permissions();
@@ -385,7 +386,7 @@ class Admin extends CI_Controller
 		);
 	}
 
-	private function get_default_permissions() 
+	private function get_default_permissions()
 	{
 		$urp = $this->admin_model->get_user_role_permissions();
 		$permissions = array();
@@ -401,7 +402,7 @@ class Admin extends CI_Controller
 		return $permissions;
 	}
 
-	public function edit_user_role_pro($id) 
+	public function edit_user_role_pro($id)
 	{
 		if(!$this->user->info->admin) $this->template->error(lang("error_2"));
 		$id = intval($id);
@@ -430,7 +431,7 @@ class Admin extends CI_Controller
 		$data['name'] = $name;
 
 
-		$this->admin_model->update_user_role($id, 
+		$this->admin_model->update_user_role($id,
 			$data
 		);
 
@@ -446,7 +447,7 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/user_roles"));
 	}
 
-	public function delete_user_role($id, $hash) 
+	public function delete_user_role($id, $hash)
 	{
 		if(!$this->user->info->admin) $this->template->error(lang("error_2"));
 		if ($hash != $this->security->get_csrf_hash()) {
@@ -473,14 +474,14 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/user_roles"));
 	}
 
-	public function payment_logs($page = 0) 
+	public function payment_logs($page = 0)
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_payment) {
 			$this->template->error(lang("error_2"));
 		}
 
 		$page = intval($page);
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("payment_logs" => 1)));
 
 		$this->template->loadContent("admin/payment_logs.php", array(
@@ -488,7 +489,7 @@ class Admin extends CI_Controller
 		);
 	}
 
-	public function payment_logs_page() 
+	public function payment_logs_page()
 	{
 		$this->load->library("datatables");
 
@@ -527,13 +528,13 @@ class Admin extends CI_Controller
 		echo json_encode($this->datatables->process());
 	}
 
-	public function payment_plans() 
+	public function payment_plans()
 	{
 
 		if(!$this->user->info->admin && !$this->user->info->admin_payment) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("payment_plans" => 1)));
 		$plans = $this->admin_model->get_payment_plans();
 
@@ -543,7 +544,7 @@ class Admin extends CI_Controller
 		);
 	}
 
-	public function add_payment_plan() 
+	public function add_payment_plan()
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_payment) {
 			$this->template->error(lang("error_2"));
@@ -580,7 +581,7 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/payment_plans"));
 	}
 
-	public function edit_payment_plan($id) 
+	public function edit_payment_plan($id)
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_payment) {
 			$this->template->error(lang("error_2"));
@@ -588,7 +589,7 @@ class Admin extends CI_Controller
 		$this->template->loadExternal(
 			'<script src="'.base_url().'scripts/libraries/jscolor.min.js"></script>'
 		);
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("payment_plans" => 1)));
 		$id = intval($id);
 		$plan = $this->admin_model->get_payment_plan($id);
@@ -600,7 +601,7 @@ class Admin extends CI_Controller
 		);
 	}
 
-	public function edit_payment_plan_pro($id) 
+	public function edit_payment_plan_pro($id)
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_payment) {
 			$this->template->error(lang("error_2"));
@@ -641,7 +642,7 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/payment_plans"));
 	}
 
-	public function delete_payment_plan($id, $hash) 
+	public function delete_payment_plan($id, $hash)
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_payment) {
 			$this->template->error(lang("error_2"));
@@ -669,19 +670,19 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/payment_plans"));
 	}
 
-	public function payment_settings() 
+	public function payment_settings()
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_payment) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("payment_settings" => 1)));
 		$this->template->loadContent("admin/payment_settings.php", array(
 			)
 		);
 	}
 
-	public function payment_settings_pro() 
+	public function payment_settings_pro()
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_payment) {
 			$this->template->error(lang("error_2"));
@@ -728,12 +729,12 @@ class Admin extends CI_Controller
 
 	}
 
-	public function email_members() 
+	public function email_members()
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("email_members" => 1)));
 		$groups = $this->admin_model->get_user_groups();
 		$this->template->loadContent("admin/email_members.php", array(
@@ -742,7 +743,7 @@ class Admin extends CI_Controller
 		);
 	}
 
-	public function email_members_pro() 
+	public function email_members_pro()
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
@@ -812,21 +813,22 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/email_members"));
 	}
 
-	public function user_groups() 
+	public function user_groups()
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("user_groups" => 1)));
 		$groups = $this->admin_model->get_user_groups();
-		$this->template->loadContent("admin/groups.php", array(
+				$this->template->layout = '/layout/themes/make_cents_template.php';
+		$this->template->loadContent("admin/bs4/groups.php", array(
 			"groups" => $groups
 			)
 		);
 	}
 
-	public function add_group_pro() 
+	public function add_group_pro()
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
@@ -855,7 +857,7 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/user_groups"));
 	}
 
-	public function edit_group($id) 
+	public function edit_group($id)
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
@@ -864,7 +866,7 @@ class Admin extends CI_Controller
 		$group = $this->admin_model->get_user_group($id);
 		if ($group->num_rows() == 0) $this->template->error(lang("error_4"));
 
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("user_groups" => 1)));
 
 		$this->template->loadContent("admin/edit_group.php", array(
@@ -873,7 +875,7 @@ class Admin extends CI_Controller
 		);
 	}
 
-	public function edit_group_pro($id) 
+	public function edit_group_pro($id)
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
@@ -886,7 +888,7 @@ class Admin extends CI_Controller
 		$default = intval($this->input->post("default_group"));
 		if (empty($name)) $this->template->error(lang("error_5"));
 
-		$this->admin_model->update_group($id, 
+		$this->admin_model->update_group($id,
 			array(
 				"name" =>$name,
 				"default" => $default
@@ -905,7 +907,7 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/user_groups"));
 	}
 
-	public function delete_group($id, $hash) 
+	public function delete_group($id, $hash)
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
@@ -920,7 +922,7 @@ class Admin extends CI_Controller
 
 		$this->admin_model->delete_group($id);
 		// Delete all user groups from member
-		$this->admin_model->delete_users_from_group($id); 
+		$this->admin_model->delete_users_from_group($id);
 
 		$this->user_model->add_log(array(
 			"userid" => $this->user->info->ID,
@@ -935,12 +937,12 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/user_groups"));
 	}
 
-	public function view_group($id, $page=0) 
+	public function view_group($id, $page=0)
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("user_groups" => 1)));
 		$id = intval($id);
 		$page = intval($page);
@@ -958,8 +960,7 @@ class Admin extends CI_Controller
 
 		include (APPPATH . "/config/page_config.php");
 
-		$this->pagination->initialize($config); 
-
+		$this->pagination->initialize($config);
 		$this->template->loadContent("admin/view_group.php", array(
 			"group" => $group->row(),
 			"users" => $users,
@@ -969,7 +970,7 @@ class Admin extends CI_Controller
 
 	}
 
-	public function add_user_to_group_pro($id) 
+	public function add_user_to_group_pro($id)
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
@@ -985,7 +986,7 @@ class Admin extends CI_Controller
 		$users = array();
 		foreach ($usernames as $username) {
 			$user = $this->user_model->get_user_by_username($username);
-			if($user->num_rows() == 0) $this->template->error(lang("error_3") 
+			if($user->num_rows() == 0) $this->template->error(lang("error_3")
 				. $username);
 			$users[] = $user->row();
 		}
@@ -1011,7 +1012,7 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/view_group/" . $id));
 	}
 
-	public function remove_user_from_group($userid, $id, $hash) 
+	public function remove_user_from_group($userid, $id, $hash)
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
@@ -1043,12 +1044,12 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/view_group/" . $id));
 	}
 
-	public function email_templates() 
+	public function email_templates()
 	{
 		if(!$this->user->info->admin) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("email_templates" => 1)));
 
 		$languages = $this->config->item("available_languages");
@@ -1059,7 +1060,7 @@ class Admin extends CI_Controller
 		);
 	}
 
-	public function email_template_page() 
+	public function email_template_page()
 	{
 		$this->load->library("datatables");
 
@@ -1093,13 +1094,13 @@ class Admin extends CI_Controller
 				$r->title,
 				$r->hook,
 				$r->language,
-				'<a href="'.site_url("admin/edit_email_template/" . $r->ID).'" class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="bottom" title="'.lang("ctn_55").'"><span class="glyphicon glyphicon-cog"></span></a> <a href="'.site_url("admin/delete_email_template/" . $r->ID . "/" . $this->security->get_csrf_hash()).'" class="btn btn-danger btn-xs" onclick="return confirm(\''.lang("ctn_317").'\')" data-toggle="tooltip" data-placement="bottom" title="'.lang("ctn_57").'"><span class="glyphicon glyphicon-trash"></span></a>'
+				'<a href="'.site_url("admin/edit_email_template/" . $r->ID).'" class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="bottom" title="'.lang("ctn_55").'"><span class="fas fa-cog"></span></a> <a href="'.site_url("admin/delete_email_template/" . $r->ID . "/" . $this->security->get_csrf_hash()).'" class="btn btn-danger btn-xs" onclick="return confirm(\''.lang("ctn_317").'\')" data-toggle="tooltip" data-placement="bottom" title="'.lang("ctn_57").'"><span class="fas fa-trash"></span></a>'
 			);
 		}
 		echo json_encode($this->datatables->process());
 	}
 
-	public function add_email_template() 
+	public function add_email_template()
 	{
 		$title = $this->common->nohtml($this->input->post("title"));
 		$template = $this->lib_filter->go($this->input->post("template"));
@@ -1129,12 +1130,12 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/email_templates"));
 	}
 
-	public function edit_email_template($id) 
+	public function edit_email_template($id)
 	{
 		if(!$this->user->info->admin) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("email_templates" => 1)));
 		$id = intval($id);
 
@@ -1152,12 +1153,12 @@ class Admin extends CI_Controller
 		);
 	}
 
-	public function edit_email_template_pro($id) 
+	public function edit_email_template_pro($id)
 	{
 		if(!$this->user->info->admin) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("email_templates" => 1)));
 		$id = intval($id);
 		$email_template = $this->admin_model->get_email_template($id);
@@ -1193,7 +1194,7 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/email_templates"));
 	}
 
-	public function delete_email_template($id, $hash) 
+	public function delete_email_template($id, $hash)
 	{
 		if($hash != $this->security->get_csrf_hash()) {
 			$this->template->error(lang("error_6"));
@@ -1219,12 +1220,12 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/email_templates"));
 	}
 
-	public function ipblock() 
+	public function ipblock()
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("ipblock" => 1)));
 
 		$ipblock = $this->admin_model->get_ip_blocks();
@@ -1235,7 +1236,7 @@ class Admin extends CI_Controller
 		);
 	}
 
-	public function add_ipblock() 
+	public function add_ipblock()
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
@@ -1259,7 +1260,7 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/ipblock"));
 	}
 
-	public function delete_ipblock($id) 
+	public function delete_ipblock($id)
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
@@ -1283,14 +1284,14 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/ipblock"));
 	}
 
-	public function members() 
+	public function members()
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("members" => 1)));
-		
+
 		$user_roles = $this->admin_model->get_user_roles();
 
 		$fields = $this->user_model->get_custom_fields(array("register"=>1));
@@ -1302,7 +1303,7 @@ class Admin extends CI_Controller
 		);
 	}
 
-	public function members_page() 
+	public function members_page()
 	{
 		$this->load->library("datatables");
 
@@ -1359,19 +1360,19 @@ class Admin extends CI_Controller
 				$this->common->get_user_role($r),
 				date($this->settings->info->date_format, $r->joined),
 				$provider,
-				'<a href="'.site_url("admin/edit_member/" . $r->ID).'" class="btn btn-warning btn-xs" title="'.lang("ctn_55").'" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-cog"></span></a> <a href="'.site_url("admin/delete_member/" . $r->ID . "/" . $this->security->get_csrf_hash()).'" class="btn btn-danger btn-xs" onclick="return confirm(\''.lang("ctn_317").'\')" title="'.lang("ctn_57").'" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-trash"></span></a>'
+				'<a href="'.site_url("admin/edit_member/" . $r->ID).'" class="btn btn-warning btn-xs" title="'.lang("ctn_55").'" data-toggle="tooltip" data-placement="bottom"><span class="fas fa-cog"></span></a> <a href="'.site_url("admin/delete_member/" . $r->ID . "/" . $this->security->get_csrf_hash()).'" class="btn btn-danger btn-xs" onclick="return confirm(\''.lang("ctn_317").'\')" title="'.lang("ctn_57").'" data-toggle="tooltip" data-placement="bottom"><span class="fas fa-trash"></span></a>'
 			);
 		}
 		echo json_encode($this->datatables->process());
 	}
 
-	public function member_user_groups($id) 
+	public function member_user_groups($id)
 	{
 		if(!$this->common->has_permissions(array("admin", "admin_members"),
 		 $this->user)) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("members" => 1)));
 		$id = intval($id);
 
@@ -1384,7 +1385,6 @@ class Admin extends CI_Controller
 		$user_groups = $this->user_model->get_user_groups($id);
 		$groups = $this->admin_model->get_user_groups();
 
-
 		$this->template->loadContent("admin/member_user_groups.php", array(
 			"member" => $member,
 			"user_groups" => $user_groups,
@@ -1393,7 +1393,7 @@ class Admin extends CI_Controller
 		);
 	}
 
-	public function add_member_to_group_pro($id) 
+	public function add_member_to_group_pro($id)
 	{
 		if(!$this->common->has_permissions(array("admin", "admin_members"),
 		 $this->user)) {
@@ -1426,19 +1426,19 @@ class Admin extends CI_Controller
 			"message" => lang("ctn_457") . $group->name . lang("ctn_458") . " ". $member->username
 			)
 		);
-		
+
 
 		$this->session->set_flashdata("globalmsg", lang("success_5"));
 		redirect(site_url("admin/member_user_groups/" . $id));
 
 	}
 
-	public function edit_member($id) 
+	public function edit_member($id)
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("members" => 1)));
 		$id = intval($id);
 
@@ -1449,7 +1449,6 @@ class Admin extends CI_Controller
 		$user_roles = $this->admin_model->get_user_roles();
 		$fields = $this->user_model->get_custom_fields_answers(array(
 			), $id);
-
 		$this->template->loadContent("admin/edit_member.php", array(
 			"member" => $member->row(),
 			"user_groups" => $user_groups,
@@ -1459,7 +1458,7 @@ class Admin extends CI_Controller
 		);
 	}
 
-	public function edit_member_pro($id) 
+	public function edit_member_pro($id)
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
@@ -1544,7 +1543,7 @@ class Admin extends CI_Controller
 		}
 
 		if ($_FILES['userfile']['size'] > 0) {
-				$this->upload->initialize(array( 
+				$this->upload->initialize(array(
 			       "upload_path" => $this->settings->info->upload_path,
 			       "overwrite" => FALSE,
 			       "max_filename" => 300,
@@ -1625,7 +1624,7 @@ class Admin extends CI_Controller
 				$options = explode(",", $r->options);
 				if(isset($_POST['cf_radio_' . $r->ID])) {
 					$answer = intval($this->common->nohtml($this->input->post("cf_radio_" . $r->ID)));
-					
+
 					$flag = false;
 					foreach($options as $k=>$v) {
 						if($k == $answer) {
@@ -1668,7 +1667,7 @@ class Admin extends CI_Controller
 		}
 
 
-		$this->user_model->update_user($id, 
+		$this->user_model->update_user($id,
 			array(
 				"username" => $username,
 				"email" => $email,
@@ -1702,7 +1701,7 @@ class Admin extends CI_Controller
 					)
 				);
 			} else {
-				$this->user_model->update_custom_field($answer['fieldid'], 
+				$this->user_model->update_custom_field($answer['fieldid'],
 					$id, $answer['answer']);
 			}
 		}
@@ -1721,7 +1720,7 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/members"));
 	}
 
-	public function add_member_pro() 
+	public function add_member_pro()
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
@@ -1745,7 +1744,7 @@ class Admin extends CI_Controller
 			$role = $this->admin_model->get_user_role($user_role);
 			if($role->num_rows() == 0) $this->template->error(lang("error_65"));
 			$role = $role->row();
-			if($role->admin || $role->admin_members || $role->admin_settings 
+			if($role->admin || $role->admin_members || $role->admin_settings
 				|| $role->admin_payment) {
 				if(!$this->user->info->admin) {
 					$this->template->error(lang("error_67"));
@@ -1843,7 +1842,7 @@ class Admin extends CI_Controller
 				$options = explode(",", $r->options);
 				if(isset($_POST['cf_radio_' . $r->ID])) {
 					$answer = intval($this->common->nohtml($this->input->post("cf_radio_" . $r->ID)));
-					
+
 					$flag = false;
 					foreach($options as $k=>$v) {
 						if($k == $answer) {
@@ -1914,10 +1913,10 @@ class Admin extends CI_Controller
 		);
 		$this->session->set_flashdata("globalmsg", lang("success_11"));
 		redirect(site_url("admin/members"));
-	
+
 	}
 
-	public function delete_member($id, $hash) 
+	public function delete_member($id, $hash)
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_members) {
 			$this->template->error(lang("error_2"));
@@ -1945,36 +1944,36 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/members"));
 	}
 
-	public function social_settings() 
+	public function social_settings()
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_settings) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("social_settings" => 1)));
 		$this->template->loadContent("admin/social_settings.php", array(
 			)
 		);
 	}
 
-	public function social_settings_pro() 
+	public function social_settings_pro()
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_settings) {
 			$this->template->error(lang("error_2"));
 		}
-		$disable_social_login = 
+		$disable_social_login =
 			intval($this->input->post("disable_social_login"));
-		$twitter_consumer_key = 
+		$twitter_consumer_key =
 			$this->common->nohtml($this->input->post("twitter_consumer_key"));
-		$twitter_consumer_secret = 
+		$twitter_consumer_secret =
 			$this->common->nohtml($this->input->post("twitter_consumer_secret"));
-		$facebook_app_id = 
+		$facebook_app_id =
 			$this->common->nohtml($this->input->post("facebook_app_id"));
-		$facebook_app_secret = 
+		$facebook_app_secret =
 			$this->common->nohtml($this->input->post("facebook_app_secret"));
-		$google_client_id = 
+		$google_client_id =
 			$this->common->nohtml($this->input->post("google_client_id"));
-		$google_client_secret = 
+		$google_client_secret =
 			$this->common->nohtml($this->input->post("google_client_secret"));
 
 		$this->admin_model->updateSettings(
@@ -1982,8 +1981,8 @@ class Admin extends CI_Controller
 				"disable_social_login" => $disable_social_login,
 				"twitter_consumer_key" => $twitter_consumer_key,
 				"twitter_consumer_secret" => $twitter_consumer_secret,
-				"facebook_app_id" => $facebook_app_id, 
-				"facebook_app_secret"=> $facebook_app_secret,  
+				"facebook_app_id" => $facebook_app_id,
+				"facebook_app_secret"=> $facebook_app_secret,
 				"google_client_id" => $google_client_id,
 				"google_client_secret" => $google_client_secret,
 			)
@@ -2001,12 +2000,12 @@ class Admin extends CI_Controller
 		redirect(site_url("admin/social_settings"));
 	}
 
-	public function settings() 
+	public function settings()
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_settings) {
 			$this->template->error(lang("error_2"));
 		}
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("admin" => array("settings" => 1)));
 		$roles = $this->admin_model->get_user_roles();
 		$layouts = $this->admin_model->get_layouts();
@@ -2017,7 +2016,7 @@ class Admin extends CI_Controller
 		);
 	}
 
-	public function settings_pro() 
+	public function settings_pro()
 	{
 		if(!$this->user->info->admin && !$this->user->info->admin_settings) {
 			$this->template->error(lang("error_2"));
@@ -2029,7 +2028,7 @@ class Admin extends CI_Controller
 		$file_types = $this->common
 			->nohtml($this->input->post("file_types"));
 		$file_size = intval($this->input->post("file_size"));
-		$upload_path_rel = 
+		$upload_path_rel =
 			$this->common->nohtml($this->input->post("upload_path_relative"));
 		$register = intval($this->input->post("register"));
 		$avatar_upload = intval($this->input->post("avatar_upload"));
@@ -2067,7 +2066,7 @@ class Admin extends CI_Controller
 		$this->load->library("upload");
 
 		if ($_FILES['userfile']['size'] > 0) {
-			$this->upload->initialize(array( 
+			$this->upload->initialize(array(
 		       "upload_path" => $this->settings->info->upload_path,
 		       "overwrite" => FALSE,
 		       "max_filename" => 300,
@@ -2079,7 +2078,7 @@ class Admin extends CI_Controller
 		    ));
 
 		    if (!$this->upload->do_upload()) {
-		    	$this->template->error(lang("error_21") 
+		    	$this->template->error(lang("error_21")
 		    	.$this->upload->display_errors());
 		    }
 
@@ -2095,8 +2094,8 @@ class Admin extends CI_Controller
 				"site_name" => $site_name,
 				"site_desc" => $site_desc,
 				"upload_path" => $upload_path,
-				"upload_path_relative" => $upload_path_rel, 
-				"site_logo"=> $image,  
+				"upload_path_relative" => $upload_path_rel,
+				"site_logo"=> $image,
 				"site_email" => $site_email,
 				"register" => $register,
 				"avatar_upload" => $avatar_upload,

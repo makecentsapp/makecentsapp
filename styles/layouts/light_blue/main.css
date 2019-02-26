@@ -223,7 +223,7 @@ text-decoration: none;
 .notification-box-title { border-bottom: 1px solid #EEE; font-size: 14px; margin-bottom: 10px; font-weight: 600; padding: 10px; }
 .notification-box-footer { border-top: 1px solid #EEE; font-size: 14px; font-weight: 500; padding: 10px; text-align: center; color: #000 !important; }
 .notification-box-footer a { color: #2d89f0 !important; }
-.badge { background: #FC2232 !important; }
+/*.badge { background: #FC2232 !important; }*/
 #notifications-scroll { overflow: scroll; height: 150px; }
 #timer-scroll { overflow: scroll; height: 150px; }
 .animation-fade { -webkit-transition: background 0.3s linear; -moz-transition: background 0.3s linear; -ms-transition: background 0.3s linear; -o-transition: background 0.3s linear; transition: background 0.3s linear; }

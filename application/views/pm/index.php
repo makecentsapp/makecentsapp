@@ -1,177 +1,127 @@
-<script type="text/javascript">
-		$.validator.methods.smartCaptcha = function(value, element, param) {
-			return value == param;
-		};
-        $("#smart-form").steps({
-            headerTag: "h2",
-            bodyTag: "fieldset",
-            transitionEffect: "slideLeft",
-            stepsOrientation: "vertical",
-            autoFocus: true,
-            labels: {
-                finish: "Submit Form",
-                next: "Continue",
-                previous: "Go Back",
-                loading: "Loading..."
-            },	
-            onStepChanging: function (event, currentIndex, newIndex){
-            
-                /* WHEN CHANGING A STEP */	
-            
-            },
-            onStepChanged: function (event, currentIndex, priorIndex){
-                
-                /* AFTER CHANGING A STEP */		
-        
-            },
-            onFinishing: function (event, currentIndex){
-                
-                /* WHEN COMPLETING CHANGING A STEP */	
-            },
-            onFinished: function (event, currentIndex){
-                
-                /* AJAX SUBMIT HANDLER GOES HERE */	 
-            }
-        }).validate({
-        	errorClass: "state-error",
-			validClass: "state-success",
-			errorElement: "em",
-            rules: {
-                
-                basicIncome: {
-                    required: true,
-                    minlength: 5
-                }
-            },
-            messages: {
-                
-                messages: {
-			        basicIncome: {
-			            required: 'Please fill the Income field, dick.'
-			        }                                  
-			    }	
-            },
-            highlight: function(element, errorClass, validClass) {
-                $(element).closest('.field').addClass(errorClass).removeClass(validClass);
-            },
-            unhighlight: function(element, errorClass, validClass) {
-                $(element).closest('.field').removeClass(errorClass).addClass(validClass);
-            },
-            errorPlacement: function(error, element) {
-                if (element.is(":radio") || element.is(":checkbox")) {
-                    element.closest('.option-group').after(error);
-                } else {
-                    error.insertAfter(element.parent());
-                }
-            }	
-        });
-</script>
+<style>
+.custom-card-icon {
+	width: 125px;
+	height: 125px;
+	background-color: #1abc9c;
+	border-radius: 3px;
+	margin: auto;
+	color: #fff;
+}
+.custom-card-icon i, .custom-card-icon a {
+	font-size: 42px;
+	line-height: 10px;
+	margin: auto;
+	color: #fff;
+	padding-top: 35px;
+}
+.card-text {
+	padding: 10px;
+}
+</style>
 <?php
-echo '<pre>';
-print_r($this->_ci_cached_vars);
-echo '</pre>';
+
+
 ?>
-
-<div class="smart-wrap">
-    <div class="smart-forms smart-container wrap-1">
-    
-        <div class="form-body smart-steps stp-three">
-            <form method="post" id="smart-form" action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
-                <h2>Income</h2>
-                <fieldset>
-	    			<div class="frm-row">
-	                    <div class="section colm colm6">
-	                    	<p><b>What is your annual income?</b></p>
-	                        <label class="field prepend-icon">
-	                            <input type="number" name="basicIncome" id="basicIncome" class="gui-input" placeholder="25,000">
-	                            <span class="field-icon"><i class="fas fa-dollar-sign"></i></span>  
-	                        </label>
-	                        <small id="emailHelp" class="form-text text-muted"><i class="fas fa-lock"></i> We will never share your data. <a href="#">Privacy Policy</a></small>
-	                    </div><!-- end section -->
-	                </div><!-- end .frm-row section -->
-                </fieldset>
-                
-                <h2>Debts</h2>
-                <fieldset>
-	    			<div class="frm-row">
-	                    <div class="section colm colm6">
-	                    	<p><b>Credit Card Debt?</b></p>
-	                        <label class="field prepend-icon">
-	                            <input type="number" name="basicCCDebt" id="basicCCDebt" class="gui-input" placeholder="1,000">
-	                            <span class="field-icon"><i class="fas fa-dollar-sign"></i></span>  
-	                        </label>
-	                    </div><!-- end section -->
-	                    <div class="section colm colm6">
-	                    	<p><b>Credit Card Interest Rate?</b></p>
-	                    		<div class="colm colm4">
-			                        <label class="field">
-			                            <input type="number" name="basicCCInterest" id="basicCCInterest" class="gui-input" placeholder="25%">
-			                        </label>
-			                    </div>
-	                    </div><!-- end section -->
-	                    
-	                </div><!-- end .frm-row section -->
-	                <div class="frm-row">
-	                    <div class="section colm colm6">
-	                    	<p><b>Car Loan?</b></p>
-	                        <label class="field prepend-icon">
-	                            <input type="number" name="basicCarDebt" id="basicCarDebt" class="gui-input" placeholder="10,000">
-	                            <span class="field-icon"><i class="fas fa-dollar-sign"></i></span>  
-	                        </label>
-	                    </div><!-- end section -->
-	                    <div class="section colm colm6">
-	                    	<p><b>Car Loan Interest Rate?</b></p>
-	                    	<div class="colm colm4">
-		                        <label class="field">
-		                            <input type="number" name="basicCarInterest" id="basicCarInterest" class="gui-input" placeholder="10%">
-		                        </label>
-	                        </div>
-	                    </div><!-- end section -->
-	                </div><!-- end .frm-row section -->
-	                <div class="frm-row">
-	                
-		                <div class="section colm colm2">
-		                <p><b>Do you have a mortgage?</b></p>
-						    
-						        <label class="switch">
-						            <input type="checkbox" name="switch1" id="switch1" value="switch1">
-						            <span class="switch-label" data-on="Yes" data-off="No"></span>
-						        </label>
-						    
-						</div><!-- end section -->
-	                    <div class="section colm colm5">
-	                    	 <p><b>Mortgage Balance?</b></p>
-	                        <label class="field prepend-icon">
-	                            <input type="number" name="basicMortgageDebt" id="basicMortgageDebt" class="gui-input" placeholder="100,000">
-	                            <span class="field-icon"><i class="fas fa-dollar-sign"></i></span>  
-	                        </label>
-	                    </div><!-- end section -->
-	                    <div class="section colm colm5">
-	                    	<p><b>Mortgage Interest Rate?</b></p>
-	                    	<div class="colm colm4">
-		                        <label class="field">
-		                            <input type="number" name="basicMortgageInterest" id="basicMortgageInterest" class="gui-input" placeholder="5%">
-		                        </label>
-		                    </div>
-	                    </div><!-- end section -->
-	                </div><!-- end .frm-row section -->
-                </fieldset>
-
-                <h2>401k Match</h2>
-                <fieldset>
-	    			<div class="frm-row">
-	                    <div class="section colm">
-	                        <label class="field prepend-icon">
-	                        	<p><b>Does your employer offer a 401k plan? If so, do they match contributions and how much?</b></p>
-	                            <input type="number" name="basic401kMatch" id="basic401kMatch" class="gui-input" placeholder="3%">
-	                        </label>
-	                    </div><!-- end section -->
-	                </div><!-- end .frm-row section -->
-                </fieldset>
-            </form>                                                                                   
-        </div><!-- end .form-body section -->
-    
-    </div><!-- end .smart-forms section -->
-</div><!-- end .smart-wrap section -->
-
-
+<br>
+<div class="container">
+	<p>First screen a user sees after registration. 
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="card text-center" style="width: 18rem;">
+				<div class="custom-card-icon">
+					<a href="<?php echo base_url ('PM/personalForm'); ?>">
+						<i class="fa fa-id-card"></i>
+						<h4 class="card-title">
+							Personal Details
+						</h4>
+					</a>
+				</div>
+				<div class="card-body">
+					<p class="card-text small small">Some quick info to help us provide you with some perspective.</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-3">
+			<div class="card text-center" style="width: 18rem;">
+				<div class="custom-card-icon">
+					<a href="<?php echo base_url ('PM/form/income'); ?>">
+						<i class="fa fa-money-bill-alt"></i>
+						<h4 class="card-title">Income</h4>
+					</a>
+				</div>
+				<div class="card-body">
+					<p class="card-text small">How much scratch do you bring in to the coffers?</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-3">
+			<div class="card text-center" style="width: 18rem;">
+				<div class="custom-card-icon">
+					<a href="<?php echo base_url ('PM/form/assets'); ?>">
+						<i class="fa fa-piggy-bank"></i>
+						<h4 class="card-title">Assets</h4>
+					</a>
+				</div>
+				<div class="card-body">
+					<p class="card-text small">House, car, and bank accounts: totaled up.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="card text-center" style="width: 18rem;">
+				<div class="custom-card-icon">
+					<a href="<?php echo base_url ('PM/form/expenses'); ?>">
+						<i class="fa fa-cash-register"></i>
+						<h4 class="card-title">Expenses</h4>
+					</a>
+				</div>
+				<div class="card-body">
+					<p class="card-text small">What are you buying and why are you paying so much?</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-3">
+			<div class="card text-center" style="width: 18rem;">
+				<div class="custom-card-icon">
+					<a href="<?php echo base_url ('PM/form/debts'); ?>">
+						<i class="fa fa-credit-card"></i>
+						<h4 class="card-title">Debts</h4>
+					</a>
+				</div>
+				<div class="card-body">
+					<p class="card-text small">Do you like snowballs or avalanches?</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-3">
+			<div class="card text-center" style="width: 18rem;">
+				<div class="custom-card-icon">
+					<a href="<?php echo base_url ('PM/form/retirement'); ?>">
+						<i class="fa fa-chart-line"></i>
+						<h4 class="card-title">Retirement</h4>
+					</a>
+				</div>
+				<div class="card-body">
+					<p class="card-text small">Getting old is expensive and inevitable.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="card text-center" style="width: 18rem;">
+				<div class="custom-card-icon">
+					<a href="<?php echo base_url ('PM/form/expenses'); ?>">
+						<i class="fa fa-kiwi-bird"></i>
+						<h4 class="card-title">Planning / Other</h4>
+					</a>
+				</div>
+				<div class="card-body">
+					<p class="card-text small">We'll come back to it later but just wanted to get it down before I forget.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

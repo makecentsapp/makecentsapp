@@ -8,7 +8,7 @@
 </div>
 <div class="login-page">
 <b><?php echo lang("ctn_134") ?>:</b> <?php echo $message ?>
-<p><input type="button" value="<?php echo lang("ctn_135") ?>" onclick="window.history.back()" class="btn btn-default btn-sm" /> </p>
+<p><input type="button" value="<?php echo lang("ctn_135") ?>" onclick="window.history.back()" class="btn btn-secondary btn-sm" /> </p>
 </div>
 
 </div>

@@ -72,9 +72,9 @@
         <script type="text/javascript" src="<?php echo base_url();?>scripts/libraries/smartForms/jquery.steps.min.js"></script>
         <script type="text/javascript" src="<?php echo base_url();?>scripts/libraries/smartForms/jquery-ui-custom.min.js"></script>
         <script type="text/javascript" src="<?php echo base_url();?>scripts/libraries/smartForms/jquery.validate.min.js"></script>
-        <script type="text/javascript" src="<?php echo base_url();?>scripts/libraries/smartForms/additional-methods.min.js"></script>    
+        <script type="text/javascript" src="<?php echo base_url();?>scripts/libraries/smartForms/additional-methods.min.js"></script>
         <script type="text/javascript" src="<?php echo base_url();?>scripts/libraries/smartForms/jquery.form.min.js"></script>
-        <script type="text/javascript" src="<?php echo base_url();?>scripts/libraries/smartForms/smart-form.js"></script>
+        <script type="text/javascript" src="<?php echo base_url();?>scripts/libraries/smartForms/jquery.formShowHide.min.js"></script>
 
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -110,6 +110,7 @@
         <?php endif; ?>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
+
           <ul class="nav navbar-nav navbar-right">
           <?php if($this->user->loggedin) : ?>
             <li><a href="#" data-target="#" onclick="load_notifications()" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="noti-menu-drop"><span class="glyphicon glyphicon-bell notification-icon"></span><?php if($this->user->info->noti_count > 0) : ?><span class="badge notification-badge small-text"><?php echo $this->user->info->noti_count ?></span><?php endif; ?></a>
