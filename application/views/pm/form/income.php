@@ -1,3 +1,4 @@
+<script type="text/javascript" src="<?php echo base_url();?>scripts/libraries/smartForms/jquery-cloneya.min.js"></script>
 <script type="text/javascript">
 jQuery(document).ready(function($){
 	/*$.validator.methods.smartCaptcha = function(value, element, param) {
@@ -97,45 +98,9 @@ jQuery(document).ready(function($){
             }
         }	
     });
-    
-    //start functions for getting location from browser
-    //2-25 based on https://stackoverflow.com/questions/5423938/html-5-geo-location-prompt-in-chrome it looks like we need HTTPS before we can use this set of code
-	var x = document.getElementById("personalLocation");
 
-	function getLocation() {
-	  if (navigator.geolocation) {
-	    navigator.geolocation.getCurrentPosition(showPosition, showError);
-	  } else {
-	    x.value = "Geolocation is not supported by this browser.";
-	  }
-	}
-
-	function showPosition(position) {
-	  x.value = "Latitude: " + position.coords.latitude + 
-	  " | Longitude: " + position.coords.longitude; 
-	}
-
-	function showError(error) {
-	  switch(error.code) {
-	    case error.PERMISSION_DENIED:
-	      x.value = "User denied the request for Geolocation. Probably needs to be HTTPS, see comments."
-	      break;
-	    case error.POSITION_UNAVAILABLE:
-	      x.value = "Location information is unavailable."
-	      break;
-	    case error.TIMEOUT:
-	      x.value = "The request to get user location timed out."
-	      break;
-	    case error.UNKNOWN_ERROR:
-	      x.value = "An unknown error occurred."
-	      break;
-	  }
-	}
-
-	$("#getLocation").click(function() { getLocation() });
+    $('#clone-fields').cloneya();
 });
-
-
 </script>
 <?php
 //echo '<pre>';
@@ -151,43 +116,33 @@ $currentUserID = $this->user->info->ID;
             	<input type="hidden" name="ID" value="<?php echo $currentUserID; ?>">
             	<!-- hidden field for CSRF security token -->
             	<input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
-                <h2>Start</h2>
+                <h2>Income</h2>
                 <fieldset>
-	    			<div class="frm-row">
-	                    <div class="section colm colm6">
-	                    	<p><b>What is your name?</b></p>
-	                        <label class="field">
-	                            <input type="text" name="personalName" id="personalName" class="gui-input" placeholder="">
-	                        </label>
-	                    </div><!-- end section -->
-	                </div><!-- end .frm-row section -->
-	                <div class="frm-row">
-	                    <div class="section colm colm4">
-	                    	<p><b>How old are you?</b></p>
-	                    	<div class="colm colm6">
-		                        <label class="field">
-		                            <input type="number" min="1" max="150" name="personalAge" id="personalAge" class="gui-input" placeholder="">
-		                        </label>
-	                        </div>
-	                    </div><!-- end section -->
-	                </div><!-- end .frm-row section -->
+                	<p><b>Give your income a description and how much income you make from it weekly.</b></p>
+	    			<div id="clone-fields">
+                        <div class="toclone clone-widget">
+	                        <div class="frm-row">
+			                    <div class="spacer-b10 colm colm6">
+		                            <input type="text" name="personalIncomeName[]" id="personalIncomeName" class="gui-input" placeholder="Full Time Job, Uber Driver, Rental Property, etc.">
+		                        </div>
+		                        <div class="spacer-b10 colm colm6">
+		                            <label class="prepend-icon">
+		                                <input type="number" name="personalIncomeAmount[]" id="personalIncomeAmount" class="gui-input" placeholder="500">
+		                                <span class="field-icon"><i class="fas fa-dollar-sign"></i></span> 
+		                            </label>
+		                        </div>
+	                        </div><!-- end .frm-row section -->
+			                <a href="#" class="clone button btn-primary"><i class="fa fa-plus"></i></a>
+		                    <a href="#" class="delete button"><i class="fa fa-minus"></i></a>
+	                    </div>
+	                </div>
+	                
                 </fieldset>
-               
-                <h2>Location</h2>
+                <h2>Second</h2>
                 <fieldset>
-	    			<div class="frm-row">
-	    				<div class="section colm colm12">
-		    				<p><b>Click the pin to automatically find your location or enter your address.</b></p>
-	                        <div class="smart-widget sm-right smr-50">
-                            <label class="field">
-                                <input type="text" name="personalLocation" id="personalLocation" class="gui-input" placeholder="Address">
-                            </label>
-                            <button type="button" id="getLocation" class="button"> <i class="fa fa-map-marker"></i> </button>
-                        </div><!-- end .smart-widget section --> 
-                    </div><!-- end section -->
+	    			<p>Nothing yet but wanted to preserve the step functionality.</p>	                
+                </fieldset>
 
-	                </div><!-- end .frm-row section -->
-                </fieldset>
 				<div class="result spacer-b10"></div><!-- end .result  section -->   
             </form>
             <small id="emailHelp" class="form-text text-muted"><i class="fas fa-lock"></i> We will never share your data. <a href="#">Privacy Policy</a></small>

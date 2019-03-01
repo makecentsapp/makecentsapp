@@ -295,4 +295,44 @@ $currentUserID = $this->user->info->ID;
     </div><!-- end .smart-forms section -->
 </div><!-- end .smart-wrap section -->
 
+<?php 
+echo '<pre>test form stuff';
 
+//replace with form POST in production use
+$exampleFormArray = array(
+        	'formName' => 'personal', 
+        	'id' => 2, 
+        	'name' => 'John Doe', 
+        	'age' => '45'
+        );
+		//setup the basic variables consistent regardless of how many fields are passed
+		$user_id = $exampleFormArray['id'];
+        $table_name = $exampleFormArray['formName'];
+        //take those rows off the array, 2 being first two fields of array, so the HTML has to pass them first
+        $exampleFormArray = array_slice($exampleFormArray, 2); 
+
+        //run through remaining values in array, find their attribute_id and insert
+        foreach ($exampleFormArray as $key => $value) {
+        	if (!empty($value)) {
+	        	$query = $this->db
+	        		->select('attribute_id')
+	        		->from($table_name)
+	        		->where('attribute_name', $key)
+	        		->get();
+				if ($query->num_rows() > 0) {
+						//parse the return of the select statement into something useable
+						$row = $query->row_array();
+				        $attribute_id = $row['attribute_id'];
+				        //prepare the data array for insert
+				        $data = array(
+				        	'user_id' => $user_id, 
+				        	'attribute_id' => $attribute_id,
+				        	'value' => $value);
+				        //do the dirty
+				        $this->db->insert($table_name.'Details', $data);
+				}//end insert query
+			}//end checking for empty data
+        }//end foreach
+        
+echo '</pre>';
+?>
