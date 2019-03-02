@@ -1,6 +1,6 @@
 
-<div class="alert alert-success" role="alert">
-    <h4> Testing BS4. As soon as you leave this page, it will be 3.3.4 again.  </h4>
+<div class="alert alert-success mt-3" role="alert">
+    <h4> Testing ATMOS. As soon as you leave this page, it will be vanilla bootstrap again.  </h4>
 </div>
 <?php
 $CI_vars_loaded = $this->_ci_cached_vars;

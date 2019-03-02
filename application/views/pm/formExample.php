@@ -112,7 +112,14 @@ jQuery(document).ready(function($){
             }
         }	
     });
-    $('.smartfm-ctrl').formShowHide(); 
+    $('.smartfm-ctrl').formShowHide();
+    $('#rootwizard').bootstrapWizard({
+            'tabClass': 'nav nav-pills',
+            'onNext': function (tab, navigation, index) {
+
+            },
+
+        }); 
 });
 
 </script>
@@ -122,6 +129,31 @@ $currentUserID = $this->user->info->ID;
 //echo $currentUserID;
 //echo '</pre>';
 ?>
+<form id="incomeForm" method="POST" action="<?php echo base_url ('PM/submit'); ?>" class="form-horizontal">
+	<div id="rootwizard">
+	    <ul class="nav nav-pills nav-justified">
+	        <li class="nav-item"><a class="nav-link" href="#tab1" data-toggle="tab">Income</a></li>
+	        <li class="nav-item"><a class="nav-link" href="#tab2" data-toggle="tab">Debts</a></li>
+	        <li class="nav-item"><a class="nav-link" href="#tab3" data-toggle="tab">Retirement</a></li>
+	    </ul>
+	    <div class="tab-content">
+	        <div class="tab-pane p-t-20 p-b-20" id="tab1">
+	        	<div class="form-group">
+	        		<label for="income">What is your annual income?</label>
+	        		<input type="number" name="income" id="income" class="form-control" placeholder="25,000">
+	        	</div>
+	        </div>
+	        <div class="tab-pane p-t-20 p-b-20" id="tab2">
+	        </div>
+	        <div class="tab-pane p-t-20 p-b-20" id="tab3">
+	        </div>
+	    	<ul class="nav nav-pills justify-content-between wizard m-b-30">
+	            <li class=" nav-item next"><a class="nav-link btn-success" href="#!">Proceed</a></li>
+	        </ul>
+	    </div>
+	</div>
+</form>
+
 <div class="smart-wrap">
     <div class="smart-forms smart-container wrap-1">
     
@@ -329,7 +361,11 @@ $exampleFormArray = array(
 				        	'attribute_id' => $attribute_id,
 				        	'value' => $value);
 				        //do the dirty
-				        $this->db->insert($table_name.'Details', $data);
+				        $write = false;
+				        if ($write == true) {
+				        	$this->db->insert($table_name.'Details', $data);
+				        }
+				        
 				}//end insert query
 			}//end checking for empty data
         }//end foreach

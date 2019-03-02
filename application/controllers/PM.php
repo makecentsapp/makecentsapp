@@ -9,9 +9,14 @@ class PM extends CI_Controller {
 	$this->template->layout = '/layout/themes/light_blue_layout.php';
 	$this->template->loadContent("pm/index.php");
 	}
-	public function formExample() {
+	public function dbAttribute() {
 		//Remove after BS4 re-code:
 		$this->template->layout = '/layout/themes/light_blue_layout.php';
+		$this->template->loadContent("pm/dbAttribute.php");
+	}
+	public function formExample() {
+		//Remove after BS4 re-code:
+		$this->template->layout = '/layout/themes/atmos.php';
 		$this->template->loadContent("pm/formExample.php");
 	}
 	public function personalForm() {
@@ -48,29 +53,72 @@ class PM extends CI_Controller {
         $this->formpost($_POST);
 	}
 	private function formpost($array) {
+		$this->load->library('session');
+		$write = true;
+		//if the post isnt an array, stop
 		if (!is_array($array)) return false;
-
         if (!headers_sent()) {
             header('Cache-Control: no-cache, must-revalidate');
             header('Expires: ' . date('r'));
             header('Content-type: application/json');
         }
 
-        $exampleFormArray = array(
-        	'formName' => 'personal', 
-        	'id' => 2, 
-        	'name' => 'John Doe', 
-        	'age' => '45'
-        );
-
-        $tableName = $exampleFormArray['formName'];
-        foreach ($exampleFormArray as $key => $value) {
-        	$this->db->where('attribute_name', $key);
-        	//$this->db->insert($tableName, $basics);
+        if (isset($array['attributeSubmit'])) {
+        	$table_name = $array['table'];
+			$data = array('attribute_name' => $array['attribute_name']);
+        	$query = $this->db
+        		->select('attribute_id')
+        		->from($table_name)
+        		->where('attribute_name', $array['attribute_name'])
+        		->get();
+			if ($query->num_rows() == 0) {
+	        	
+	        	if ($write == true) {
+		        	$this->db->insert($table_name, $data);
+		        }
+		        $returnData = array('attributeReturn' => 'Sucessfully inserted '. $this->db->affected_rows() . ' row.');
+		        $this->session->set_userdata($returnData);
+		    }
+		    else {
+		    	$returnData = array('attributeReturn' => 'That attribute already exists in the '. $table_name . ' table');
+		    	$this->session->set_userdata($returnData);
+		    }
+		    redirect('PM/dbAttribute');
         }
-        
+        else {
+			//setup the consistent variables, regardless of how many fields are passed
+			$user_id = $array['id'];
+	        $table_name = $array['formName'];
+	        //take those rows off the array, 2 being first two fields of array, so the HTML has to pass them first
+	        $array = array_slice($array, 2); 
 
-	    $send = array('result' => $this->db->affected_rows() . ' row(s) added.');
-        exit(json_encode($send, JSON_FORCE_OBJECT));
+	        //run through remaining values in array, find their attribute_id and insert
+	        foreach ($array as $key => $value) {
+	        	if (!empty($value)) {
+		        	$query = $this->db
+		        		->select('attribute_id')
+		        		->from($table_name)
+		        		->where('attribute_name', $key)
+		        		->get();
+					if ($query->num_rows() > 0) {
+						//parse the return of the select statement into something useable
+						$row = $query->row_array();
+				        $attribute_id = $row['attribute_id'];
+				        //prepare the data array for insert
+				        $data = array(
+				        	'user_id' => $user_id, 
+				        	'attribute_id' => $attribute_id,
+				        	'value' => $value);
+				        //do the dirty
+				        if ($write == true) {
+				        	$this->db->insert($table_name.'Details', $data);
+				        }
+					}//end insert query
+				}//end checking for empty data
+	        }//end foreach
+	        //give some debug return for the console on the ajax
+		    $send = array('result' => $this->db->affected_rows() . ' row(s) added.');
+	        exit(json_encode($send, JSON_FORCE_OBJECT));
+		}
 	}
 }

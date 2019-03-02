@@ -21,7 +21,7 @@ class BW extends CI_Controller
 	$this->output->enable_profiler(TRUE);
 
 	//This system uses templating. Check Application/libraries/template.php to see
-	$this->template->layout = '/layout/themes/make_cents_template.php';
+	$this->template->layout = '/layout/themes/atmos.php';
 	$this->template->loadContent("bw/index.php", $arrayOfThings);
 	}
 
