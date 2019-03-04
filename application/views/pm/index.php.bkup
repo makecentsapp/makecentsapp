@@ -1,0 +1,159 @@
+<style>
+.inactive-card {
+	background-color: #ccc !important;
+}
+.custom-card-icon {
+	width: 125px;
+	height: 125px;
+	background-color: #1abc9c;
+	border-radius: 3px;
+	margin: auto;
+	color: #fff;
+}
+.custom-card-icon:hover {
+	background-color: #1ccdaa;
+}
+.custom-card-icon i, .card a {
+	font-size: 42px;
+	vertical-align: middle;
+	margin: auto;
+	color: #fff;
+	padding-top: 35px;
+	text-decoration: none;
+}
+.card-text {
+	padding: 10px;
+}
+</style>
+<?php
+
+
+?>
+<br>
+<div class="container p-t-20">
+<div class="row">
+	
+	</div>
+<div class="row">
+<div class="col-lg-12">
+                    <div class="card m-b-30">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6 my-auto">
+                                    <h2>Progress</h2>
+                                    <p class="text-muted">
+                                        First screen a user sees after registration. Probably something up here about expectations, i.e. 5 mins per survey and then you are on your way to being a millionaire.
+                                    </p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div style="overflow: hidden; max-height: 210px !important; position: relative;">
+                                        <div id="chart-07" style="min-height: 355px;"><div id="apexchartsan1cuz43" class="apexcharts-canvas apexchartsan1cuz43" style="width: 233px; height: 350px;"><svg id="SvgjsSvg1001" width="233" height="350" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" class="apexcharts-svg" xmlns:data="ApexChartsNS" transform="translate(0, 0)" style="background: transparent;"><g id="SvgjsG1003" class="apexcharts-inner apexcharts-graphical" transform="translate(-31, 20)"><defs id="SvgjsDefs1002"><clipPath id="gridRectMaskan1cuz43"><rect id="SvgjsRect1004" width="297" height="297" x="-1" y="-1" rx="0" ry="0" fill="#ffffff" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0"></rect></clipPath><clipPath id="gridRectMarkerMaskan1cuz43"><rect id="SvgjsRect1005" width="303" height="303" x="-4" y="-4" rx="0" ry="0" fill="#ffffff" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0"></rect></clipPath><linearGradient id="SvgjsLinearGradient1011" x1="0" y1="1" x2="2" y2="2"><stop id="SvgjsStop1012" stop-opacity="1" stop-color="rgba(242,242,242,1)" offset="0"></stop><stop id="SvgjsStop1013" stop-opacity="1" stop-color="rgba(206,206,206,1)" offset="0.5"></stop><stop id="SvgjsStop1014" stop-opacity="1" stop-color="rgba(206,206,206,1)" offset="0.65"></stop><stop id="SvgjsStop1015" stop-opacity="1" stop-color="rgba(242,242,242,1)" offset="0.91"></stop></linearGradient><linearGradient id="SvgjsLinearGradient1022" x1="0" y1="1" x2="2" y2="2"><stop id="SvgjsStop1023" stop-opacity="1" stop-color="rgba(0,143,251,1)" offset="0"></stop><stop id="SvgjsStop1024" stop-opacity="1" stop-color="rgba(0,122,213,1)" offset="0.5"></stop><stop id="SvgjsStop1025" stop-opacity="1" stop-color="rgba(0,122,213,1)" offset="0.65"></stop><stop id="SvgjsStop1026" stop-opacity="1" stop-color="rgba(0,143,251,1)" offset="0.91"></stop></linearGradient></defs><g id="SvgjsG1007" class="apexcharts-radialbar"><g id="SvgjsG1008"><g id="SvgjsG1009"><g id="apexcharts-track-0" class="apexcharts-radialbar-track apexcharts-track" rel="1"><path id="apexcharts-radialbarTrack-0" d="M 58.8109756097561 147.5 A 88.6890243902439 88.6890243902439 0 0 1 236.1890243902439 147.5" fill="none" fill-opacity="1" stroke="rgba(242,242,242,0.85)" stroke-opacity="1" stroke-linecap="butt" stroke-width="28.591341463414633" stroke-dasharray="0" class="apexcharts-radialbar-area" data:pathOrig="M 58.8109756097561 147.5 A 88.6890243902439 88.6890243902439 0 0 1 236.1890243902439 147.5"></path></g></g><g id="SvgjsG1017"><g id="apexcharts-series-0" class="apexcharts-series apexcharts-radial-series series-1" rel="1"><path id="apexcharts-radialArc-0" d="M 58.8109756097561 147.5 A 88.6890243902439 88.6890243902439 0 0 1 193.17822438760209 71.47866836151084" fill="none" fill-opacity="0.85" stroke="url(#SvgjsLinearGradient1022)" stroke-opacity="1" stroke-linecap="butt" stroke-width="29.475609756097562" stroke-dasharray="4" class="apexcharts-radialbar-area" data:angle="121" data:value="67" index="0" j="0" data:pathOrig="M 58.8109756097561 147.5 A 88.6890243902439 88.6890243902439 0 0 1 193.17822438760209 71.47866836151084"></path></g><circle id="SvgjsCircle1018" r="69.39335365853658" cx="147.5" cy="147.5" class="apexcharts-radialbar-hollow" fill="transparent"></circle><g id="SvgjsG1019" class="apexcharts-datalabels-group" transform="translate(0, 0)" style="opacity: 1;"><text id="SvgjsText1020" font-family="Helvetica, Arial, sans-serif" x="147.5" y="147.5" text-anchor="middle" dominate-baseline="central" font-size="22px" fill="#373d3f" class="apexcharts-datalabel-value" style="font-family: Helvetica, Arial, sans-serif;">67%</text></g></g></g></g><line id="SvgjsLine1028" x1="0" y1="0" x2="295" y2="0" stroke="#b6b6b6" stroke-dasharray="0" stroke-width="1" class="apexcharts-ycrosshairs"></line><line id="SvgjsLine1029" x1="0" y1="0" x2="295" y2="0" stroke-dasharray="0" stroke-width="0" class="apexcharts-ycrosshairs-hidden"></line></g></svg><div class="apexcharts-legend"></div></div></div>
+
+                                    <div class="resize-triggers"><div class="expand-trigger"><div style="width: 234px; height: 211px;"></div></div><div class="contract-trigger"></div></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+</div>
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="card text-center" style="width: 18rem;">
+				<a href="<?php echo base_url ('PM/personalForm'); ?>">
+					<div class="custom-card-icon">
+						<i class="fa fa-id-card"></i>
+						<h4 class="card-title">
+							Personal Details
+						</h4>
+					</div>
+				</a>
+				<div class="card-body">
+					<p class="card-text small small">Some quick info to help us provide you with some perspective.</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-3">
+			<div class="card text-center" style="width: 18rem;">
+				<a href="<?php echo base_url ('PM/incomeForm'); ?>">
+					<div class="custom-card-icon">
+						<i class="fa fa-money-bill-alt"></i>
+						<h4 class="card-title">Income</h4>
+					</div>
+				</a>
+				<div class="card-body">
+					<p class="card-text small">How much scratch do you bring in to the coffers?</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-3">
+			<div class="card text-center" style="width: 18rem;">
+				<a href="<?php echo base_url ('PM/assetsForm'); ?>">
+					<div class="custom-card-icon inactive-card">
+						<i class="fa fa-piggy-bank"></i>
+						<h4 class="card-title">Assets</h4>
+					</div>
+				</a>
+				<div class="card-body">
+					<p class="card-text small">House, car, and bank accounts: totaled up.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="card text-center" style="width: 18rem;">
+				<a href="<?php echo base_url ('PM/expensesForm'); ?>">
+					<div class="custom-card-icon inactive-card">
+						<i class="fa fa-cash-register"></i>
+						<h4 class="card-title">Expenses</h4>
+					</div>	
+				</a>
+				<div class="card-body">
+					<p class="card-text small">What are you buying and why are you paying so much?</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-3">
+			<div class="card text-center" style="width: 18rem;">
+				<a href="<?php echo base_url ('PM/debtsForm'); ?>">
+					<div class="custom-card-icon inactive-card">
+						<i class="fa fa-credit-card"></i>
+						<h4 class="card-title">Debts</h4>
+					</div>
+				</a>
+				<div class="card-body">
+					<p class="card-text small">Do you like snowballs or avalanches?</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-3">
+			<div class="card text-center" style="width: 18rem;">
+				<a href="<?php echo base_url ('PM/retirementForm'); ?>">
+					<div class="custom-card-icon inactive-card">
+						<i class="fa fa-chart-line"></i>
+						<h4 class="card-title">Retirement</h4>
+					</div>
+				</a>
+				<div class="card-body">
+					<p class="card-text small">Getting old is expensive and inevitable.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="card text-center" style="width: 18rem;">
+				<a href="#">
+					<div class="custom-card-icon inactive-card">
+						<i class="fa fa-kiwi-bird"></i>
+						<h4 class="card-title">Planning / Other</h4>
+					</div>
+				</a>
+				<div class="card-body">
+					<p class="card-text small">We'll come back to it later but just wanted to get it down before I forget.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

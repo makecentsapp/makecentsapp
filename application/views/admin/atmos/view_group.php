@@ -1,43 +1,69 @@
-<div class="white-area-content">
-    <div class="db-header clearfix">
-        <div class="page-header-title"> <span class="fas fa-user"></span> <?php echo lang("ctn_1") ?></div>
-        <div class="db-header-extra"><input type="button" class="btn btn-primary btn-sm" value="<?php echo lang("ctn_129") ?> <?php echo $group->name ?>" data-toggle="modal" data-target="#memberModal" />
+<div class="bg-dark">
+    <ol class="breadcrumb my-0 py-0 text-primary bg-dark">
+	      <li class="breadcrumb-item"><a href="<?php echo site_url() ?>"><?php echo lang("ctn_2") ?></a></li>
+	      <li class="breadcrumb-item"><a href="<?php echo site_url("admin") ?>"><?php echo lang("ctn_1") ?></a></li>
+	      <li class="breadcrumb-item"><a href="<?php echo site_url("admin/user_groups") ?>"><?php echo lang("ctn_15") ?></a></li>
+	      <li class="breadcrumb-item active"><?php echo lang("ctn_125") ?></li>
+    </ol>
+</div>
+<div class="bg-dark">
+    <div class="container m-b-30">
+        <div class="row">
+            <div class="col-12 text-white p-t-20 p-b-90">
+                <h4>
+                    <span class="badge">
+                    <i class="fas fa-users"></i>
+                    </span>
+                    <?php echo lang("ctn_125") ?>
+                </h4>
+                <p><?php echo lang("ctn_126") ?> <b><?php echo $group->name ?></b> - <?php echo lang("ctn_127") ?> <b><?php echo number_format($total_members) ?></b></p>
+            </div>
         </div>
     </div>
+</div>
 
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="<?php echo site_url() ?>"><?php echo lang("ctn_2") ?></a></li>
-      <li class="breadcrumb-item"><a href="<?php echo site_url("admin") ?>"><?php echo lang("ctn_1") ?></a></li>
-      <li class="breadcrumb-item"><a href="<?php echo site_url("admin/user_groups") ?>"><?php echo lang("ctn_15") ?></a></li>
-      <li class="breadcrumb-item active"><?php echo lang("ctn_125") ?></li>
-    </ol>
+<div class="container pull-up">
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+                    <div class="table">
+                        <div id="table_wrapper01" class="datatables_wrapper dt-bootstrap4">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="float-right form-inline mb-2">
+                                        <input type="button" class="btn btn-primary btn-sm" value="<?php echo lang("ctn_129") ?> : <?php echo $group->name ?>" data-toggle="modal" data-target="#memberModal" />
+                                    </div>
+								    <table class="table datatable table-hover table-striped">
+								        <tr class="table-header">
+								            <td><?php echo lang("ctn_25") ?></td>
+								            <td><?php echo lang("ctn_128") ?></td>
+								            <td><?php echo lang("ctn_52") ?></td>
+								        </tr>
+								        <?php foreach($users->result() as $r) : ?>
+								            <tr>
+								                <td><?php echo $r->username ?></td>
+								                <td><?php echo $r->name ?></td>
+								                <td>
+								                    <a href="<?php echo site_url("admin/remove_user_from_group/" . $r->userid . "/" . $r->groupid . "/" . $this->security->get_csrf_hash()) ?>" class="btn btn-danger btn-xs"><?php echo lang("ctn_130") ?>
 
-    <p><?php echo lang("ctn_126") ?> <b><?php echo $group->name ?></b> - <?php echo lang("ctn_127") ?> <b><?php echo number_format($total_members) ?></b></p>
-
-    <hr>
-
-    <table class="table table-bordered">
-        <tr class="table-header">
-            <td><?php echo lang("ctn_25") ?></td>
-            <td><?php echo lang("ctn_128") ?></td>
-            <td><?php echo lang("ctn_52") ?></td>
-        </tr>
-        <?php foreach($users->result() as $r) : ?>
-            <tr>
-                <td><?php echo $r->username ?></td>
-                <td><?php echo $r->name ?></td>
-                <td>
-                    <a href="<?php echo site_url("admin/remove_user_from_group/" . $r->userid . "/" . $r->groupid . "/" . $this->security->get_csrf_hash()) ?>" class="btn btn-danger btn-xs"><?php echo lang("ctn_130") ?>
-
-                    </a>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-
-    <div class="align-center">
-        <?php echo $this->pagination->create_links() ?>
+								                    </a>
+								                </td>
+								            </tr>
+								        <?php endforeach; ?>
+								    </table>
+							        <div class="align-center">
+								        <?php echo $this->pagination->create_links() ?>
+								    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
     <div class="modal fade" id="memberModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">

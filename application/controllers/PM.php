@@ -1,17 +1,44 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class PM extends CI_Controller {
+	
+	public function __construct()
+      {
+         parent::__construct();
+
+        /* if (!$this->session->userdata('user_id'))
+         {
+            redirect('logoutcontroller');
+         }*/
+
+         $this->load->model('user_model');
+      }
+
 	public function index() {
 	//enabling the profiler to show more data on the view
 	//$this->output->enable_profiler(TRUE);
+	$userdata = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
+	$query = $this->db
+		->select('*')
+		->from('formProgress')
+		->where('user_id', $this->user->info->ID)
+		->get();
 
-	//Remove after BS4 re-code:
-	$this->template->layout = '/layout/themes/light_blue_layout.php';
-	$this->template->loadContent("pm/index.php");
+
+    $array = array(
+		'personalRows' => $query,
+		'user' => $this->user
+		//'userid' => $userdata
+	);
+	$this->template->layout = '/layout/themes/atmos.php';
+	$this->template->loadContent("pm/index.php", $array);
 	}
+
+
+
 	public function dbAttribute() {
 		//Remove after BS4 re-code:
-		$this->template->layout = '/layout/themes/light_blue_layout.php';
+		$this->template->layout = '/layout/themes/atmos.php';
 		$this->template->loadContent("pm/dbAttribute.php");
 	}
 	public function formExample() {
@@ -21,32 +48,32 @@ class PM extends CI_Controller {
 	}
 	public function personalForm() {
 		//Remove after BS4 re-code:
-		$this->template->layout = '/layout/themes/light_blue_layout.php';
+		$this->template->layout = '/layout/themes/atmos.php';
 		$this->template->loadContent("pm/form/personal.php");
 	}
 	public function incomeForm() {
 		//Remove after BS4 re-code:
-		$this->template->layout = '/layout/themes/light_blue_layout.php';
+		$this->template->layout = '/layout/themes/atmos.php';
 		$this->template->loadContent("pm/form/income.php");
 	}
 	public function assetsForm() {
 		//Remove after BS4 re-code:
-		$this->template->layout = '/layout/themes/light_blue_layout.php';
+		$this->template->layout = '/layout/themes/atmos.php';
 		$this->template->loadContent("pm/form/assets.php");
 	}
 	public function expensesForm() {
 		//Remove after BS4 re-code:
-		$this->template->layout = '/layout/themes/light_blue_layout.php';
+		$this->template->layout = '/layout/themes/atmos.php';
 		$this->template->loadContent("pm/form/expenses.php");
 	}
 	public function debtsForm() {
 		//Remove after BS4 re-code:
-		$this->template->layout = '/layout/themes/light_blue_layout.php';
+		$this->template->layout = '/layout/themes/atmos.php';
 		$this->template->loadContent("pm/form/debts.php");
 	}
 	public function retirementForm() {
 		//Remove after BS4 re-code:
-		$this->template->layout = '/layout/themes/light_blue_layout.php';
+		$this->template->layout = '/layout/themes/atmos.php';
 		$this->template->loadContent("pm/form/retirement.php");
 	}
 	public function submit() {

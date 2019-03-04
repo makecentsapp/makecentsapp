@@ -33,6 +33,8 @@
         <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/atmos.min.css">
         <!-- Additional library for page -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+        <!-- ProLogin Tags css- for dropzones etc -->
+        <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>styles/elements.css">
 
         <!-- SCRIPTS -->
         <script type="text/javascript">
@@ -68,9 +70,6 @@
         </script>
         <?php endif; ?>
 
-        <!-- CODE INCLUDES -->
-        <?php echo $cssincludes ?>
-
         <!-- Smart Forms - added by PM 2/22-->
         <link rel="stylesheet" type="text/css"  href="<?php echo base_url();?>assets/vendor/smartforms/smart-forms.css">
         <link rel="stylesheet" type="text/css"  href="<?php echo base_url();?>assets/vendor/smartforms/smart-addons.css">
@@ -84,6 +83,10 @@
 
         <!-- Extra Atmos Assets - added by PM 3/2-->
         <script type="text/javascript" src="<?php echo base_url();?>assets/vendor/jquery.bootstrap.wizard/jquery.bootstrap.wizard.min.js"></script>
+        <script src="<?php echo base_url();?>assets/vendor/apexchart/apexcharts.min.js"></script>
+
+        <!-- CODE INCLUDES -->
+        <?php echo $cssincludes ?>
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -182,6 +185,7 @@
                                         <a class="dropdown-item" href="<?php echo site_url("admin") ?>"><?php echo lang("ctn_157") ?></a>
                                     <?php endif; ?>
                                     <a class="dropdown-item" href="#">Help</a>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#aboutusmodal">About</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="<?php echo site_url("login/logout/" . $this->security->get_csrf_hash()) ?>"><?php echo lang("ctn_149") ?></a>
                                 </div>
@@ -198,8 +202,43 @@
                 </nav>
             </header>
 
+            <div class="modal fade" id="aboutusmodal" tabindex="-1" role="dialog" aria-labelledby="aboutusmodal" aria-hidden="true">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content bg-dark bg-cover" style="background-image: url('<?php echo base_url();?>assets/img/patterns/circles.svg')">
+                        <div class="modal-body">
+                            <button type="button" class="close light" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <div class="text-white p-b-10">
+                                <div class="avatar avatar-xl my-auto">
+                                    <div class="avatar-title bg-success rounded-circle">
+                                        <i class="mdi mdi-information-outline"></i>
+                                    </div>
+                                </div>
+                                <h5 class="p-t-20">About <?php echo $this->settings->info->site_name ?> V <?php echo $this->settings->version ?></h5>
+                                <p class="opacity-75">
+                                We are, seriously awesome.
+                                </p>
+                                <p class="opacity-50">
+                                    &copy; 2019 - <?PHP echo date("Y"); ?> - <?php echo $this->settings->info->site_name ?>
+                                </p>
+                                <p></p>
+                                <p class="Text-Primary">
+                                    <?php echo lang("ctn_430") ?>: <a href="<?php echo site_url("members/index/1") ?>"><?php echo $this->settings->info->currently_online ?></a>
+                                </p>
+                                <p>
+                                    <a href="<?php echo site_url("home/change_language") ?>"><?php echo lang("ctn_171") ?></a>
+                                </p>
+                                <hr>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <section class="admin-content">
-                <div class="container-fluid">
+                <div class="">
 
                     <?php $gl = $this->session->flashdata('globalmsg'); ?>
                     <?php if(!empty($gl)) :?>
@@ -214,14 +253,7 @@
 
                 </div>
             </section>
-            <div id="footer" class="clearfix">
-                <span class="float-left"><?php echo lang("ctn_170") ?> -
-                    <!-- <a href="http://MakeCentsApp.com/">Make Cents</a> -->
-                    <?php echo $this->settings->info->site_name ?>V <?php echo $this->settings->version ?>
-                </span>
-                <span class="float-right"><?php echo lang("ctn_430") ?>: <a href="<?php echo site_url("members/index/1") ?>"><?php echo $this->settings->info->currently_online ?></a> - <a href="<?php echo site_url("home/change_language") ?>"><?php echo lang("ctn_171") ?></a>
-                </span>
-            </div>
+
         </main>
 
 <div class="modal modal-slide-left  fade" id="siteSearchModal" tabindex="-1" role="dialog" aria-labelledby="siteSearchModal"
@@ -253,7 +285,7 @@
 
                         <div class="list-group-item d-flex  align-items-center">
                             <div class="m-r-20">
-                                <div class="avatar avatar-sm "><img class="avatar-img rounded-circle"   src="assets/img/users/user-3.jpg" alt="user-image"></div>
+                                <div class="avatar avatar-sm "><img class="avatar-img rounded-circle"   src="<?php echo base_url();?>assets/img/users/user-3.jpg" alt="user-image"></div>
                             </div>
                             <div class="">
                                 <div class="name">Eric Chen</div>
@@ -265,7 +297,7 @@
                         <div class="list-group-item d-flex  align-items-center">
                             <div class="m-r-20">
                                 <div class="avatar avatar-sm "><img class="avatar-img rounded-circle"
-                                                                    src="assets/img/users/user-4.jpg" alt="user-image"></div>
+                                                                    src="<?php echo base_url();?>assets/img/users/user-4.jpg" alt="user-image"></div>
                             </div>
                             <div class="">
                                 <div class="name">Sean Valdez</div>
@@ -277,7 +309,7 @@
                         <div class="list-group-item d-flex  align-items-center">
                             <div class="m-r-20">
                                 <div class="avatar avatar-sm "><img class="avatar-img rounded-circle"
-                                                                    src="assets/img/users/user-8.jpg" alt="user-image"></div>
+                                                                    src="<?php echo base_url();?>assets/img/users/user-8.jpg" alt="user-image"></div>
                             </div>
                             <div class="">
                                 <div class="name">Marie Arnold</div>

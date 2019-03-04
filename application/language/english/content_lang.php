@@ -24,6 +24,7 @@ $lang['ctn_20'] = "If selected, when a user registers they will be automatically
 $lang['ctn_21'] = "Members";
 $lang['ctn_22'] = "Edit Member";
 $lang['ctn_23'] = "Here you can manage the members of your site.";
+$lang['ctn_23_1'] = "Here you can edit this members information, and the groups they have membership to.";
 $lang['ctn_24'] = "Email";
 $lang['ctn_25'] = "Username";
 $lang['ctn_26'] = "Avatar";
@@ -116,7 +117,7 @@ $lang['ctn_112'] = "Disables the built-in CodeIgniter captcha form on the site."
 $lang['ctn_113'] = "Allow Avatar Upload";
 $lang['ctn_114'] = "Allows users to upload their own avatar.";
 $lang['ctn_115'] = "Social Settings";
-$lang['ctn_116'] = "The social settings affect user's ability to login to the site using Social Networks. A lot of the settings on this page require you to register your site with the social network's API developer areas. For more information on how to obtain the keys, please refer to the documentation available in the download files.<";
+$lang['ctn_116'] = "The social settings affect user's ability to login to the site using Social Networks. A lot of the settings on this page require you to register your site with the social network's API developer areas. For more information on how to obtain the keys, please refer to the documentation available in the download files.";
 $lang['ctn_117'] = "Disable Social Login";
 $lang['ctn_118'] = "Prevents users from logging into the site using their Social Network Accounts.";
 $lang['ctn_119'] = "Twitter Consumer Key";
@@ -245,6 +246,7 @@ $lang['ctn_223'] = "Login";
 
 // Settings
 $lang['ctn_224'] = "Settings";
+$lang['ctn_224_1'] = "Your Settings";
 $lang['ctn_225'] = "Change Password";
 $lang['ctn_226'] = "You can update your settings below.";
 $lang['ctn_227'] = "Your Information";

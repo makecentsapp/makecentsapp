@@ -3,7 +3,7 @@ jQuery(document).ready(function($){
 	/*$.validator.methods.smartCaptcha = function(value, element, param) {
 		return value == param;
 	};*/
-	var formdata = '';
+	/*var formdata = '';
     $("#smart-form").steps({
         headerTag: "h2",
         bodyTag: "fieldset",
@@ -112,16 +112,81 @@ jQuery(document).ready(function($){
             }
         }	
     });
-    $('.smartfm-ctrl').formShowHide();
-    $('#rootwizard').bootstrapWizard({
-            'tabClass': 'nav nav-pills',
-            'onNext': function (tab, navigation, index) {
+    $('.smartfm-ctrl').formShowHide();*/
+    var formdata = '';
+    var focus = 'incomeForm';
+    $('#'+focus).bootstrapWizard({
+    	nextSelector: '.button-next', 
+    	previousSelector: '.button-previous',
+    	tabClass: 'nav nav-pills',
+    	'onNext': function(tab, navigation, index) {
+  			if(!$('#'+focus).valid()) {
+  				return false;
+  			}
+  			else {
+	  			//after sucessfully passing validation, when the step changes to the next, submit changed data to DB
+	        	
+	            //check if anything in the form has been updated since last onStepChanged
+	            if (formdata !== $('#'+focus).serialize()) {
+	            	formdata = $('#'+focus).serialize();
 
+	            	$.ajax({
+					    data: formdata,
+					    type: "post",
+					    url: "<?php echo base_url ('PM/submit'); ?>",
+					    error: function(xhr, status, error) {
+							var err = eval("(" + xhr.responseText + ")");
+							alert(err.Message);
+						},
+					    success: function(data){
+					        alert("Data returned: " + JSON.stringify(data));
+					    }
+					});
+	            }
+	        }
+  		},
+  		'onLast': function(tab, navigation, index) {
+  			console.log('onLast');
+  			$('#'+focus+' .finish').click(function() {
+		    	$('#'+focus).find("a[href*='tab1']").trigger('click'); //if you want to go to first tab again. Else do what ever you want to do like enable next button again. 
+			});
+  		}
+	}).validate({
+		errorClass: "is-invalid",
+        validClass: "is-valid",
+        rules: {
+            income: {
+                required: true,
+                minlength: 2
             },
-
-        }); 
-});
-
+            basicCCDebt: {
+				required: "#CCSwitch:checked"
+			},
+			basicCCInterest: {
+				required: "#CCSwitch:checked"
+			}/*,
+			basicAutoDebt: {
+				required: "#AutoSwitch:checked"
+			},
+			basicAutoInterest: {
+				required: "#AutoSwitch:checked"
+			},
+			basicMortgageDebt: {
+				required: "#mortgageSwitch:checked"
+			},
+			basicMortgageInterest: {
+				required: "#mortgageSwitch:checked"
+			}*/
+        },
+        messages: {
+	        income: {
+	            required: 'Please fill in your annual income.',
+	            minlength: 'Temp error for 2 digits.'
+	        }
+        }
+    });
+    
+});//end of ready function
 </script>
 <?php
 //echo '<pre>';
@@ -129,7 +194,17 @@ $currentUserID = $this->user->info->ID;
 //echo $currentUserID;
 //echo '</pre>';
 ?>
+<div class="row m-h-100 align-items-center justify-content-center">
+    <div class="col-lg-6 col-md-10 p-t-80">
+        <div class="card shadow-lg">
+            <div class=" p-all-25">
 <form id="incomeForm" method="POST" action="<?php echo base_url ('PM/submit'); ?>" class="form-horizontal">
+	<!-- hidden field for the current User ID -->
+	<input type="hidden" name="ID" value="<?php echo $currentUserID; ?>">
+	<!-- hidden field for CSRF security token -->
+	<input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
+	<!-- hidden field for form name -->
+	<input type="hidden" name="formName" value="income">
 	<div id="rootwizard">
 	    <ul class="nav nav-pills nav-justified">
 	        <li class="nav-item"><a class="nav-link" href="#tab1" data-toggle="tab">Income</a></li>
@@ -138,21 +213,69 @@ $currentUserID = $this->user->info->ID;
 	    </ul>
 	    <div class="tab-content">
 	        <div class="tab-pane p-t-20 p-b-20" id="tab1">
-	        	<div class="form-group">
-	        		<label for="income">What is your annual income?</label>
-	        		<input type="number" name="income" id="income" class="form-control" placeholder="25,000">
+	        	<h3><span class="align-middle">Some Title</span></h3>
+                <div class="form-group"> 
+	        		<label for="income">What is your monthly income?</label>
+        			<div class="input-group">
+	        			<div class="input-group-prepend">
+				        	<div class="input-group-text"><span class="field-icon"><i class="fas fa-dollar-sign"></i></span></div>
+				        </div>
+		        		<input type="number" name="income" id="income" class="form-control" placeholder="2,000" required>	
+		        	</div>        		
 	        	</div>
 	        </div>
 	        <div class="tab-pane p-t-20 p-b-20" id="tab2">
+	        	<div class="section colm colm3">
+                	<p><b>Do you have any credit card debt?</b></p>
+			        <label class="switch">
+			            <input type="checkbox" name="CCSwitch" id="CCSwitch" class="smartfm-ctrl" data-show-id="ctr_CC">
+			            <span class="switch-label" data-on="Yes" data-off="No"></span>
+			        </label>
+				</div><!-- end section -->
+
+				<div id="ctr_CC" class="hiddenbox">
+                    <div class="section colm colm5">
+                    	 <p><b>What is your credit card balance?</b></p>
+                        <label class="field prepend-icon">
+                            <input type="number" name="basicCCDebt" id="basicCCDebt" class="gui-input" placeholder="1,000">
+                            <span class="field-icon"><i class="fas fa-dollar-sign"></i></span>  
+                        </label>
+                    </div><!-- end section -->
+                    <div class="section colm colm4">
+                    	<p><b>What is the interest rate?</b></p>
+                    	<div class="colm colm6">
+                        <label class="field append-icon">
+                            <input type="number" name="basicCCInterest" id="basicCCInterest"class="gui-input" placeholder="25">
+                            <span class="field-icon"><i class="fas fa-percent"></i></span>
+                        </label>
+                        </div>
+                    </div><!-- end section -->
+                </div>
 	        </div>
 	        <div class="tab-pane p-t-20 p-b-20" id="tab3">
+	        	<p>tab 3</p>
 	        </div>
-	    	<ul class="nav nav-pills justify-content-between wizard m-b-30">
-	            <li class=" nav-item next"><a class="nav-link btn-success" href="#!">Proceed</a></li>
-	        </ul>
+	        <ul class="nav nav-pills justify-content-between wizard m-b-30">
+                <li class="nav-item next"><a class="nav-link btn-success" href="#!">Proceed</a></li>
+            </ul>
+	        <div style="float:right">
+				<input type='button' class='btn button-next' name='next' value='Next' />
+			</div>
+			<div style="float:left">
+				<input type='button' class='btn button-previous' name='previous' value='Back' />
+			</div>
 	    </div>
 	</div>
 </form>
+
+</div>
+<p class="text-center">
+	<a href='/light/' class='text-underline'>Back to Dashboard</a>
+	<small id="emailHelp" class="form-text text-muted"><i class="fas fa-lock"></i> We will never share your data. <a href="#">Privacy Policy</a></small>
+</p>
+</div>
+</div>
+</div>
 
 <div class="smart-wrap">
     <div class="smart-forms smart-container wrap-1">

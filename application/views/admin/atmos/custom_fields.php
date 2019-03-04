@@ -1,55 +1,85 @@
-<div class="white-area-content">
-    <div class="db-header clearfix">
-        <div class="page-header-title"> <span class="glyphicon glyphicon-user"></span> <?php echo lang("ctn_1") ?></div>
-        <div class="db-header-extra form-inline">
-            <input type="button" class="btn btn-primary btn-sm" value="<?php echo lang("ctn_373") ?>" data-toggle="modal" data-target="#memberModal" />
-        </div>
-    </div>
-
-    <ol class="breadcrumb">
+<div class="bg-dark">
+    <ol class="breadcrumb my-0 py-0 text-primary bg-dark">
         <li class="breadcrumb-item"><a href="<?php echo site_url() ?>"><?php echo lang("ctn_2") ?></a></li>
         <li class="breadcrumb-item"><a href="<?php echo site_url("admin") ?>"><?php echo lang("ctn_1") ?></a></li>
         <li class="breadcrumb-item active"><?php echo lang("ctn_346") ?></li>
     </ol>
-
-    <p><?php echo lang("ctn_372") ?></p>
-
-    <table class="table table-hover table-striped table-bordered">
-        <tr class="table-header">
-            <td><?php echo lang("ctn_352") ?></td>
-            <td><?php echo lang("ctn_358") ?></td>
-            <td><?php echo lang("ctn_52") ?></td>
-        </tr>
-        <?php foreach($fields->result() as $r) : ?>
-            <?php if($r->type == 0) {
-                $type = lang("ctn_357");
-            } elseif($r->type == 1) {
-                $type = lang("ctn_353");
-            } elseif($r->type == 2) {
-                $type = lang("ctn_354");
-            } elseif($r->type == 3) {
-                $type = lang("ctn_355");
-            } elseif($r->type == 4) {
-                $type = lang("ctn_356");
-            }
-            ?>
-            <tr>
-                <td><?php echo $r->name ?></td>
-                <td><?php echo $type ?></td>
-                <td>
-                    <a href="<?php echo site_url("admin/edit_custom_field/" . $r->ID) ?>" class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="bottom" title="<?php echo lang("ctn_55") ?>">
-                        <span class="fas fa-cog"></span>
-                    </a>
-                    <a href="<?php echo site_url("admin/delete_custom_field/" . $r->ID . "/" . $this->security->get_csrf_hash()) ?>" class="btn btn-danger btn-xs" data-toggle="tooltip" data-placement="bottom" onclick="return confirm('<?php echo lang("ctn_317") ?>')" title="<?php echo lang("ctn_57") ?>">
-                        <span class="fas fa-trash"></span>
-                    </a>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-
-
 </div>
+<div class="bg-dark">
+    <div class="container m-b-30">
+        <div class="row">
+            <div class="col-12 text-white p-t-20 p-b-90">
+                <h4>
+                    <span class="badge">
+                    <i class="far fa-list-alt"></i>
+                    </span>
+                    <?php echo lang("ctn_346") ?>
+                </h4>
+                <p class="opacity-75"><?php echo lang("ctn_372") ?></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container pull-up col-10">
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+                    <div class="table">
+                        <div id="table_wrapper01" class="datatables_wrapper dt-bootstrap4">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="float-right form-inline mb-2">
+                                        <input type="button" class="btn btn-primary btn-sm" value="<?php echo lang("ctn_373") ?>" data-toggle="modal" data-target="#memberModal" />
+                                    </div>
+
+                                    <table class="table datatable table-hover table-striped">
+                                        <tr class="table-header">
+                                            <td><?php echo lang("ctn_352") ?></td>
+                                            <td><?php echo lang("ctn_358") ?></td>
+                                            <td><?php echo lang("ctn_52") ?></td>
+                                        </tr>
+                                        <?php foreach($fields->result() as $r) : ?>
+                                            <?php if($r->type == 0) {
+                                                $type = lang("ctn_357");
+                                            } elseif($r->type == 1) {
+                                                $type = lang("ctn_353");
+                                            } elseif($r->type == 2) {
+                                                $type = lang("ctn_354");
+                                            } elseif($r->type == 3) {
+                                                $type = lang("ctn_355");
+                                            } elseif($r->type == 4) {
+                                                $type = lang("ctn_356");
+                                            }
+                                            ?>
+                                            <tr>
+                                                <td><?php echo $r->name ?></td>
+                                                <td><?php echo $type ?></td>
+                                                <td>
+                                                    <a href="<?php echo site_url("admin/edit_custom_field/" . $r->ID) ?>" class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="bottom" title="<?php echo lang("ctn_55") ?>">
+                                                        <span class="fas fa-cog"></span>
+                                                    </a>
+                                                    <a href="<?php echo site_url("admin/delete_custom_field/" . $r->ID . "/" . $this->security->get_csrf_hash()) ?>" class="btn btn-danger btn-xs" data-toggle="tooltip" data-placement="bottom" onclick="return confirm('<?php echo lang("ctn_317") ?>')" title="<?php echo lang("ctn_57") ?>">
+                                                        <span class="fas fa-trash"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <div class="modal fade" id="memberModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">

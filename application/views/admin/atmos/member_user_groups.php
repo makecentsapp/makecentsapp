@@ -1,36 +1,66 @@
-<div class="white-area-content">
-    <div class="db-header clearfix">
-        <div class="page-header-title"> <span class="fas fa-user"></span> <?php echo lang("ctn_1") ?></div>
-        <div class="db-header-extra">
-            <a href="<?php echo site_url("admin/edit_member/" . $member->ID) ?>" class="btn btn-warning btn-sm"><?php echo lang("ctn_22") ?></a>
-            <input type="button" class="btn btn-primary btn-sm" value="Add To User Group" data-toggle="modal" data-target="#addModal" />
-        </div>
-    </div>
-    <ol class="breadcrumb">
+<div class="bg-dark">
+    <ol class="breadcrumb my-0 py-0 text-primary bg-dark">
         <li class="breadcrumb-item"><a href="<?php echo site_url() ?>"><?php echo lang("ctn_2") ?></a></li>
         <li class="breadcrumb-item"><a href="<?php echo site_url("admin") ?>"><?php echo lang("ctn_1") ?></a></li>
         <li class="breadcrumb-item"><a href="<?php echo site_url("admin/members") ?>"><?php echo lang("ctn_21") ?></a></li>
         <li class="breadcrumb-item active"><?php echo lang("ctn_15") ?></li>
     </ol>
-
-    <table class="table table-bordered table-striped table-hover">
-        <tr class="table-header">
-            <td><?php echo lang("ctn_389") ?></td>
-            <td><?php echo lang("ctn_52") ?></td>
-        </tr>
-        <?php foreach($user_groups->result() as $r) : ?>
-            <tr>
-                <td><?php echo $r->name ?></td>
-                <td>
-                    <a href="<?php echo site_url("admin/remove_user_from_group/" . $r->userid . "/" . $r->groupid . "/" . $this->security->get_csrf_hash()) ?>" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger btn-xs" title="<?php echo lang("ctn_130") ?>">
-                        <span class="fas fa-trash"></span>
-                    </a>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-
 </div>
+<div class="bg-dark">
+    <div class="container m-b-30">
+        <div class="row">
+            <div class="col-12 text-white p-t-20 p-b-90">
+                <h4>
+                    <span class="badge">
+                    <i class="fas fa-users-cog"></i>
+                    </span>
+                    <?php echo lang("ctn_15") ?>
+                </h4>
+                <p> Edit membership to groups for user: <?php echo $member->username; ?> </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container pull-up">
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+                    <div class="table">
+                        <div id="table_wrapper01" class="datatables_wrapper dt-bootstrap4">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="float-right form-inline mb-2">
+                                        <a href="<?php echo site_url("admin/edit_member/" . $member->ID) ?>" class="btn btn-warning btn-sm"><?php echo lang("ctn_22") ?></a>
+            							<input type="button" class="btn btn-primary btn-sm" value="Add To User Group" data-toggle="modal" data-target="#addModal" />
+                                    </div>
+								    <table class="table datatable table-hover table-striped">
+								        <tr class="table-header">
+								            <td><?php echo lang("ctn_389") ?></td>
+								            <td><?php echo lang("ctn_52") ?></td>
+								        </tr>
+								        <?php foreach($user_groups->result() as $r) : ?>
+								            <tr>
+								                <td><?php echo $r->name ?></td>
+								                <td>
+								                    <a href="<?php echo site_url("admin/remove_user_from_group/" . $r->userid . "/" . $r->groupid . "/" . $this->security->get_csrf_hash()) ?>" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger btn-xs" title="<?php echo lang("ctn_130") ?>">
+								                        <span class="fas fa-trash"></span>
+								                    </a>
+								                </td>
+								            </tr>
+								        <?php endforeach; ?>
+								    </table>
+								</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

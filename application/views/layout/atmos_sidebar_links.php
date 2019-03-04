@@ -44,9 +44,7 @@
                                         <span class="menu-name"><?php echo lang("ctn_158") ?></span>
                                     </span>
                                     <span class="menu-icon">
-                                        <i class="icon-placeholder  ">
-                                        L
-                                        </i>
+                                        <i class="icon-placeholder fas fa-cogs"></i>
                                     </span>
                                 </a>
                             </li>
@@ -56,91 +54,104 @@
                                         <span class="menu-name"><?php echo lang("ctn_159") ?></span>
                                     </span>
                                     <span class="menu-icon">
-                                        <i class="icon-placeholder  ">
-                                        L
-                                        </i>
+                                        <i class="icon-placeholder mdi mdi-facebook-box"></i>
                                     </span>
                                 </a>
                             </li>
                         <?php endif; ?>
-                        <?php if($this->user->info->admin || $this->user->info->admin_members) : ?>
-                            <li class="menu-item <?php if(isset($activeLink['admin']['members'])) echo "active" ?>">
-                                <a href="<?php echo site_url("admin/members") ?>" class=" menu-link">
-                                    <span class="menu-label">
-                                        <span class="menu-name"><?php echo lang("ctn_160") ?></span>
+                        <li class="menu-item ">
+                            <a href="#" class="open-dropdown menu-link">
+                                <span class="menu-label">
+                                    <span class="menu-name">Members and Users
+                                        <span class="menu-arrow"></span>
                                     </span>
-                                    <span class="menu-icon">
-                                        <i class="icon-placeholder  ">
-                                        L
-                                        </i>
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="menu-item <?php if(isset($activeLink['admin']['custom_fields'])) echo "active" ?>">
-                                <a href="<?php echo site_url("admin/custom_fields") ?>" class=" menu-link">
-                                    <span class="menu-label">
-                                        <span class="menu-name"><?php echo lang("ctn_346") ?></span>
-                                    </span>
-                                    <span class="menu-icon">
-                                        <i class="icon-placeholder  ">
-                                        L
-                                        </i>
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="menu-item <?php if(isset($activeLink['admin']['user_logs'])) echo "active" ?>">
-                                <a href="<?php echo site_url("admin/user_logs") ?>" class=" menu-link">
-                                    <span class="menu-label">
-                                        <span class="menu-name"><?php echo lang("ctn_471") ?></span>
-                                    </span>
-                                    <span class="menu-icon">
-                                        <i class="icon-placeholder  ">
-                                        L
-                                        </i>
-                                    </span>
-                                </a>
-                            </li>
-                        <?php endif; ?>
-                        <?php if($this->user->info->admin) : ?>
-                            <li class="menu-item <?php if(isset($activeLink['admin']['user_roles'])) echo "active" ?>">
-                                <a href="<?php echo site_url("admin/user_roles") ?>" class=" menu-link">
-                                    <span class="menu-label">
-                                        <span class="menu-name"><?php echo lang("ctn_316") ?></span>
-                                    </span>
-                                    <span class="menu-icon">
-                                        <i class="icon-placeholder  ">
-                                        L
-                                        </i>
-                                    </span>
-                                </a>
-                            </li>
-                        <?php endif; ?>
-                        <?php if($this->user->info->admin || $this->user->info->admin_members) : ?>
-                            <li class="menu-item  <?php if(isset($activeLink['admin']['user_groups'])) echo "active" ?>">
-                                <a href="<?php echo site_url("admin/user_groups") ?>" class=" menu-link">
-                                    <span class="menu-label">
-                                        <span class="menu-name"><?php echo lang("ctn_161") ?></span>
-                                    </span>
-                                    <span class="menu-icon">
-                                        <i class="icon-placeholder  ">
-                                        L
-                                        </i>
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="menu-item <?php if(isset($activeLink['admin']['ipblock'])) echo "active" ?>">
-                                <a href="<?php echo site_url("admin/ipblock") ?>" class=" menu-link">
-                                    <span class="menu-label">
-                                        <span class="menu-name"><?php echo lang("ctn_162") ?></span>
-                                    </span>
-                                    <span class="menu-icon">
-                                        <i class="icon-placeholder  ">
-                                        L
-                                        </i>
-                                    </span>
-                                </a>
-                            </li>
-                        <?php endif; ?>
+                                    <span class="menu-info">Settings and Logs</span>
+                                </span>
+                                <span class="menu-icon">
+                                    <i class="icon-placeholder fas fa-users"></i>
+                                </span>
+                            </a>
+                            <ul class="sub-menu">
+                                <?php if($this->user->info->admin || $this->user->info->admin_members) : ?>
+                                    <li class="menu-item <?php if(isset($activeLink['admin']['members'])) echo "active" ?>">
+                                        <a href="<?php echo site_url("admin/members") ?>" class=" menu-link">
+                                            <span class="menu-label">
+                                                <span class="menu-name"><?php echo lang("ctn_160") ?></span>
+                                            </span>
+                                            <span class="menu-icon">
+                                                <i class="icon-placeholder  ">
+                                                L
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item <?php if(isset($activeLink['admin']['custom_fields'])) echo "active" ?>">
+                                        <a href="<?php echo site_url("admin/custom_fields") ?>" class=" menu-link">
+                                            <span class="menu-label">
+                                                <span class="menu-name"><?php echo lang("ctn_346") ?></span>
+                                            </span>
+                                            <span class="menu-icon">
+                                                <i class="icon-placeholder  ">
+                                                L
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item <?php if(isset($activeLink['admin']['user_logs'])) echo "active" ?>">
+                                        <a href="<?php echo site_url("admin/user_logs") ?>" class=" menu-link">
+                                            <span class="menu-label">
+                                                <span class="menu-name"><?php echo lang("ctn_471") ?></span>
+                                            </span>
+                                            <span class="menu-icon">
+                                                <i class="icon-placeholder  ">
+                                                L
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                                <?php if($this->user->info->admin) : ?>
+                                    <li class="menu-item <?php if(isset($activeLink['admin']['user_roles'])) echo "active" ?>">
+                                        <a href="<?php echo site_url("admin/user_roles") ?>" class=" menu-link">
+                                            <span class="menu-label">
+                                                <span class="menu-name"><?php echo lang("ctn_316") ?></span>
+                                            </span>
+                                            <span class="menu-icon">
+                                                <i class="icon-placeholder  ">
+                                                L
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                                <?php if($this->user->info->admin || $this->user->info->admin_members) : ?>
+                                    <li class="menu-item  <?php if(isset($activeLink['admin']['user_groups'])) echo "active" ?>">
+                                        <a href="<?php echo site_url("admin/user_groups") ?>" class=" menu-link">
+                                            <span class="menu-label">
+                                                <span class="menu-name"><?php echo lang("ctn_161") ?></span>
+                                            </span>
+                                            <span class="menu-icon">
+                                                <i class="icon-placeholder  ">
+                                                L
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item <?php if(isset($activeLink['admin']['ipblock'])) echo "active" ?>">
+                                        <a href="<?php echo site_url("admin/ipblock") ?>" class=" menu-link">
+                                            <span class="menu-label">
+                                                <span class="menu-name"><?php echo lang("ctn_162") ?></span>
+                                            </span>
+                                            <span class="menu-icon">
+                                                <i class="icon-placeholder  ">
+                                                L
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                            </ul>
+                        </li>
                         <?php if($this->user->info->admin) : ?>
                             <li class="menu-item <?php if(isset($activeLink['admin']['email_templates'])) echo "active" ?>">
                                 <a href="<?php echo site_url("admin/email_templates") ?>" class=" menu-link">
@@ -148,9 +159,7 @@
                                         <span class="menu-name"><?php echo lang("ctn_163") ?></span>
                                     </span>
                                     <span class="menu-icon">
-                                        <i class="icon-placeholder  ">
-                                        L
-                                        </i>
+                                        <i class="icon-placeholder mdi mdi-email-search-outline"></i>
                                     </span>
                                 </a>
                             </li>
@@ -162,61 +171,74 @@
                                         <span class="menu-name"><?php echo lang("ctn_164") ?></span>
                                     </span>
                                     <span class="menu-icon">
-                                        <i class="icon-placeholder  ">
-                                        L
-                                        </i>
+                                        <i class="icon-placeholder mdi mdi-send"></i>
                                     </span>
                                 </a>
                             </li>
                         <?php endif; ?>
                         <?php if($this->user->info->admin || $this->user->info->admin_payment) : ?>
-                            <li class="menu-item <?php if(isset($activeLink['admin']['payment_settings'])) echo "active" ?>">
-                                <a href="<?php echo site_url("admin/payment_settings") ?>" class=" menu-link">
+                            <li class="menu-item ">
+                                <a href="#" class="open-dropdown menu-link">
                                     <span class="menu-label">
-                                        <span class="menu-name"><?php echo lang("ctn_246") ?></span>
+                                        <span class="menu-name">Payments+Premium
+                                            <span class="menu-arrow"></span>
+                                        </span>
+                                        <span class="menu-info">Settings and Logs</span>
                                     </span>
                                     <span class="menu-icon">
-                                        <i class="icon-placeholder  ">
-                                        L
-                                        </i>
+                                        <i class="icon-placeholder fas fa-piggy-bank"></i>
                                     </span>
                                 </a>
-                            </li>
-                            <li class="menu-item <?php if(isset($activeLink['admin']['payment_plans'])) echo "active" ?>">
-                                <a href="<?php echo site_url("admin/payment_plans") ?>" class=" menu-link">
-                                    <span class="menu-label">
-                                        <span class="menu-name"><?php echo lang("ctn_258") ?></span>
-                                    </span>
-                                    <span class="menu-icon">
-                                        <i class="icon-placeholder  ">
-                                        L
-                                        </i>
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="menu-item <?php if(isset($activeLink['admin']['payment_logs'])) echo "active" ?>">
-                                <a href="<?php echo site_url("admin/payment_logs") ?>" class=" menu-link">
-                                    <span class="menu-label">
-                                        <span class="menu-name"><?php echo lang("ctn_288") ?></span>
-                                    </span>
-                                    <span class="menu-icon">
-                                        <i class="icon-placeholder  ">
-                                        L
-                                        </i>
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="menu-item <?php if(isset($activeLink['admin']['premium_users'])) echo "active" ?>">
-                                <a href="<?php echo site_url("admin/premium_users") ?>" class=" menu-link">
-                                    <span class="menu-label">
-                                        <span class="menu-name"><?php echo lang("ctn_325") ?></span>
-                                    </span>
-                                    <span class="menu-icon">
-                                        <i class="icon-placeholder  ">
-                                        L
-                                        </i>
-                                    </span>
-                                </a>
+                                <ul class="sub-menu">
+                                    <li class="menu-item <?php if(isset($activeLink['admin']['payment_settings'])) echo "active" ?>">
+                                        <a href="<?php echo site_url("admin/payment_settings") ?>" class=" menu-link">
+                                            <span class="menu-label">
+                                                <span class="menu-name"><?php echo lang("ctn_246") ?></span>
+                                            </span>
+                                            <span class="menu-icon">
+                                                <i class="icon-placeholder  ">
+                                                L
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item <?php if(isset($activeLink['admin']['payment_plans'])) echo "active" ?>">
+                                        <a href="<?php echo site_url("admin/payment_plans") ?>" class=" menu-link">
+                                            <span class="menu-label">
+                                                <span class="menu-name"><?php echo lang("ctn_258") ?></span>
+                                            </span>
+                                            <span class="menu-icon">
+                                                <i class="icon-placeholder  ">
+                                                L
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item <?php if(isset($activeLink['admin']['payment_logs'])) echo "active" ?>">
+                                        <a href="<?php echo site_url("admin/payment_logs") ?>" class=" menu-link">
+                                            <span class="menu-label">
+                                                <span class="menu-name"><?php echo lang("ctn_288") ?></span>
+                                            </span>
+                                            <span class="menu-icon">
+                                                <i class="icon-placeholder  ">
+                                                L
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item <?php if(isset($activeLink['admin']['premium_users'])) echo "active" ?>">
+                                        <a href="<?php echo site_url("admin/premium_users") ?>" class=" menu-link">
+                                            <span class="menu-label">
+                                                <span class="menu-name"><?php echo lang("ctn_325") ?></span>
+                                            </span>
+                                            <span class="menu-icon">
+                                                <i class="icon-placeholder  ">
+                                                L
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                         <?php endif; ?>
                     </ul>

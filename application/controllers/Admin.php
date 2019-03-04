@@ -155,8 +155,8 @@ class Admin extends CI_Controller
 		}
 
 		$field = $field->row();
-				$this->template->layout = '/layout/themes/make_cents_template.php';
-		$this->template->loadContent("admin/bs4/edit_custom_field.php", array(
+
+		$this->template->loadContent("admin/edit_custom_field.php", array(
 			"field" => $field
 			)
 		);
@@ -821,8 +821,8 @@ class Admin extends CI_Controller
 		$this->template->loadData("activeLink",
 			array("admin" => array("user_groups" => 1)));
 		$groups = $this->admin_model->get_user_groups();
-				$this->template->layout = '/layout/themes/make_cents_template.php';
-		$this->template->loadContent("admin/bs4/groups.php", array(
+
+		$this->template->loadContent("admin/groups.php", array(
 			"groups" => $groups
 			)
 		);
