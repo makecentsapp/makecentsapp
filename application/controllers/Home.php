@@ -1,15 +1,15 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Home extends CI_Controller 
+class Home extends CI_Controller
 {
 
-	public function __construct() 
+	public function __construct()
 	{
 		parent::__construct();
 		if (defined('REQUEST') && REQUEST == "external") {
 	        return;
 	    }
-		$this->template->loadData("activeLink", 
+		$this->template->loadData("activeLink",
 			array("home" => array("general" => 1)));
 		$this->load->model("user_model");
 		$this->load->model("home_model");
@@ -118,6 +118,115 @@ class Home extends CI_Controller
 		    }
 		];';
 
+		$javascript .= '
+            var options = {
+                chart: {
+                    width: 380,
+                    type: "donut",
+                },
+                legend: {
+                            position: "bottom",
+                            containerMargin: {
+                              left: 35,
+                              right: 35
+                            }
+                        },
+                series: [
+                '.$stats->google_members.',
+                '.($stats->total_members - ($stats->google_members + $stats->facebook_members + $stats->twitter_members)).',
+                '.$stats->facebook_members.',
+                '.$stats->twitter_members.'
+                ],
+                labels: ["Google", "'.lang("ctn_242").'", "Facebook", "Twitter"],
+                plotOptions: {
+                    pie: {
+                        customScale: 1,
+                        donut: {
+                            size: "50%"
+                        }
+                    }
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 300
+                        },
+                        legend: {
+                            position: "bottom"
+                        }
+                    }
+                }]
+            }
+            window.onload = function() {
+                var apxchart = new ApexCharts(
+                    document.querySelector("#apexmembers"),
+                    options
+                );
+                apxchart.render();
+
+                var apxlineoptions = {
+                    colors: colors,
+                    chart: {
+                        type: "area",
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    stroke: {
+                        curve: "smooth"
+                    },
+                    series: [{
+                        name: "Registrations",
+                        data: [';
+                        foreach($months as $d) {
+                            $javascript .= $d['count'].',';
+                        }
+                        $javascript.=']
+                    }],
+
+                    xaxis: {
+                        labels: {
+                            rotate: -65,
+                        },
+                        categories: [';
+                        foreach($months as $d) {
+                            $javascript .= '"'.$d['date'].'",';
+                        }
+                        $javascript.='],
+                    },
+                    tooltip: {
+                        fixed: {
+                            enabled: false,
+                            position: "topRight"
+                        }
+                    },
+                    responsive: [{
+                      breakpoint: 600,
+                      options: {
+                        legend: {
+                          position: "bottom",
+                        },
+                        xaxis: {
+                          labels: {
+                            rotate: -70,
+                            show: false,
+                          },
+                        },
+                      }
+                    }]
+                };
+
+                var apxlinechart = new ApexCharts(
+                document.querySelector("#apxmembersactivity"),
+                apxlineoptions
+                );
+
+                apxlinechart.render();
+
+            };
+               ';
+
 
 		$this->template->loadExternal(
 			'<script type="text/javascript" src="'
@@ -137,7 +246,7 @@ class Home extends CI_Controller
 		);
 	}
 
-	private function get_fresh_results($stats) 
+	private function get_fresh_results($stats)
 	{
 		$data = new STDclass;
 
@@ -151,8 +260,8 @@ class Home extends CI_Controller
 		return $data;
 	}
 
-	public function change_language() 
-	{	
+	public function change_language()
+	{
 
 		$languages = $this->config->item("available_languages");
 		if(!isset($_COOKIE['language'])) {
@@ -167,12 +276,12 @@ class Home extends CI_Controller
 		);
 	}
 
-	public function change_language_pro() 
+	public function change_language_pro()
 	{
 
 		$lang = $this->common->nohtml($this->input->post("language"));
 		$languages = $this->config->item("available_languages");
-		
+
 		if(!array_key_exists($lang, $languages)) {
 			$this->template->error(lang("error_25"));
 		}
@@ -182,32 +291,32 @@ class Home extends CI_Controller
 		redirect(site_url());
 	}
 
-	public function load_notifications() 
+	public function load_notifications()
 	{
 		$notifications = $this->user_model
 			->get_notifications($this->user->info->ID);
 		$this->template->loadAjax("home/ajax_notifications.php", array(
 			"notifications" => $notifications
 			),0
-		);	
+		);
 	}
 
-	public function load_notifications_unread() 
+	public function load_notifications_unread()
 	{
 		$notifications = $this->user_model
 			->get_notifications_unread($this->user->info->ID);
 		$this->template->loadAjax("home/ajax_notifications.php", array(
 			"notifications" => $notifications
 			),0
-		);	
+		);
 	}
 
-	public function read_all_noti($hash) 
+	public function read_all_noti($hash)
 	{
 		if($hash != $this->security->get_csrf_hash()) {
 			$this->template->error("Invalid Hash!");
 		}
-		
+
 		$this->user_model->update_user_notifications($this->user->info->ID, array(
 			"status" => 1
 			)
@@ -245,14 +354,14 @@ class Home extends CI_Controller
 		redirect(site_url($noti->url));
 	}
 
-	public function notifications() 
+	public function notifications()
 	{
 		$this->template->loadContent("home/notifications.php", array(
 			)
-		);	
+		);
 	}
 
-	public function notification_read($id) 
+	public function notification_read($id)
 	{
 		$notification = $this->user_model
 			->get_notification($id, $this->user->info->ID);
@@ -273,7 +382,7 @@ class Home extends CI_Controller
 		redirect(site_url("home/notifications"));
 	}
 
-	public function notification_unread($id) 
+	public function notification_unread($id)
 	{
 		$notification = $this->user_model
 			->get_notification($id, $this->user->info->ID);
@@ -294,7 +403,7 @@ class Home extends CI_Controller
 		redirect(site_url("home/notifications"));
 	}
 
-	public function notifications_page() 
+	public function notifications_page()
 	{
 		$this->load->library("datatables");
 

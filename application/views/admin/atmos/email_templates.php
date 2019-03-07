@@ -46,7 +46,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <div id="table_wrapper01" class="datatables_wrapper dt-bootstrap4">
-                            <div class="row">
+                            <div class="row mx-auto">
                                 <div class="col-sm-12">
                                     <table id="ann-table" class="table datatable table-striped table-hover table-bordered">
                                         <thead>
@@ -131,7 +131,7 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo lang("ctn_60") ?></button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo lang("ctn_60") ?></button>
     <input type="submit" class="btn btn-primary" value="<?php echo lang("ctn_407") ?>">
     <?php echo form_close() ?>
 </div>

@@ -27,9 +27,9 @@
         <div class="col-12">
             <div class="card m-b-30">
                 <div class="card-body">
-                    <div class="table">
+                    <div class="table-responsive">
                         <div id="table_wrapper01" class="datatables_wrapper dt-bootstrap4">
-                            <div class="row">
+                            <div class="row mx-auto">
                                 <div class="col-sm-12">
                                     <div class="float-right form-inline mb-2">
                                         <a href="<?php echo site_url("admin/edit_member/" . $member->ID) ?>" class="btn btn-warning btn-sm"><?php echo lang("ctn_22") ?></a>

@@ -79,7 +79,6 @@
         <script type="text/javascript" src="<?php echo base_url();?>assets/vendor/smartforms/jquery.validate.min.js"></script>
         <script type="text/javascript" src="<?php echo base_url();?>assets/vendor/smartforms/additional-methods.min.js"></script>
         <script type="text/javascript" src="<?php echo base_url();?>assets/vendor/smartforms/jquery.form.min.js"></script>
-        <script type="text/javascript" src="<?php echo base_url();?>assets/vendor/smartforms/smart-form.js"></script>
 
         <!-- Extra Atmos Assets - added by PM 3/2-->
         <script type="text/javascript" src="<?php echo base_url();?>assets/vendor/jquery.bootstrap.wizard/jquery.bootstrap.wizard.min.js"></script>

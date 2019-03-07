@@ -57,7 +57,7 @@
                             </div>
                         </div>
 
-                        <input type="submit" class="form-control btn btn-primary" value="<?php echo lang("ctn_50") ?>" />
+                        <input type="submit" class="btn btn-primary" value="<?php echo lang("ctn_50") ?>" />
                     <?php echo form_close() ?>
                 </div>
             </div>

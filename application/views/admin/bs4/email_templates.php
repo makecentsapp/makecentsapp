@@ -1,7 +1,7 @@
 <div class="white-area-content">
     <div class="db-header clearfix">
         <div class="page-header-title"> <span class="fas fa-user"></span> <?php echo lang("ctn_1") ?></div>
-        <div class="db-header-extra form-inline form-input-sm">
+        <div class="db-header-extra form-inline input-group-sm">
 
            <!-- <div class="row mb-3 has-feedback no-margin">
             <div class="input-group"> -->
@@ -48,28 +48,28 @@
 </div>
 
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog modal-lg mw-100 w-75" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel"><span class="fas fa-paper-plane"></span> <?php echo lang("ctn_407") ?></h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     </div>
     <div class="modal-body">
        <?php echo form_open(site_url("admin/add_email_template"), array("class" => "form-horizontal")) ?>
-       <div class="row mb-3">
+       <div class="row mb-3 col-md-10 mx-auto">
         <label for="p-in" class="col-md-4 col-form-label"><?php echo lang("ctn_81") ?></label>
         <div class="col-md-8">
             <input type="text" class="form-control" name="name" value="">
         </div>
     </div>
-    <div class="row mb-3">
+    <div class="row mb-3 col-md-10 mx-auto">
         <label for="p-in" class="col-md-4 col-form-label"><?php echo lang("ctn_11") ?></label>
         <div class="col-md-8">
             <input type="text" class="form-control" name="title" value="">
             <span class="form-text text-muted small"><?php echo lang("ctn_474") ?></span>
         </div>
     </div>
-    <div class="row mb-3">
+    <div class="row mb-3 col-md-10 mx-auto">
         <label for="p-in" class="col-md-4 col-form-label"><?php echo lang("ctn_404") ?></label>
         <div class="col-md-8">
             <select name="hook" class="form-control">
@@ -80,7 +80,7 @@
             <span class="form-text text-muted small"><?php echo lang("ctn_406") ?></span>
         </div>
     </div>
-    <div class="row mb-3">
+    <div class="row mb-3 col-md-10 mx-auto">
         <label for="p-in" class="col-md-4 col-form-label"><?php echo lang("ctn_148") ?></label>
         <div class="col-md-8">
             <select name="language" class="form-control">
@@ -90,16 +90,18 @@
             </select>
         </div>
     </div>
-    <table class="table table-bordered">
-        <tr><td>[NAME]</td><td> <?php echo lang("ctn_7") ?></td></tr>
-        <tr><td>[SITE_URL]</td><td> <?php echo lang("ctn_8") ?></td></tr>
-        <tr><td>[SITE_NAME]</td><td> <?php echo lang("ctn_9") ?></td></tr>
-        <tr><td>[EMAIL_LINK]</td><td> <?php echo lang("ctn_10") ?></td></tr>
-
-    </table>
-    <div class="row mb-3">
+    <p class="col-md-10 mx-auto">Variables for the email template:</p>
+    <div class="col-md-10 mx-auto">
+	    <table class="table table-bordered">
+	        <tr><td>[NAME]</td><td> <?php echo lang("ctn_7") ?></td></tr>
+	        <tr><td>[SITE_URL]</td><td> <?php echo lang("ctn_8") ?></td></tr>
+	        <tr><td>[SITE_NAME]</td><td> <?php echo lang("ctn_9") ?></td></tr>
+	        <tr><td>[EMAIL_LINK]</td><td> <?php echo lang("ctn_10") ?></td></tr>
+	    </table>
+	</div>
+    <div class="row mb-0 h-50">
         <label for="p-in" class="col-md-4 col-form-label"><?php echo lang("ctn_3") ?></label>
-        <div class="col-md-8">
+        <div class="col-md-12 h-25">
             <textarea name="template" id="ann-area"></textarea>
         </div>
     </div>

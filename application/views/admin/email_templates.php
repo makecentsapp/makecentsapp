@@ -1,50 +1,74 @@
-<div class="white-area-content">
-    <div class="db-header clearfix">
-        <div class="page-header-title"> <span class="fas fa-user"></span> <?php echo lang("ctn_1") ?></div>
-        <div class="db-header-extra form-inline input-group-sm">
-
-           <!-- <div class="row mb-3 has-feedback no-margin">
-            <div class="input-group"> -->
-                <input type="text" class="form-control input-sm" placeholder="<?php echo lang("ctn_336") ?>" id="form-search-input" />
-                <div class="input-group-append">
-                    <input type="hidden" id="search_type" value="0">
-                    <button type="button" class="btn btn-info btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="fas fa-search" aria-hidden="true"></span></button>
-                        <ul class="dropdown-menu small-text" style="min-width: 90px !important; left: -90px;">
-                          <li><a class="text-muted dropdown-item" href="#" onclick="change_search(0)"><span class="fas fa-check" id="search-like"></span> <?php echo lang("ctn_337") ?></a></li>
-                          <li><a class="text-muted dropdown-item" href="#" onclick="change_search(1)"><span class="fas fa-check no-display" id="search-exact"></span> <?php echo lang("ctn_338") ?></a></li>
-                          <li><a class="text-muted dropdown-item" href="#" onclick="change_search(2)"><span class="fas fa-check no-display" id="title-exact"></span> <?php echo lang("ctn_11") ?></a></li>
-                          <li><a class="text-muted dropdown-item" href="#" onclick="change_search(3)"><span class="fas fa-check no-display" id="language-exact"></span> <?php echo lang("ctn_148") ?></a></li>
-                      </ul>
-                  </div><!-- /btn-group -->
-              <!-- </div>
-          </div> -->
-
-          <input type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" value="<?php echo lang("ctn_407") ?>">
-
-      </div>
-  </div>
-
-  <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="<?php echo site_url() ?>"><?php echo lang("ctn_2") ?></a></li>
-      <li class="breadcrumb-item"><a href="<?php echo site_url("admin") ?>"><?php echo lang("ctn_1") ?></a></li>
-      <li class="breadcrumb-item active"><?php echo lang("ctn_62") ?></li>
-  </ol>
-
-  <p><?php echo lang("ctn_63") ?></p>
-
-  <hr>
-
-  <div class="table-responsive">
-    <table id="ann-table" class="table table-bordered table-striped table-hover">
-        <thead>
-            <tr class="table-header"><td><?php echo lang("ctn_81") ?></td><td><?php echo lang("ctn_11") ?></td><td><?php echo lang("ctn_404") ?></td><td><?php echo lang("ctn_148") ?></td><td><?php echo lang("ctn_52") ?></td></tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+<div class="bg-dark">
+    <ol class="breadcrumb my-0 py-0 text-primary bg-dark">
+        <li class="breadcrumb-item"><a href="<?php echo site_url() ?>"><?php echo lang("ctn_2") ?></a></li>
+        <li class="breadcrumb-item"><a href="<?php echo site_url("admin") ?>"><?php echo lang("ctn_1") ?></a></li>
+        <li class="breadcrumb-item active"><?php echo lang("ctn_62") ?></li>
+    </ol>
+</div>
+<div class="bg-dark">
+    <div class="container m-b-30">
+        <div class="row">
+            <div class="col-12 text-white p-t-20 p-b-90">
+                <h4>
+                    <span class="badge">
+                    <i class="fas fa-envelope-square"></i>
+                    </span>
+                    <?php echo lang("ctn_62") ?>
+                </h4>
+                <p><?php echo lang("ctn_63") ?></p>
+                <div class="col-6">
+                    <div class="form-inline input-group input-group-sm">
+                        <input type="text" class="form-control input-sm" placeholder="<?php echo lang("ctn_336") ?>" id="form-search-input" />
+                        <div class="input-group-append">
+                            <input type="hidden" id="search_type" value="0">
+                            <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fas fa-search" aria-hidden="true"></span>
+                            </button>
+                            <ul class="dropdown-menu small-text" style="min-width: 90px !important; left: -90px;">
+                                <li><a class="text-muted dropdown-item" href="#" onclick="change_search(0)"><span class="fas fa-check" id="search-like"></span> <?php echo lang("ctn_337") ?></a></li>
+                                <li><a class="text-muted dropdown-item" href="#" onclick="change_search(1)"><span class="fas fa-check no-display" id="search-exact"></span> <?php echo lang("ctn_338") ?></a></li>
+                                <li><a class="text-muted dropdown-item" href="#" onclick="change_search(2)"><span class="fas fa-check no-display" id="title-exact"></span> <?php echo lang("ctn_11") ?></a></li>
+                                <li><a class="text-muted dropdown-item" href="#" onclick="change_search(3)"><span class="fas fa-check no-display" id="language-exact"></span> <?php echo lang("ctn_148") ?></a></li>
+                            </ul>
+                        </div>
+                        <input type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" value="<?php echo lang("ctn_407") ?>">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+<div class="container pull-up">
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <div id="table_wrapper01" class="datatables_wrapper dt-bootstrap4">
+                            <div class="row mx-auto">
+                                <div class="col-sm-12">
+                                    <table id="ann-table" class="table datatable table-striped table-hover table-bordered">
+                                        <thead>
+                                            <tr class="table-header">
+                                                <td><?php echo lang("ctn_81") ?></td>
+                                                <td><?php echo lang("ctn_11") ?></td>
+                                                <td><?php echo lang("ctn_404") ?></td>
+                                                <td><?php echo lang("ctn_148") ?></td>
+                                                <td><?php echo lang("ctn_52") ?></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -92,13 +116,13 @@
     </div>
     <p class="col-md-10 mx-auto">Variables for the email template:</p>
     <div class="col-md-10 mx-auto">
-	    <table class="table table-bordered">
-	        <tr><td>[NAME]</td><td> <?php echo lang("ctn_7") ?></td></tr>
-	        <tr><td>[SITE_URL]</td><td> <?php echo lang("ctn_8") ?></td></tr>
-	        <tr><td>[SITE_NAME]</td><td> <?php echo lang("ctn_9") ?></td></tr>
-	        <tr><td>[EMAIL_LINK]</td><td> <?php echo lang("ctn_10") ?></td></tr>
-	    </table>
-	</div>
+        <table class="table table-bordered">
+            <tr><td>[NAME]</td><td> <?php echo lang("ctn_7") ?></td></tr>
+            <tr><td>[SITE_URL]</td><td> <?php echo lang("ctn_8") ?></td></tr>
+            <tr><td>[SITE_NAME]</td><td> <?php echo lang("ctn_9") ?></td></tr>
+            <tr><td>[EMAIL_LINK]</td><td> <?php echo lang("ctn_10") ?></td></tr>
+        </table>
+    </div>
     <div class="row mb-0 h-50">
         <label for="p-in" class="col-md-4 col-form-label"><?php echo lang("ctn_3") ?></label>
         <div class="col-md-12 h-25">
@@ -107,13 +131,14 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo lang("ctn_60") ?></button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo lang("ctn_60") ?></button>
     <input type="submit" class="btn btn-primary" value="<?php echo lang("ctn_407") ?>">
     <?php echo form_close() ?>
 </div>
 </div>
 </div>
 </div>
+
 <script type="text/javascript">
     $(document).ready(function() {
         CKEDITOR.replace('ann-area', { height: '150'});

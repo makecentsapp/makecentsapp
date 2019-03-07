@@ -70,12 +70,12 @@
                           </table>
                           <div class="row mb-3">
                             <label for="p-in" class="col-md-4 col-form-label"><?php echo lang("ctn_3") ?></label>
-                            <div class="col-md-8">
+                            <div class="col-md-12">
                                 <textarea name="template" id="ann-area"><?php echo $email_template->message ?></textarea>
                             </div>
                         </div>
 
-                        <input type="submit" class="form-control btn btn-primary" value="<?php echo lang("ctn_13") ?>" />
+                        <input type="submit" class="btn btn-primary" value="<?php echo lang("ctn_13") ?>" />
                     <?php echo form_close() ?>
                 </div>
             </div>

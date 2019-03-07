@@ -18,9 +18,9 @@ $CI_vars_loaded = $this->_ci_cached_vars;
     </div>
     <div class="row">
         <div class="col-xlg-6 m-b-30 col-lg-6 col-sm-6">
-            <div class="col-12 m-b-20">
+            <!-- <div class="col-12 m-b-20">
                 <h5> <i class="fe fe-zap"></i> Membership Status</h5>
-            </div>
+            </div> -->
             <div class="row">
                 <div class="col-lg-3 col-md-6">
                     <div class="card m-b-30">

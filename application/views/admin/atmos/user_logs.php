@@ -43,7 +43,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <div id="table_wrapper01" class="datatables_wrapper dt-bootstrap4">
-                            <div class="row">
+                            <div class="row mx-auto">
                                 <div class="col-sm-12">
                                     <table id="member-table" class="table table-striped table-bordered">
                                         <thead>
