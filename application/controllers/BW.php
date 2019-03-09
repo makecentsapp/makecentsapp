@@ -25,6 +25,46 @@ class BW extends CI_Controller
     $this->template->loadContent("bw/index.php", $arrayOfThings);
     }
 
+    public function logintest()
+    {
+        $this->template->layout = '/layout/atmos_login_layout.php';
+        $this->template->loadContent("login/atmos/index.php", array(
+            )
+        );
+
+    }
+
+    public function forgotpw()
+    {
+        $this->template->set_error_view("error/login_error.php");
+        $this->template->set_layout("layout/atmos_login_layout.php");
+        $this->template->loadContent("login/forgotpw.php", array());
+    }
+
+    public function resetpw()
+    {
+        $this->template->set_error_view("error/login_error.php");
+        $this->template->set_layout("layout/atmos_login_layout.php");
+        $this->template->loadContent("login/resetpw.php", array());
+    }
+
+    public function privacy()
+    {
+        $this->template->set_page_title(lang("ctn_150"));
+        $this->template->set_error_view("error/login_error.php");
+        $this->template->set_layout("layout/atmos_login_layout.php");
+
+        $this->template->loadContent("login/privacy.php", array());
+    }
+
+    public function loginerrortest()
+    {
+        $this->template->set_error_view("error/login_error.php");
+        $this->template->layout = '/layout/atmos_login_layout.php';
+        $this->template->loadContent("login/banned.php", array());
+
+    }
+
     public function adminindex()
     {
         $this->template->loadData("activeLink",

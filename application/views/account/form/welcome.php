@@ -6,12 +6,15 @@
 
 <script type="text/javascript">
 jQuery(document).ready(function($){
+	var numAnswered = 0;
+	var numTotal = 9;
 	/*$.validator.methods.smartCaptcha = function(value, element, param) {
 		return value == param;
 	};*/
 	var writeMode = false;
 	var formdata = '';
     $("#smart-form").steps({
+    	titleTemplate: "<span class='number'>#index#</span> #title#",
         headerTag: "h2",
         bodyTag: "fieldset",
         transitionEffect: "slideLeft",
@@ -31,7 +34,9 @@ jQuery(document).ready(function($){
 		},
         onStepChanged: function (event, currentIndex, priorIndex){
         	//after sucessfully passing validation, when the step changes to the next, submit changed data to DB
-        	
+		    $('#numAnswered').html(currentIndex);
+		    $('#form-progress').css('width', (currentIndex/numTotal)*100+'%');
+		    
             //check if anything in the form has been updated since last onStepChanged
             if (formdata !== $('#smart-form').serialize()) {
             	formdata = $('#smart-form').serialize();
@@ -148,10 +153,18 @@ jQuery(document).ready(function($){
 
 	$('[data-toggle="tooltip"]').tooltip();
 
+	//deal with hiding steps and creating progress bar
+	$('div.steps').css("display", "none");
+	$('div.form-body').prepend('<div class="progress" style="height: 3px;"><div id="form-progress" class="progress-bar bg-info" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div></div><p><span id="numAnswered">'+numAnswered+'</span>/'+numTotal+'</p>');
+	$('#form-progress').css('width', (numAnswered/numTotal)*100+'%');
+
+	
+		
 });
 
 
 </script>
+
 <?php
 //echo '<pre>';
 $currentUserID = $this->user->info->ID;
@@ -160,7 +173,7 @@ $currentUserID = $this->user->info->ID;
 ?>
 <div class="smart-wrap">
     <div class="smart-forms smart-container wrap-1">
-        <div class="form-body smart-steps steps-theme-primary stp-nine">
+        <div class="form-body steps-progress steps-theme-primary stp-nine">
             <form method="post" id="smart-form" action="<?php echo base_url ('Account/submit'); ?>">
             	<!-- hidden field for the current User ID -->
             	<input type="hidden" name="ID" value="<?php echo $currentUserID; ?>">

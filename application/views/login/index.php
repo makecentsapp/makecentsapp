@@ -1,76 +1,77 @@
-<div class="container">
-    <div class="row">
-    <div class="col-md-5 center-block-e">
+<div class="row ">
+    <div class="col-lg-4  bg-white">
+        <div class="row align-items-center m-h-100">
+            <?php $gl = $this->session->flashdata('globalmsg'); ?>
+            <?php if(!empty($gl)) :?>
+                <div class="alert alert-success">
+                    <b><span class="fas fa-check"></span></b>
+                    <?php echo $this->session->flashdata('globalmsg') ?>
+                </div>
+            <?php endif; ?>
+            <div class="mx-auto col-md-8">
+                <div class="p-b-20 text-center">
+                    <p>
+                        <img src="<?php echo base_url() ?>assets/img/logo.svg" width="80" alt="">
 
-      
+                    </p>
+                    <p class="admin-brand-content">
+                        <?php echo $this->settings->info->site_name ?>
+                    </p>
+                </div>
+                <h3 class="text-center p-b-20 fw-400">Login</h3>
+                    <?php if(isset($_GET['redirect'])) : ?>
+                        <?php echo form_open(site_url("login/pro/" . urlencode($_GET['redirect'])), array("id" => "login_form")) ?>
+                    <?php else : ?>
+                        <?php echo form_open(site_url("login/pro"), array("id" => "login_form")) ?>
+                    <?php endif; ?>
+                    <div class="form-row">
+                        <div class="form-group floating-label col-md-12">
+                            <label>Email</label>
+                            <input type="text" class="form-control" name="email" placeholder="<?php echo lang("ctn_303") ?>">
+                        </div>
+                        <div class="form-group floating-label col-md-12">
+                            <label>Password</label>
+                            <input type="password" name="pass" class="form-control" placeholder="*********">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg"><?php echo lang("ctn_150") ?></button>
+                </form>
+                <p class="form-inline p-t-10">
+                    <a href="<?php echo site_url("login/forgotpw") ?>" class="text-underline mr-auto"><?php echo lang("ctn_181") ?></a>
+                    <a href="<?php echo site_url("register") ?>" class="text-underline ml-auto"><?php echo lang("ctn_151") ?></a>
+                </p>
+                <?php if(!$this->settings->info->disable_social_login) : ?>
+                    <div class="d-flex justify-content-between p-t-10">
+                        <?php if(!empty($this->settings->info->twitter_consumer_key) && !empty($this->settings->info->twitter_consumer_secret)) : ?>
+                            <div class="btn-group">
+                                <a href="<?php echo site_url("login/twitter_login") ?>" class="btn btn-lg btn-social-icon btn-twitter" >
+                                    <span class="fab fa-twitter"></span><!-- Sign in with Twitter -->
+                                </a>
+                            </div>
+                        <?php endif; ?>
+                        <?php if(!empty($this->settings->info->facebook_app_id) && !empty($this->settings->info->facebook_app_secret)) : ?>
+                            <div class="btn-group">
+                                <a href="<?php echo site_url("login/facebook_login") ?>" class="btn btn-lg btn-social-icon btn-facebook" >
+                                    <span class="fab fa-facebook"></span> <!-- Sign in with Facebook -->
+                                </a>
+                            </div>
+                        <?php endif; ?>
 
-      <div class="login-form">
-
-        <div class="login-form-inner">
-        <?php $gl = $this->session->flashdata('globalmsg'); ?>
-        <?php if(!empty($gl)) :?>
-          <div class="alert alert-success"><b><span class="glyphicon glyphicon-ok"></span></b> <?php echo $this->session->flashdata('globalmsg') ?></div> 
-        <?php endif; ?>
-        <p class="login-form-intro"><img src="<?php echo base_url() ?>images/ava2.png" width="100"></p>
-        <?php if(isset($_GET['redirect'])) : ?>
-        <?php echo form_open(site_url("login/pro/" . urlencode($_GET['redirect'])), array("id" => "login_form")) ?>
-        <?php else : ?>
-        <?php echo form_open(site_url("login/pro"), array("id" => "login_form")) ?>
-        <?php endif; ?>
-        <div class="form-group login-form-area has-feedback">
-          <input type="text" class="form-control" name="email" placeholder="<?php echo lang("ctn_303") ?>">
-          <i class="glyphicon glyphicon-user form-control-feedback login-icon-color"></i>
+                        <?php if(!empty($this->settings->info->google_client_id) && !empty($this->settings->info->google_client_secret)) : ?>
+                            <div class="btn-group">
+                                <a href="<?php echo site_url("login/google_login") ?>" class="btn btn-lg btn-social-icon btn-google" >
+                                  <span class="fab fa-google"></span> <!-- Sign in with Google -->
+                                </a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php echo form_close() ?>
         </div>
-
-        <div class="form-group login-form-area has-feedback">
-          <input type="password" name="pass" class="form-control" placeholder="*********">
-          <i class="glyphicon glyphicon-lock form-control-feedback login-icon-color"></i>
-        </div>
-
-        <p><input type="submit" class="btn btn-flat-login form-control" value="<?php echo lang("ctn_150") ?>"></p>
-        <p class="decent-margin small-text"><a href="<?php echo site_url("login/forgotpw") ?>"><?php echo lang("ctn_181") ?></a> <span class="pull-right"><a href="<?php echo site_url("register") ?>"><?php echo lang("ctn_151") ?></a></span></p>
-      </div>
-      <div class="login-form-bottom clearfix">
-          <?php if(!$this->settings->info->disable_social_login) : ?>
-          <div class="text-center decent-margin-top">
-          <?php if(!empty($this->settings->info->twitter_consumer_key) && !empty($this->settings->info->twitter_consumer_secret)) : ?>
-          <div class="btn-group">
-            <a href="<?php echo site_url("login/twitter_login") ?>" class="btn btn-flat-social-twitter" >
-              <img src="<?php echo base_url() ?>images/social/twitter.png" height="20" class='social-icon' />
-             Twitter</a>
-          </div>
-          <?php endif; ?>
-          <?php if(!empty($this->settings->info->facebook_app_id) && !empty($this->settings->info->facebook_app_secret)) : ?>
-          <div class="btn-group">
-            <a href="<?php echo site_url("login/facebook_login") ?>" class="btn btn-flat-social-facebook" >
-              <img src="<?php echo base_url() ?>images/social/facebook.png" height="20" class='social-icon' />
-             Facebook</a>
-          </div>
-          <?php endif; ?>
-
-          <?php if(!empty($this->settings->info->google_client_id) && !empty($this->settings->info->google_client_secret)) : ?>
-          <div class="btn-group">
-            <a href="<?php echo site_url("login/google_login") ?>" class="btn btn-flat-social-google" >
-              <img src="<?php echo base_url() ?>images/social/google.png" height="20" class='social-icon' />
-             Google</a>
-          </div>
-          <?php endif; ?>
-          </div>
-          <?php endif; ?>
-          <hr> 
-          <?php echo form_close() ?>
-      </div>
-
-
-      </div>
-
-
-</div>
-</div>
-</div>
-
-<div class="login-footer">
-
+    </div>
+    <div class="col-lg-8 d-none d-md-block bg-cover" style="background-image: url('<?php echo base_url() ?>assets/img/login.svg');">
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -111,7 +112,7 @@
                     $(field_name).addClass("errorField");
                     // Get input group of field
                     $('#'+form).prepend('<div class="form-error">'+errors[property]+'</div>');
-                    
+
 
                 }
             }
@@ -125,7 +126,7 @@
     });
   });
 
-  function clearerrors() 
+  function clearerrors()
   {
     console.log("Called");
     $('.form-error').remove();

@@ -6,7 +6,7 @@
     </ol>
 </div>
 <div class="bg-dark">
-    <div class="container m-b-30">
+    <div class="container col-sm-10 m-b-30">
         <div class="row">
             <div class="col-12 text-white p-t-20 p-b-90">
                 <h4>
@@ -42,7 +42,7 @@
     </div>
 </div>
 
-<div class="container pull-up">
+<div class="container col-sm-10 pull-up">
     <div class="row">
         <div class="col-12">
             <div class="card m-b-30">
