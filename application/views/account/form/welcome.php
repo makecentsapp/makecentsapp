@@ -1,13 +1,14 @@
 <!-- include the calls for these two scripts in the template at some point -->
-<script type="text/javascript" src="http://makecentsapp.com/assets/vendor/smartforms/jquery.formShowHide.min.js"></script>
-<script type="text/javascript" src="http://makecentsapp.com/assets/vendor/smartforms/jquery-cloneya.min.js"></script>
-<script type="text/javascript" src="http://makecentsapp.com/assets/vendor/smartforms/jquery.geocomplete.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7x_A4xjZJPfv2dMuDpyUlB67pUCfSuwE&libraries=places"></script>
+<script type="text/javascript" src="//makecentsapp.com/assets/vendor/smartforms/jquery.maskedinput.js"></script>
+<script type="text/javascript" src="//makecentsapp.com/assets/vendor/smartforms/jquery.formShowHide.min.js"></script>
+<script type="text/javascript" src="//makecentsapp.com/assets/vendor/smartforms/jquery-cloneya.min.js"></script>
+<script type="text/javascript" src="//makecentsapp.com/assets/vendor/smartforms/jquery.geocomplete.min.js"></script>
+<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyA7x_A4xjZJPfv2dMuDpyUlB67pUCfSuwE&libraries=places"></script>
 
 <script type="text/javascript">
 jQuery(document).ready(function($){
 	var numAnswered = 0;
-	var numTotal = 9;
+	var numTotal = 11;
 	/*$.validator.methods.smartCaptcha = function(value, element, param) {
 		return value == param;
 	};*/
@@ -113,7 +114,7 @@ jQuery(document).ready(function($){
     });
     $('.smartfm-ctrl').formShowHide();
     $('#clone-fields').cloneya();
-    $("#geoComplete").geocomplete();
+    //$("#geoComplete").geocomplete();
     
     //start functions for getting location from browser
     //2-25 based on https://stackoverflow.com/questions/5423938/html-5-geo-location-prompt-in-chrome it looks like we need HTTPS before we can use this set of code
@@ -153,18 +154,29 @@ jQuery(document).ready(function($){
 
 	$('[data-toggle="tooltip"]').tooltip();
 
-	//deal with hiding steps and creating progress bar
+	//deal with hiding steps and creating progress bar, this should be written into the JS eventually
 	$('div.steps').css("display", "none");
+	//centering the buttons on smartforms, this should probably be written into the JS eventually
+	$('div.actions').addClass("text-center");
 	$('div.form-body').prepend('<div class="progress" style="height: 3px;"><div id="form-progress" class="progress-bar bg-info" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div></div><p><span id="numAnswered">'+numAnswered+'</span>/'+numTotal+'</p>');
 	$('#form-progress').css('width', (numAnswered/numTotal)*100+'%');
 
-	
+
+	$("#dates").mask('99/99/9999', {placeholder:' '});
 		
 });
-
-
 </script>
-
+<style>
+.form-row label {
+	padding-bottom: 10px;
+	font-size: 24px !important;
+	text-align: center !important;
+	margin: auto;
+}
+.form-group label {
+	font-size: 16px !important;
+}
+</style>
 <?php
 //echo '<pre>';
 $currentUserID = $this->user->info->ID;
@@ -173,7 +185,7 @@ $currentUserID = $this->user->info->ID;
 ?>
 <div class="smart-wrap">
     <div class="smart-forms smart-container wrap-1">
-        <div class="form-body steps-progress steps-theme-primary stp-nine">
+        <div class="form-body steps-progress steps-theme-info stp-eleven text-center">
             <form method="post" id="smart-form" action="<?php echo base_url ('Account/submit'); ?>">
             	<!-- hidden field for the current User ID -->
             	<input type="hidden" name="ID" value="<?php echo $currentUserID; ?>">
@@ -181,36 +193,56 @@ $currentUserID = $this->user->info->ID;
             	<input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
             	<!-- hidden field for form name -->
 				<input type="hidden" name="formName" value="welcome">
-                <h2>About You</h2>
+                <h2>Start</h2>
                 <fieldset>
-	    			<div class="frm-row">
-	                    <div class="section colm colm6">
-	                    	<p><b>What is your name?</b></p>
-	                        <label class="field">
-	                            <input type="text" name="personalName" id="personalName" class="gui-input" placeholder="">
-	                        </label>
-	                    </div><!-- end section -->
-	                </div><!-- end .frm-row section -->
-	                <div class="frm-row">
-	                    <div class="section colm colm4">
-	                    	<p><b>How old are you?</b> <i class="fa fa-question-circle" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="This will help us know how long we have to work with until your target retirement."></i></p>
-	                        <label class="field">
-	                            <input type="number" min="1" max="150" name="personalAge" id="personalAge" class="gui-input" placeholder="">
-	                        </label>
-	                    </div><!-- end section -->
-	                </div><!-- end .frm-row section -->
-	                <div class="frm-row">
+	                <div class="form-row">
+		                <div class="col-md-12">
+			                <label for="retireAge">At what age do you hope to retire?</label>
+			            </div>
+		                <div class="form-group col-md-2 offset-md-5">
+							<input type="number" min="1" max="150" name="retireAge" id="retireAge" class="gui-input" placeholder="55">
+						</div>
+					</div>	                
+	            </fieldset>
+	            <h2>Age</h2>
+                <fieldset>
+	                <div class="form-row">
+	                	<div class="col-md-12">
+		                	<label for="dob">What is your date of birth? <i class="fa fa-question-circle" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="This will help us know how long we have to work with until your target retirement."></i></label>
+		                </div>
+		                <div class="form-group col-md-4 offset-md-4">
+							<input type="text" name="dates" id="dates" class="gui-input" placeholder="DD/MM/YYYY">
+						</div>
+					</div>	                
+	            </fieldset>
+	            <h2>Location</h2>
+                <fieldset>
+	                <div class="frm-row" style="background-color: red;">
 	    				<div class="section colm colm12">
 		    				<p><b>Click the pin or start typing to automatically find your location or enter your address.</b></p>
 		    				<p>Current errors because we need to set up google maps API stuff</p>
 	                        <div class="smart-widget sm-right smr-50">
-	                            <label class="field">
+	                            <label>
 	                                <input type="text" id="geoComplete" name="personalLocation" id="personalLocation" class="gui-input" placeholder="Address">
 	                            </label>
 	                            <button type="button" id="getLocation" class="button"> <i class="fa fa-map-marker"></i> </button>
                         	</div><!-- end .smart-widget section --> 
 	                    </div><!-- end section -->
 	                </div><!-- end .frm-row section -->
+					<div class="form-row">
+						<label>Where you live can be a major factor in determining your cost of living. With a rough estimate of your location, we can personalize your results to provide you financial insights.</label>
+						<div class="form-group col-md-6 offset-md-1">
+						<label for="inputCity">City</label>
+						<input type="text" class="form-control" id="inputCity">
+						</div>
+						<div class="form-group col-md-4">
+						<label for="inputState">State</label>
+						<select id="inputState" class="form-control">
+						<option selected>Choose...</option>
+						<option>...</option>
+						</select>
+						</div>
+					</div>
                 </fieldset>
                
                 <h2>Income</h2>

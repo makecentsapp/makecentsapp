@@ -6,10 +6,9 @@ class Account extends CI_Controller {
       {
          parent::__construct();
 
-        /* if (!$this->session->userdata('user_id'))
-         {
-            redirect('logoutcontroller');
-         }*/
+        if(!$this->user->loggedin) {
+            redirect(site_url("login"));
+        }
 
          $this->load->model('user_model');
       }
@@ -38,6 +37,11 @@ class Account extends CI_Controller {
 		//Remove after BS4 re-code:
 		$this->template->layout = '/layout/themes/atmos.php';
 		$this->template->loadContent("account/form/welcome.php");
+	}
+	public function welcome2() {
+		//Remove after BS4 re-code:
+		$this->template->layout = '/layout/themes/atmos.php';
+		$this->template->loadContent("account/form/welcome2.php");
 	}
 
 	public function dbAttribute() {
@@ -79,6 +83,7 @@ class Account extends CI_Controller {
         $this->formpost($_POST);
 	}
 	private function formpost($array) {
+		var_dump($array);
 		$this->load->library('session');
 		$write = true;
 		//if the post isnt an array, stop
@@ -91,7 +96,11 @@ class Account extends CI_Controller {
 
         if (isset($array['attributeSubmit'])) {
         	$table_name = $array['table'];
-			$data = array('attribute_name' => $array['attribute_name']);
+			$data = array(
+				'attribute_name' => $array['name'],
+				'attribute_type' => $array['type'],
+				'attribute_behavior' => $array['behavior'],
+			);
         	$query = $this->db
         		->select('attribute_id')
         		->from($table_name)
@@ -106,10 +115,10 @@ class Account extends CI_Controller {
 		        $this->session->set_userdata($returnData);
 		    }
 		    else {
-		    	$returnData = array('attributeReturn' => 'That attribute already exists in the '. $table_name . ' table');
+		    	$returnData = array('attributeReturn' => 'That attribute name already exists in the '. $table_name . ' table');
 		    	$this->session->set_userdata($returnData);
 		    }
-		    redirect('account/dbAttribute');
+		    redirect('Account/dbAttribute');
         }
         else {
 			//setup the consistent variables, regardless of how many fields are passed

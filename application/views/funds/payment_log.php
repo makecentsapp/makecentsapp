@@ -1,28 +1,53 @@
-<div class="white-area-content">
-
-    <div class="db-header clearfix">
-        <div class="page-header-title"> <span class="fas fa-piggy-bank"></span> <?php echo lang("ctn_250") ?></div>
-        <div class="db-header-extra"> <a href="<?php echo site_url("funds/payment_log") ?>" class="btn btn-info btn-sm"><?php echo lang("ctn_388") ?></a>
+<div class="bg-dark">
+        <ol class="breadcrumb my-0 py-0 text-primary bg-dark">
+          <li class="breadcrumb-item"><a href="<?php echo site_url() ?>"><?php echo lang("ctn_2") ?></a></li>
+          <li class="breadcrumb-item"><a href="<?php echo site_url("funds") ?>"><?php echo lang("ctn_250") ?></a></li>
+          <li class="breadcrumb-item active"><?php echo lang("ctn_388") ?></li>
+        </ol>
+</div>
+<div class="bg-dark">
+    <div class="container m-b-30">
+        <div class="row">
+            <div class="col-12 text-white p-t-20 p-b-90">
+                <h4>
+                    <span class="badge">
+                    <i class="fas fa-piggy-bank"></i>
+                    </span>
+                    <?php echo lang("ctn_250") ?>
+                </h4>
+                <p><?php echo lang("ctn_290") ?></p>
+            </div>
         </div>
     </div>
-
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="<?php echo site_url() ?>"><?php echo lang("ctn_2") ?></a></li>
-      <li class="breadcrumb-item"><a href="<?php echo site_url("funds") ?>"><?php echo lang("ctn_250") ?></a></li>
-      <li class="breadcrumb-item active"><?php echo lang("ctn_388") ?></li>
-  </ol>
-
-  <hr>
-
-  <table id="payment_table" class="table table-bordered table-hover table-striped">
-    <thead>
-        <tr class="table-header"><td><?php echo lang("ctn_25") ?></td><td><?php echo lang("ctn_291") ?></td><td><?php echo lang("ctn_292") ?></td><td><?php echo lang("ctn_293") ?></td><td><?php echo lang("ctn_378") ?></td></tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-
 </div>
+<div class="container pull-up">
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <div id="table_wrapper01" class="datatables_wrapper dt-bootstrap4">
+                            <div class="row mx-auto">
+                                <div class="col-sm-12">
+                                    <div class="float-right"> <a href="<?php echo site_url("funds") ?>" class="btn btn-info btn-sm"><?php echo lang("ctn_250") ?></a>
+                                    </div>
+                                    <table id="payment_table" class="table datatable table-hover table-striped">
+                                        <thead>
+                                        <tr class="table-header"><td><?php echo lang("ctn_25") ?></td><td><?php echo lang("ctn_291") ?></td><td><?php echo lang("ctn_292") ?></td><td><?php echo lang("ctn_293") ?></td><td><?php echo lang("ctn_378") ?></td></tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
     $(document).ready(function() {
 

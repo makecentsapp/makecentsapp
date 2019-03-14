@@ -4,6 +4,11 @@
 <?php else : ?>
 <html lang="en">
 <?php endif; ?>
+<?php
+if(!$this->user->loggedin) {
+			redirect(site_url("login"));
+		}
+?>
     <head>
         <title><?php if(isset($page_title)) : ?><?php echo $page_title ?> - <?php endif; ?><?php echo $this->settings->info->site_name ?></title>
         <meta charset="UTF-8" />
@@ -31,6 +36,7 @@
         <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/fonts/feather/feather-icons.css">
         <!--Bootstrap + atmos Admin CSS-->
         <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/atmos.min.css">
+        <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/bootstrap-social.css">
         <!-- Additional library for page -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
         <!-- ProLogin Tags css- for dropzones etc -->
