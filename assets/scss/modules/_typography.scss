@@ -1,7 +1,7 @@
-//Type
 body {
   background-color: $body-bg;
   color: $body-color;
+  font-size: $font-size-base;
   font-weight: $font-weight-base;
   font-family: $font-primary;
   -webkit-font-smoothing: antialiased;
@@ -10,7 +10,6 @@ body {
   -webkit-font-feature-settings: "kern" 1;
   -moz-font-feature-settings: "kern" 1;
 }
-
 // inherit the color of parent class for anchors
 a {
   color: inherit;

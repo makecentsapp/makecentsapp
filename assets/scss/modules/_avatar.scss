@@ -123,4 +123,35 @@
     }
   }
 }
+//for avatar as input also requires js check form-data.js
+
+.avatar-input {
+  position: relative;
+  overflow: hidden;
+  //hide file input
+  .avatar-file-picker {
+    position: absolute;
+    z-index: 2;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+  }
+  .avatar-input-icon{
+    position: absolute;
+    top: 0;
+    background: rgba(0, 0, 0, 0.37);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    transition: all ease 0.2s;
+    opacity: 0;
+    height: 100%;
+    width: 100%;
+  }
+  &:hover .avatar-input-icon{
+    opacity: 1;
+  }
+}
 
