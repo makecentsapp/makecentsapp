@@ -3,13 +3,12 @@
         <div class="row">
             <div class="col-12 text-white p-t-40 p-b-90">
 
-                <h4 class="">  Form elements
+                <h4 class="">Form fields -> DB
                 </h4>
                 <p class="opacity-75 ">
-                    Examples for form control styles, layout options, and custom components for
-                    creating a wide variety of forms elements.
+                    Interface to add new attributes to the database tables. This allows to create new receptors for form fields without having to open DB software.
                     <br>
-                    we have included dropzone for file uploads, datepicker and select2 for custom controls.
+                    Input form type, field type, action, and name.
                 </p>
 
 
@@ -25,12 +24,12 @@ if (isset($this->session->attributeReturn)) {
 }
 $selectOptions = array(
 	'welcome' => 'Welcome Table', 
-	'personal' => 'Personal Table', 
-	'income' => 'Income Table'
+	'main' => 'Main Table', 
 	);
 $typeOptions = array(
 	'decimal' => 'Decimal', 
-	'varchar' => 'VarChar'
+	'varchar' => 'VarChar',
+	'datetime' => 'DateTime'
 	);
 $writeOptions = array(
 	'insert' => 'Insert (keep historical data)', 

@@ -257,6 +257,17 @@
                     </span>
                 </a>
             </li>
+            <li class="menu-item <?php if(isset($activeLink['home']['account'])) echo "active" ?>">
+                <a href="<?php echo site_url("account") ?>" class="menu-link">
+                    <span class="menu-label">
+                        <span class="menu-name">Dashboard
+                        </span>
+                    </span>
+                    <span class="menu-icon">
+                        <i class="icon-placeholder mdi mdi-view-dashboard"></i>
+                    </span>
+                </a>
+            </li>
             <li class="menu-item <?php if(isset($activeLink['members']['general'])) echo "active" ?>">
                 <a href="<?php echo site_url("members") ?>" class="menu-link">
                     <span class="menu-label">

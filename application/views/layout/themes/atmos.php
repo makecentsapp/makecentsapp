@@ -77,7 +77,7 @@ if(!$this->user->loggedin) {
         <?php endif; ?>
 
         <!-- Smart Forms - added by PM 2/22-->
-        <link rel="stylesheet" type="text/css"  href="<?php echo base_url();?>assets/vendor/smartforms/smart-forms.css">
+        <link rel="stylesheet" type="text/css"  href="<?php echo base_url();?>assets/vendor/smartforms/smart-forms-customized.css">
         <link rel="stylesheet" type="text/css"  href="<?php echo base_url();?>assets/vendor/smartforms/smart-addons.css">
 
         <script type="text/javascript" src="<?php echo base_url();?>assets/vendor/smartforms/jquery.steps.min.js"></script>

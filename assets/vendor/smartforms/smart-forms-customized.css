@@ -199,7 +199,6 @@ html, body{
 ------------------------------------------------------------- */
 .smart-forms label, 
 .smart-forms input,
-.smart-forms button,
 .smart-forms select,  
 .smart-forms textarea {
 	margin: 0;  
@@ -215,7 +214,6 @@ html, body{
 .smart-forms .gui-input,
 .smart-forms .gui-textarea,
 .smart-forms .select > select,
-.smart-forms input[type="button"],
 .smart-forms input[type="submit"],
 .smart-forms input[type="search"],
 .smart-forms .select-multiple select {
@@ -244,8 +242,7 @@ html, body{
 
 /* @prevent user selection for usability purposes
 ----------------------------------------------------- */
-.smart-forms .radio,
-.smart-forms .button,  
+.smart-forms .radio,  
 .smart-forms .checkbox,
 .smart-forms .switch > label{
 	-webkit-user-select: none;
@@ -258,7 +255,6 @@ html, body{
 /* @universal rules for all elements 
 ---------------------------------------------------- */
 .smart-forms .radio,
-.smart-forms .button,
 .smart-forms .tooltip,
 .smart-forms .checkbox,  
 .smart-forms .gui-input,
@@ -266,8 +262,6 @@ html, body{
 .smart-forms .gui-textarea,
 .smart-forms .select > select,
 .smart-forms .select-multiple select,
-.smart-forms input[type="button"].button,
-.smart-forms input[type="submit"].button,
 .smart-forms input[type="search"].gui-input{ 
 	-webkit-transition:all 0.5s ease-in-out;
 	-moz-transition:all 0.5s ease-in-out;
@@ -1002,6 +996,9 @@ html, body{
 
 /* @buttons 
 ----------------------------------------------------- */
+/*PM deleted all references to btn or button CSS from this version to avoid conflicts with atmos and bootstrap */
+/* @buttons 
+----------------------------------------------------- */
 .smart-forms .button {
     border: 0;
 	height: 42px;
@@ -1027,206 +1024,6 @@ html, body{
 .smart-forms label.button { line-height: 42px; text-decoration: none; }
 .smart-forms .button i{ font-size:14px; }
 .smart-forms .button-list .button{ margin-bottom:5px; }
-
-/* @primary button theme
--------------------------------------------- */
-.smart-forms .btn-primary {  background-color: #1abc9c;  }
-.smart-forms .btn-primary:hover,
-.smart-forms .btn-primary:focus { background-color: #48c9b0; }
-.smart-forms .btn-primary:active{ background-color: #16a085; }
-.smart-forms .btn-primary, 
-.smart-forms .btn-primary:hover,
-.smart-forms .btn-primary:focus, 
-.smart-forms .btn-primary:active{ color: #fff; text-shadow: 0 1px rgba(0, 0, 0, 0.08); }
-
-/* @rounded buttons 
--------------------------------------------- */
-.smart-forms .btn-rounded{ 
-	-webkit-border-radius:22px;
-	-moz-border-radius:22px;
-	-o-border-radius:22px;
-	border-radius:22px;  
-}
-
-/* @left + right buttons :: look like IOS
--------------------------------------------- */
-.smart-forms .button-left, 
-.smart-forms .button-right {
-    position: relative;
-	z-index:9;
-}
-
-.smart-forms .button-left:before, 
-.smart-forms .button-right:before {
-    content:'';
-    z-index:-1;
-    width: 32px;
-    height: 32px;
-	position: absolute;
-    background-color: inherit;
-	border-color: inherit;	
-    border: none;
-	top: 5px;
-}
-
-.smart-forms .button-left {
-    border-left-width: 0; 
-	padding: 0 18px 0 7px;
-    -webkit-border-radius: 0 3px 3px 0;
-	-moz-border-radius: 0 3px 3px 0;
-	-o-border-radius: 0 3px 3px 0;
-	border-radius: 0 3px 3px 0;
-	margin-left:20px;
-}
-
-.smart-forms .button-left:before {
-    left: -15px;
-    -webkit-border-radius: 2px 5px 0 5px;
-	-moz-border-radius: 2px 5px 0 5px;
-	-o-border-radius: 2px 5px 0 5px;
-	border-radius: 2px 5px 0 5px;
-    -webkit-transform: rotate(-45deg);
-    -moz-transform: rotate(-45deg);
-    -ms-transform: rotate(-45deg);
-    -o-transform: rotate(-45deg);
-    transform: rotate(-45deg);
-}
-
-.smart-forms .button-right {
-    padding: 0 7px 0 18px;
-    border-right-width: 0;
-    -webkit-border-radius: 3px 0 0 3px;
-	-moz-border-radius: 3px 0 0 3px;
-	-o-border-radius: 3px 0 0 3px;
-	border-radius: 3px 0 0 3px;
-	margin-right:20px;
-}
-
-.smart-forms .button-right:before {
-    right: -15px;
-    -webkit-border-radius: 5px 2px 5px 0;
-	-moz-border-radius: 5px 2px 5px 0;
-	-o-border-radius: 5px 2px 5px 0;
-	border-radius: 5px 2px 5px 0;
-    -webkit-transform: rotate(45deg);
-    -moz-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    -o-transform: rotate(45deg);
-    transform: rotate(45deg);
-}
-
-/* @left right button pointed button shapes 
------------------------------------------------- */
-.smart-forms .btn-pointed.button-left, 
-.smart-forms .btn-pointed.button-right{ 
-	-webkit-border-radius:22px;
-	-moz-border-radius:22px;
-	-o-border-radius:22px; 
-	border-radius:22px;  
-}
-
-.smart-forms .btn-rounded.button-left{ 
-	-webkit-border-radius: 0 22px 22px 0;
-	-moz-border-radius: 0 22px 22px 0;
-	-o-border-radius: 0 22px 22px 0; 
-	border-radius: 0 22px 22px 0;  
-}
-
-.smart-forms .btn-rounded.button-right{
-	-webkit-border-radius: 22px 0 0 22px;
-	-moz-border-radius: 22px 0 0 22px;
-	-o-border-radius: 22px 0 0 22px;
-	border-radius: 22px 0 0 22px; 
-}
-
-/* @push buttons
------------------------------------------------- */
-.smart-forms .pushed { 
-	-webkit-box-shadow:inset 0 -0.3em 0 rgba(0,0,0,0.2);
-	-moz-box-shadow:inset 0 -0.3em 0 rgba(0,0,0,0.2);
-	-o-box-shadow:inset 0 -0.3em 0 rgba(0,0,0,0.2);
-	box-shadow:inset 0 -0.3em 0 rgba(0,0,0,0.2);
-	position:relative;
-}
-
-.smart-forms .pushed:active{
-	-webkit-box-shadow:inset 0 -0.15em 0 rgba(0,0,0,0.2);
-	-moz-box-shadow:inset 0 -0.15em  0 rgba(0,0,0,0.2);
-	-o-box-shadow:inset 0 -0.15em  0 rgba(0,0,0,0.2);
-	box-shadow:inset 0 -0.15em  0 rgba(0,0,0,0.2);
-	top:2px;
-}
-
-.smart-forms .pushed.button-left:before {
-	-webkit-box-shadow:inset 0.35em 0  0 rgba(0,0,0,0.2);
-	-moz-box-shadow:inset 0.35em 0 0 rgba(0,0,0,0.2);
-	-o-box-shadow:inset 0.35em 0 0 rgba(0,0,0,0.2);
-	box-shadow:inset 0.35em 0 0 rgba(0,0,0,0.2);	
-}
-
-.smart-forms .pushed:active.button-left:before{
-	-webkit-box-shadow:inset 0.2em 0  0 rgba(0,0,0,0.2);
-	-moz-box-shadow:inset 0.2em 0  0 rgba(0,0,0,0.2);
-	-o-box-shadow:inset 0.2em 0  0 rgba(0,0,0,0.2);
-	box-shadow:inset 0.2em 0  0 rgba(0,0,0,0.2);
-}
-
-.smart-forms .pushed.button-right:before {
-	-webkit-box-shadow:inset  -0.35em 0  0 rgba(0,0,0,0.2);
-	-moz-box-shadow:inset -0.35em 0  0  rgba(0,0,0,0.2);
-	-o-box-shadow:inset -0.35em 0  0  rgba(0,0,0,0.2);
-	box-shadow:inset -0.35em 0  0  rgba(0,0,0,0.2);	
-}
-
-.smart-forms .pushed:active.button-right:before{
-	-webkit-box-shadow:inset -0.2em 0  0 rgba(0,0,0,0.2);
-	-moz-box-shadow:inset -0.2em 0  0 rgba(0,0,0,0.2);
-	-o-box-shadow:inset -0.2em 0  0 rgba(0,0,0,0.2);
-	box-shadow:inset -0.2em 0  0 rgba(0,0,0,0.2);
-}
-
-/* @adjust buttons in form footer
------------------------------------------------- */
-.smart-forms .form-footer .button{ margin-right:10px; margin-bottom:5px; }
-.smart-forms .align-right .button{ margin-right:0; margin-left:10px; }
-
-/* @social buttons :: facebook :: twitter :: google +
----------------------------------------------------- */
-.smart-forms .twitter, 
-.smart-forms .twitter:hover, 
-.smart-forms .twitter:focus,
-.smart-forms .facebook, 
-.smart-forms .facebook:hover, 
-.smart-forms .facebook:focus,
-.smart-forms .googleplus,
-.smart-forms .googleplus:hover, 
-.smart-forms .googleplus:focus { color:#fff; text-shadow: 0 1px rgba(0, 0, 0, 0.08); } 
-.smart-forms .facebook { background-color:#3b5998; }
-.smart-forms .twitter { background-color:#00acee;  }
-.smart-forms .googleplus { background-color:#dd4b39; }
-.smart-forms .facebook:hover, 
-.smart-forms .facebook:focus { background-color:#25385F;  }
-.smart-forms .twitter:hover, 
-.smart-forms .twitter:focus { background-color:#00749F;  }
-.smart-forms .googleplus:hover, 
-.smart-forms .googleplus:focus { background-color:#8D2418;  }
-.smart-forms .span-left{ padding-left:52px; text-align:left; }
-.smart-forms .btn-social { position:relative; margin-bottom:5px;  }
-.smart-forms .btn-social i{ font-size:22px; position:relative; top:2px;    }
-.smart-forms .btn-social span{
-	-webkit-border-radius:3px 0 0 3px;
-	-moz-border-radius:3px 0 0 3px;
-	-o-border-radius:3px 0 0 3px;
-	border-radius:3px 0 0 3px;	
-	display:inline-block; 
-	text-align:center; 
-	position:absolute;
-	width:42px; 
-	left:0; 
-}
-.smart-forms .twitter span{ background-color:#009AD5; }
-.smart-forms .facebook span{ background-color:#31497D; }
-.smart-forms .googleplus span{ background-color:#C03121; }
 
 /* @rating and review star widget :: with hover back afetr selecting
 ------------------------------------------------------------------------ */
