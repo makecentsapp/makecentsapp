@@ -2,6 +2,17 @@
 
 class BW extends CI_Controller
 {
+
+    public function __construct() 
+	{
+		parent::__construct();
+        $this->load->library('kint');
+        
+        if(!$this->user->info->admin) {
+			$this->template->error(lang("error_2"));
+		}
+	}
+    
     public function index()
     {
 
@@ -27,7 +38,7 @@ class BW extends CI_Controller
 
     public function logintest()
     {
-        $this->template->layout = '/layout/atmos_login_layout.php';
+        $this->template->layout = '/layout/login_layout.php';
         $this->template->loadContent("login/atmos/index.php", array(
             )
         );
@@ -37,14 +48,14 @@ class BW extends CI_Controller
     public function forgotpw()
     {
         $this->template->set_error_view("error/login_error.php");
-        $this->template->set_layout("layout/atmos_login_layout.php");
+        $this->template->set_layout("layout/login_layout.php");
         $this->template->loadContent("login/forgotpw.php", array());
     }
 
     public function resetpw()
     {
         $this->template->set_error_view("error/login_error.php");
-        $this->template->set_layout("layout/atmos_login_layout.php");
+        $this->template->set_layout("layout/login_layout.php");
         $this->template->loadContent("login/resetpw.php", array());
     }
 
@@ -52,7 +63,7 @@ class BW extends CI_Controller
     {
         $this->template->set_page_title(lang("ctn_150"));
         $this->template->set_error_view("error/login_error.php");
-        $this->template->set_layout("layout/atmos_login_layout.php");
+        $this->template->set_layout("layout/login_layout.php");
 
         $this->template->loadContent("login/privacy.php", array());
     }
@@ -60,7 +71,7 @@ class BW extends CI_Controller
     public function loginerrortest()
     {
         $this->template->set_error_view("error/login_error.php");
-        $this->template->layout = '/layout/atmos_login_layout.php';
+        $this->template->layout = '/layout/login_layout.php';
         $this->template->loadContent("login/banned.php", array());
 
     }

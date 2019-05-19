@@ -244,7 +244,7 @@
                     </ul>
                 </li>
                 <!--list item ends-->
-            <?php endif; ?>
+            
 
             <li class="menu-item <?php if(isset($activeLink['home']['general'])) echo "active" ?>">
                 <a href="<?php echo site_url() ?>" class="menu-link">
@@ -257,6 +257,8 @@
                     </span>
                 </a>
             </li>
+            <?php endif; ?>
+
             <li class="menu-item <?php if(isset($activeLink['home']['account'])) echo "active" ?>">
                 <a href="<?php echo site_url("account") ?>" class="menu-link">
                     <span class="menu-label">
@@ -268,6 +270,8 @@
                     </span>
                 </a>
             </li>
+
+            <?php if($this->user->info->admin) : ?>
             <li class="menu-item <?php if(isset($activeLink['members']['general'])) echo "active" ?>">
                 <a href="<?php echo site_url("members") ?>" class="menu-link">
                     <span class="menu-label">
@@ -279,6 +283,8 @@
                     </span>
                 </a>
             </li>
+            <?php endif; ?>
+            
             <li class="menu-item <?php if(isset($activeLink['settings']['general'])) echo "active" ?>">
                 <a href="<?php echo site_url("user_settings") ?>" class="menu-link">
                     <span class="menu-label">

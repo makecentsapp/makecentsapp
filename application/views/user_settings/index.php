@@ -41,7 +41,7 @@
                               <a class="text-primary" href="<?php echo site_url("profile/" . $this->user->info->username) ?>"><?php echo $this->user->info->username ?></a>
                             </div>
                         </div>
-                        <?php if($this->settings->info->payment_enabled) : ?>
+                        <?php if($this->settings->info->payment_enabled && $this->user->info->admin) : ?>
                             <div class="form-group">
                                 <label for="inputEmail3" class="control-label font-weight-bold"><?php echo lang("ctn_423") ?></label>
                                 <div class="">

@@ -10,6 +10,11 @@ class Funds extends CI_Controller
 		$this->load->model("funds_model");
 
 		if(!$this->user->loggedin) $this->template->error(lang("error_1"));
+		
+		//Disable funds controller for non admins
+		if(!$this->user->info->admin) {
+			$this->template->error(lang("error_2"));
+		}
 	}
 
 	public function index() 

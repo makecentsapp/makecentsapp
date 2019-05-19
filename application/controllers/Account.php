@@ -67,11 +67,6 @@ class Account extends CI_Controller {
 	}
 
 	public function dbAttribute() {
-		//Remove after BS4 re-code:
-		$this->template->layout = '/layout/themes/atmos.php';
-		$this->template->loadContent("account/dbAttribute.php");
-	}
-	public function main() {
 		$translationQuery = $this->db
 		->select('*')
 		->from('main')
@@ -80,6 +75,12 @@ class Account extends CI_Controller {
 			$translationArray[$row['attribute_id']] = $row['attribute_name'];
 		}
 		$userdata = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
+		$dateQuery = $this->db
+			->select('*')
+			->from('mainDetails_datetime')
+			->where('user_id', $this->user->info->ID)
+			->order_by('date_added', 'ASC')
+			->get();
 		$decQuery = $this->db
 			->select('*')
 			->from('mainDetails_decimal')
@@ -96,6 +97,48 @@ class Account extends CI_Controller {
 	    $array = array(
 			'translation' => $translationArray,
 			'user' => $this->user,
+			'datetime' => $dateQuery->result_array(),
+			'decimal' => $decQuery->result_array(),
+			'varchar' => $vcharQuery->result_array()
+
+			//'userid' => $userdata
+		);
+		//Remove after BS4 re-code:
+		$this->template->layout = '/layout/themes/atmos.php';
+		$this->template->loadContent("account/dbAttribute.php", $array);
+	}
+	public function main() {
+		$translationQuery = $this->db
+		->select('*')
+		->from('main')
+		->get();
+		foreach ($translationQuery->result_array() as $row) {
+			$translationArray[$row['attribute_id']] = $row['attribute_name'];
+		}
+		$userdata = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
+		$dateQuery = $this->db
+			->select('*')
+			->from('mainDetails_datetime')
+			->where('user_id', $this->user->info->ID)
+			->order_by('date_added', 'ASC')
+			->get();
+		$decQuery = $this->db
+			->select('*')
+			->from('mainDetails_decimal')
+			->where('user_id', $this->user->info->ID)
+			->order_by('date_added', 'ASC')
+			->get();
+		$vcharQuery = $this->db
+			->select('*')
+			->from('mainDetails_varchar')
+			->where('user_id', $this->user->info->ID)
+			->order_by('date_added', 'ASC')
+			->get();
+
+	    $array = array(
+			'translation' => $translationArray,
+			'user' => $this->user,
+			'datetime' => $dateQuery->result_array(),
 			'decimal' => $decQuery->result_array(),
 			'varchar' => $vcharQuery->result_array()
 
@@ -177,6 +220,10 @@ class Account extends CI_Controller {
 				        if ($attribute_type == 'datetime') {
 				        	//dealing with the date format masking (slashes) as a result of the jquery function
 			        		$value = date('Y-m-d H:i:s', strtotime(htmlspecialchars_decode($value)));
+			        	}
+			        	if ($attribute_type == 'decimal') {
+			        		$value = str_replace(',', '', $value);
+			        		$value = str_replace('$', '', $value);
 			        	}
 				        $data = array(
 				        	'user_id' => $user_id, 

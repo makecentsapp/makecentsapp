@@ -160,6 +160,8 @@ $lang['ctn_148'] = "Language";
 // Layout
 $lang['ctn_149'] = "Logout";
 $lang['ctn_150'] = "Login";
+$lang['ctn_1501'] = "Intro";
+$lang['ctn_1502'] = "Results";
 $lang['ctn_151'] = "Register";
 $lang['ctn_152'] = "Search";
 $lang['ctn_153'] = "Please login to continue";

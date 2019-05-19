@@ -16,7 +16,8 @@
         </div>
     </div>
 </div>
-<div class="container  pull-up">
+<div class="container">
+	<div class="card pull-up p-t-30 p-b-30 p-l-30 m-b-30">
 <?php
 $this->load->library('session');
 if (isset($this->session->attributeReturn)) {
@@ -55,5 +56,14 @@ echo form_input('name', '', 'placeholder="new attribute name" class="form-contro
 echo form_submit('attributeSubmit', 'Save', 'class="btn btn-primary"');
 	echo '</div>';
 echo '</div>';
+?>
+	</div>
+</div>
+<div class="card">
+<?php
+$CI_vars = $this->_ci_cached_vars;
+echo '<pre>';
+var_dump($CI_vars);
+echo '</pre>';
 ?>
 </div>

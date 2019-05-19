@@ -4,22 +4,42 @@
 		<?php
 		$currentUserID = $this->user->info->ID;
 		$CI_vars = $this->_ci_cached_vars;
-		if (!empty($CI_vars['varchar'])) {
-			foreach ($CI_vars['varchar'] as $record) {
-				if ($record['attribute_id'] == 1) {
-					//need to get whatever the last question was out of DB
-					$lastStepCompleted = $record['value'];
-
-				}
+		global $varchars;
+		global $datetimes;
+		global $decimals;
+		if (!empty($CI_vars['datetime'])) {
+			foreach ($CI_vars['datetime'] as $key => $value) {
+				$datetimes[$CI_vars['translation'][$value['attribute_id']]] = $value['value'];
 			}
 		}
-		
+		if (!empty($CI_vars['varchar'])) {
+			foreach ($CI_vars['varchar'] as $key => $value) {
+				$varchars[$CI_vars['translation'][$value['attribute_id']]] = $value['value'];
+			}
+		}
+		if (!empty($CI_vars['decimal'])) {
+			foreach ($CI_vars['decimal'] as $key => $value) {
+				$decimals[$CI_vars['translation'][$value['attribute_id']]] = $value['value'];
+			}
+		}
+		$lastStepCompleted = $varchars['mainCurrentStep'];
+		echo '<div class="row"><div class="col-md-4"><pre>';
+			var_dump($varchars);
+			//var_dump($transDB);
+		echo '</pre></div>';
+		echo '<div class="col-md-4"><pre>';
+			var_dump($datetimes);
+			//var_dump($transDB);
+		echo '</pre></div>';
+		echo '<div class="col-md-4"><pre>';
+			var_dump($decimals);
+			//var_dump($transDB);
+		echo '</pre></div></div>';
 		?>
 
 		<script type="text/javascript" src="//makecentsapp.com/assets/vendor/smartforms/jquery.formShowHide.min.js"></script>
 		<!-- cleave is for imput masking -->
 		<script type="text/javascript" src="//makecentsapp.com/assets/vendor/cleave/cleave.min.js"></script>
-		<script type="text/javascript" src="//makecentsapp.com/assets/vendor/smartforms/jquery.maskedinput.js"></script>
 		<script type="text/javascript" src="//makecentsapp.com/assets/vendor/smartforms/jquery-cloneya.min.js"></script>
 		<!-- touchpunch necessary for mobile tap to slide sliders - thanks chris! -->
 		<script type="text/javascript" src="//makecentsapp.com/assets/vendor/jquery.touchpunch/touchpunch.min.js"></script>
@@ -92,13 +112,11 @@
 			        },
 			        errorPlacement: function(error, element) 
 			        {
-		        		console.log('inserting error');
-			            if ( element.is(":radio") ||  element.is(":checkbox")) 
-			            {
+			            if (element.is(":radio") ||  element.is(":checkbox")) {
 			                error.appendTo( element.parents('.card-body') );
 			            }
-			            else 
-			            { // This is the default behavior 
+			            else { 
+			            	// This is the default behavior 
 			                //error.insertAfter( element );
 			                error.appendTo( element.parents('.card-body') );
 			            }
@@ -108,7 +126,7 @@
 				//step counter to allow user to pick up where they left off, with a little bit of null handling so JS doesnt get pissy
 				
 				var lastStepCompleted = "<?php if (!empty($lastStepCompleted)) {echo $lastStepCompleted;} else {echo '';} ?>";
-				console.log(lastStepCompleted);
+				//console.log(lastStepCompleted);
 				//start the wizard
 				$(formDiv).wizard({
 					stepClasses: {
@@ -129,6 +147,15 @@
 							}
 							return branch;
 						},
+						childrenYes: function( state, action ) {
+							//locate the goal branch and define a variable so that we can pass to the next step / validate properly
+							var branch = state.step.find( "[name=childrenYes]:checked" ).attr('data-goto');
+							if ( !branch ) {
+								form.validate().settings.ignore = ":disabled,:hidden";
+        						return form.valid();
+							}
+							return branch;
+						},
 						debts: function( state, action ) {
 							//locate the goal branch and define a variable so that we can pass to the next step / validate properly
 							var branch = state.step.find( "[name=debts]:checked" ).attr('data-goto');
@@ -138,54 +165,9 @@
 							}
 							return branch;
 						},
-						debtsYes: function( state, action ) {
+						housing: function( state, action ) {
 							//locate the goal branch and define a variable so that we can pass to the next step / validate properly
-							var branch = state.step.find( "[name=debtsYes]:checked" ).attr('data-goto');
-							if ( !branch ) {
-								form.validate().settings.ignore = ":disabled,:hidden";
-        						return form.valid();
-							}
-							return branch;
-						},
-						debtsHighInterest: function( state, action ) {
-							//locate the goal branch and define a variable so that we can pass to the next step / validate properly
-							var branch = state.step.find( "[name=debtsHighInterest]:checked" ).attr('data-goto');
-							if ( !branch ) {
-								form.validate().settings.ignore = ":disabled,:hidden";
-        						return form.valid();
-							}
-							return branch;
-						},
-						mortgage: function( state, action ) {
-							//locate the goal branch and define a variable so that we can pass to the next step / validate properly
-							var branch = state.step.find( "[name=mortgage]:checked" ).attr('data-goto');
-							if ( !branch ) {
-								form.validate().settings.ignore = ":disabled,:hidden";
-        						return form.valid();
-							}
-							return branch;
-						},
-						mortgageNo: function( state, action ) {
-							//locate the goal branch and define a variable so that we can pass to the next step / validate properly
-							var branch = state.step.find( "[name=mortgageNo]:checked" ).attr('data-goto');
-							if ( !branch ) {
-								form.validate().settings.ignore = ":disabled,:hidden";
-        						return form.valid();
-							}
-							return branch;
-						},
-						rent: function( state, action ) {
-							//locate the goal branch and define a variable so that we can pass to the next step / validate properly
-							var branch = state.step.find( "[name=rent]:checked" ).attr('data-goto');
-							if ( !branch ) {
-								form.validate().settings.ignore = ":disabled,:hidden";
-        						return form.valid();
-							}
-							return branch;
-						},
-						rentYes: function( state, action ) {
-							//locate the goal branch and define a variable so that we can pass to the next step / validate properly
-							var branch = state.step.find( "[name=rentYes]:checked" ).attr('data-goto');
+							var branch = state.step.find( "[name=housing]:checked" ).attr('data-goto');
 							if ( !branch ) {
 								form.validate().settings.ignore = ":disabled,:hidden";
         						return form.valid();
@@ -196,8 +178,42 @@
 							//locate the goal branch and define a variable so that we can pass to the next step / validate properly
 							var branch = state.step.find( "[name=retirementMatch]:checked" ).attr('data-goto');
 							if ( !branch ) {
+								console.log('here');
+								form.validate().settings.ignore = ":disabled,:hidden";
+        						if( form.valid() == true ){
+        							var branch = 'retirementMatch';
+        						}
+							}
+							return branch;
+						},
+						upcomingExpense: function( state, action ) {
+							//locate the goal branch and define a variable so that we can pass to the next step / validate properly
+							var branch = state.step.find( "[name=upcomingExpense]:checked" ).attr('data-goto');
+							if ( !branch ) {
 								form.validate().settings.ignore = ":disabled,:hidden";
         						return form.valid();
+							}
+							return branch;
+						},
+						foodExpense: function( state, action ) {
+							//locate the goal branch and define a variable so that we can pass to the next step / validate properly
+							var branch = state.step.find( "[name=foodExpense]:checked" ).attr('data-goto');
+							if ( !branch ) {
+								form.validate().settings.ignore = ":disabled,:hidden";
+        						if( form.valid() == true ){
+        							var branch = 'foodExpense';
+        						}
+							}
+							return branch;
+						},
+						car: function( state, action ) {
+							//locate the goal branch and define a variable so that we can pass to the next step / validate properly
+							var branch = state.step.find( "[name=car]:checked" ).attr('data-goto');
+							if ( !branch ) {
+								form.validate().settings.ignore = ":disabled,:hidden";
+        						if( form.valid() == true ){
+        							var branch = 'car';
+        						}
 							}
 							return branch;
 						},
@@ -218,6 +234,7 @@
 		   				
 					},
 					beforeForward: function( event, state ) {
+						//console.log(state);
 						//check if the button pressed to advance was a id=skip, otherwise validate according to rules
 						if (typeof(event['currentTarget']) != "undefined" && event['currentTarget'] !== null) {
 							if (event['currentTarget']['id'] !== 'skip') {
@@ -247,7 +264,7 @@
 		   				}
 
 		   				//testing wizard history
-		   				console.log(state);
+		   				//console.log(state);
 
 		   				//check if anything in the form has been updated since last afterSelect call
 			            if (formdata !== $(form).serialize()) {
@@ -290,8 +307,6 @@
                 if (lastStepCompleted.length !== 0) {
 	                $('#bottomForward, #bottomBackward').hide();
 	            }
-                //initialize the clone fields
-                $('#debt-clone-fields').cloneya();
 
                 //setup the showHide for the country selector as well as disable fields which are not displayed
             	$('.smartfm-ctrl').change(function(){
@@ -340,14 +355,15 @@
 	            }
 	            //fire when user clicks the button
 	            $('#pickup').click( function(){
-	            	//find how many steps it takes to get back to where they were
-					selectStepCount = $(formDiv).wizard("stepIndex", select);
-					//step foward the number of steps, subtracting one to get exactly where they left off
-					/*console.log(selectStepCount);
-					$(formDiv).wizard("forward", selectStepCount-1);*/
-					$(formDiv).wizard("select", select);
-	            });
-
+	            	//old way -
+		            	//find how many steps it takes to get back to where they were
+						//selectStepCount = $(formDiv).wizard("stepIndex", select);
+						//step foward the number of steps, subtracting one to get exactly where they left off
+						/*console.log(selectStepCount);
+						$(formDiv).wizard("forward", selectStepCount-1);*/
+					$(formDiv).wizard("select", select);            
+				});
+	            
 			});
 		</script>
 		<style>
@@ -408,6 +424,23 @@
 				padding-left: 25px;
 			}
 		}
+		.clone-block {
+			position: relative;
+			padding-right: 90px;
+		}
+		a.delete {
+			position: absolute;
+			top: 0;
+			right: 0;
+		}
+		a.clone {
+			position: absolute;
+			top: 0;
+			right: 45px;
+		}
+		.bg-custom {
+			background-color: powderblue;
+		}
 		</style>
 <?php
 function writePickup () {
@@ -419,24 +452,18 @@ function writePickup () {
 				echo '<button type="button" id="pickup" name="forward" class="forward btn btn-primary">Get back in there</button>';
 	echo '</div></div></div>';
 }
-//branchExit is only used to put an alternative step class on which includes a data-state
-function writeTextQuestion ($id, $name, $label, $message, $placeholder, $branchExit) {
-	if (!empty($branchExit)) {
-		echo '<div class="step" data-state="'.$branchExit.'">';
-	}
-	else {
-		echo '<div class="step" id="'.$id.'">';
-	}
-	echo '<div class="section"><div class="card-header m-b-0">
+function writeMidResults ($id, $label, $message) {
+
+	echo '<div class="step" id="'.$id.'">
+			<div class="section text-center bg-custom"><div class="card-header p-t-20 p-b-0 bg-custom">
 			<label for="'.$id.'">'.$label.'</label>
+		</div><div class="card-body p-t-0 p-b-30 bg-custom">
 				<p>'.$message.'</p>
-				<hr class="card-line" align="left">
-		</div><div class="card-body m-b-30">
-				<input type="text" name="'.$name.'" id="input'.$id.'" class="form-control" placeholder="'.$placeholder.'">
 	</div></div></div>';
 }
-//branchExit is only used to put an alternative step class on which includes a data-state
-function writeDollarQuestion ($id, $name, $label, $message, $placeholder, $branchExit) {
+//branchExit is only used to put an alternative step class on which includes a data-state, only use this if the step is in a branch
+function writeTextQuestion ($id, $name, $label, $message, $placeholder, $branchExit, $additionalClass) {
+	global $varchars;
 	if (!empty($branchExit)) {
 		echo '<div class="step" data-state="'.$branchExit.'">';
 	}
@@ -447,9 +474,46 @@ function writeDollarQuestion ($id, $name, $label, $message, $placeholder, $branc
 			<label for="'.$id.'">'.$label.'</label>
 				<p>'.$message.'</p>
 				<hr class="card-line" align="left">
-		</div><div class="card-body m-b-30">
-				<input type="tel" name="'.$name.'" id="input'.$id.'" class="form-control" placeholder="'.$placeholder.'">
-	</div></div></div>';
+		</div><div class="card-body m-b-30">';
+		$inputClass = 'form-control';
+		if (!empty($additionalClass)) {
+			$inputClass = 'form-control '. $additionalClass;
+		}
+				echo '<input type="text" name="'.$name.'" id="input'.$id.'" class="'.$inputClass.'" placeholder="'.$placeholder.'" ';
+				if (isset($varchars[$id])) {
+                	echo 'value="'.$varchars[$id].'">';
+                }
+                else {
+                	echo '>';
+                }
+	echo '</div></div></div>';
+}
+//branchExit is only used to put an alternative step class on which includes a data-state, only use this if the step is in a branch
+function writeDollarQuestion ($id, $name, $label, $message, $placeholder, $branchExit, $additionalClass) {
+	global $decimals;
+	if (!empty($branchExit)) {
+		echo '<div class="step" data-state="'.$branchExit.'">';
+	}
+	else {
+		echo '<div class="step" id="'.$id.'">';
+	}
+	echo '<div class="section"><div class="card-header m-b-0">
+			<label for="'.$id.'">'.$label.'</label>
+				<p>'.$message.'</p>
+				<hr class="card-line" align="left">
+		</div><div class="card-body m-b-30">';
+		$inputClass = 'form-control';
+		if (!empty($additionalClass)) {
+			$inputClass = 'form-control '. $additionalClass;
+		}
+			echo '<input type="tel" name="'.$name.'" id="input'.$id.'" class="'.$inputClass.'" placeholder="'.$placeholder.'" data-goto="'.$branchExit.'"';
+			if (isset($decimals[$id])) {
+            	echo 'value="'.$decimals[$id].'">';
+            }
+            else {
+            	echo '>';
+            }
+	echo '</div></div></div>';
 	echo '<script>
 		var cleave'.$id.' = new Cleave("#input'.$id.'", {
 	    prefix: "$",
@@ -460,6 +524,7 @@ function writeDollarQuestion ($id, $name, $label, $message, $placeholder, $branc
 }
 //branchExit is only used to put an alternative step class on which includes a data-state
 function writeDateQuestion ($id, $name, $label, $message, $placeholder, $branchExit) {
+	global $datetimes;
 	if (!empty($branchExit)) {
 		echo '<div class="step" data-state="'.$branchExit.'">';
 	}
@@ -473,8 +538,14 @@ function writeDateQuestion ($id, $name, $label, $message, $placeholder, $branchE
 			}
 				echo '<hr class="card-line" align="left">
 		</div><div class="card-body m-b-30">
-				<input type="text" name="'.$name.'" id="input'.$id.'" class="form-control" placeholder="'.$placeholder.'">
-	</div></div></div>';
+				<input type="tel" name="'.$name.'" id="input'.$id.'" class="form-control" placeholder="'.$placeholder.'" ';
+				if (isset($datetimes[$id])) {
+                	echo 'value="'.date('m/d/Y', strtotime($datetimes[$id])).'">';
+                }
+                else {
+                	echo '>';
+                }
+	echo '</div></div></div>';
 	echo '<script>
 		var cleave'.$id.' = new Cleave("#input'.$id.'", {
 	    date: true,
@@ -483,10 +554,18 @@ function writeDateQuestion ($id, $name, $label, $message, $placeholder, $branchE
 		});
 	</script>';
 }
-function writeRadioQuestion ($id, $options, $label, $message, $branch) {
-	if ($branch == true) {
-		echo '<div class="step" data-state="'.$id.'">';
+function writeRadioQuestion ($id, $options, $label, $message, $branchName) {
+	global $varchars;
+	global $radioID;
+	//if both are filled in then this is an offshoot of a branch and is also the beginning of another branch
+	if (!empty($branchName) && !empty($id)) {
+		echo '<div class="step" id="'.$id.'" data-state="'.$branchName.'">';
 	}
+	//this is part of a branch
+	else if (!empty($branchName)) {
+		echo '<div class="step" data-state="'.$branchName.'">';
+	}
+	//this means it is just a regular one off step
 	else {
 		echo '<div class="step" id="'.$id.'">';
 	}
@@ -500,9 +579,21 @@ function writeRadioQuestion ($id, $options, $label, $message, $branch) {
 			</div>
 			<div class="card-body m-b-30">';
 			foreach ($options as $option) {
+				$radioID++;
 				echo '<div class="option-box p-r-10">
-                    <input id="'.$option['name'].'" name="'.$id.'" value="'.$option['label'].'" type="radio">
-                    <label for="'.$option['name'].'">
+                    <input id="'.$radioID.'" name="'.$id.'" value="'.$option['name'].'" ';
+                    //check if there is a stored value in the DB for the question and if so, pre-check the radio selector for that option
+                    if (isset($varchars[$id]) && $varchars[$id] == $option['name']) {
+                    	echo 'checked ';
+                    }
+                    if (isset($option['data-goto'])) {
+                    	echo 'data-goto="'.$option['data-goto'].'" type="radio">';
+                    }
+                    else {
+                    	echo 'type="radio">';
+                    }
+                    
+                    echo '<label for="'.$radioID.'">
                     	<span class="radio-content"><p>'.$option['label'].'</p></span>
                 	</label>
                 </div>';
@@ -512,7 +603,105 @@ function writeRadioQuestion ($id, $options, $label, $message, $branch) {
 		</div>
 	</div>';
 }
-
+//branchExit is only used to put an alternative step class on which includes a data-state
+//clone button not working? make sure all cloneTargetID variables are different
+function writeCloneQuestion ($id, $cloneTargetID, $questions, $label, $message, $branchExit) {
+	global $varchars;
+	echo '<script>
+			jQuery(function($) {
+				$("#'.$cloneTargetID.'").cloneya();
+			});
+			</script>';
+	if (!empty($branchExit)) {
+		echo '<div class="step" data-state="'.$branchExit.'">';
+	}
+	else {
+		echo '<div class="step" id="'.$id.'">';
+	}
+	echo '<div class="section">
+			<div class="card-header m-b-0">
+			<label for="'.$id.'">'.$label.'</label>
+				<p>'.$message.'</p>
+				<hr class="card-line" align="left">
+			</div>
+			<div class="card-body m-b-30" id="'.$cloneTargetID.'">';
+			echo '<div class="row">';
+			//put the labels in their own row, requires a loop through because it needs to both: go outside the clone block and involve the qestion specific classes
+			foreach ($questions as $question) {
+				echo '<div class="'.$question['class'].'">
+						<p><small>'.$question['placeholder'].'</small></p>
+					</div>';
+				//if there was a previously entered data set for the clone question, try to parse it into a usable format to recreate the number of rows created with the clone input
+				if (isset($varchars[$question['name']])) {
+					$cloneExp = explode(',', $varchars[$question['name']]);
+					$i=0;
+					foreach ($cloneExp as $v) {
+						$cloneRow[$i] = array($question['name'] => $v);
+						$i++;
+					}
+				}
+				//if the result of this was nothing because there was no data stored previously, just set up an empty array to actually kick the next foreach
+				if (empty($cloneRow)) {
+					$cloneRow[0] = array('' => '');
+				}
+			}
+			echo '</div>';
+			echo '<pre>';
+			var_dump($cloneRow);
+			echo '</pre>';
+			foreach ($cloneRow as $row) {
+				var_dump($row);
+				echo '<div class="toclone clone-block">
+    				<div class="form-row">';
+			foreach ($questions as $question) {
+				echo '<div class="form-group '.$question['class'].'">';
+					if (isset($question['fieldLabel']) && isset($question['icon'])) {
+						echo '<div class="input-group mb-3">';
+						if ($question['fieldLabel'] == 'input-group-prepend') {
+							echo '<div class="'.$question['fieldLabel'].'">
+									<span class="input-group-text"><i class="'.$question['icon'].'"></i></span>
+								</div>';
+						}	 	
+					}
+					if ($question['type'] == 'select') {
+						echo '<select name="'.$question['name'].'[]" id="'.$question['id'].'" class="form-control">';
+						foreach ($question['options'] as $key => $option) {
+							echo '<option value="'.$option.'">'.ucwords(str_replace('_', ' ', $option)).'</option>';
+						}
+						echo '</select>';
+					}
+					else {
+    					echo '<input type="'.$question['type'].'" name="'.$question['name'].'[]" id="'.$question['id'].'" class="form-control" ';
+    					//holy shit this might be a dumpster
+    					foreach ($row as $rkey => $rvalue) {
+    						if (isset($rkey) && $rkey == $question['name']) {
+    							echo 'value="'.$rvalue.'" >';
+	    					}
+	    					else {
+	    						echo '>';
+	    					}
+    					}
+					}
+    				if (isset($question['fieldLabel']) && isset($question['icon'])) {
+						if ($question['fieldLabel'] == 'input-group-append') {
+							echo '<div class="'.$question['fieldLabel'].'">
+									<span class="input-group-text"><i class="'.$question['icon'].'"></i></span>
+								</div>';
+						}
+						echo '</div>';//end input group
+					}
+    				echo '</div>';//end form group
+			}
+				
+				echo '</div>
+		          	<a href="#" class="clone btn btn-success"><i class="fa fa-plus"></i></a>
+	      			<a href="#" class="delete btn btn-success"><i class="fa fa-minus"></i></a>
+	        	</div>';//end clone-block
+	        }//end number of rows loop
+	        echo '</div>
+        </div>
+    </div>';
+}
 /**
  * Writes a boolean question.
  * dont forget to hard code into the javascript for the branch step
@@ -525,6 +714,7 @@ function writeRadioQuestion ($id, $options, $label, $message, $branch) {
  * @param      string          $gotoNo      where to send the wizard to next if no is answered
  */
 function writeBooleanQuestion ($id, $name, $label, $message, $branchName, $gotoYes, $gotoNo) {
+	global $varchars;
 	global $boolID;
 	$boolID++;
 	//if both are filled in then this is an offshoot of a branch and is also the beginning of another branch
@@ -549,14 +739,26 @@ function writeBooleanQuestion ($id, $name, $label, $message, $branchName, $gotoY
 			</div>
 			<div class="card-body m-b-30">
                 <div class="option-box p-r-10">
-                    <input id="bool-'.$boolID.'" data-goto="'.$gotoYes.'" name="'.$name.'" value="yes" type="radio">
-                    <label for="bool-'.$boolID.'">
+                    <input id="bool-'.$boolID.'" data-goto="'.$gotoYes.'" name="'.$name.'" value="yes" type="radio" ';
+                    if (isset($varchars[$name]) && $varchars[$name] == 'yes') {
+                    	echo 'checked >';
+                    }
+                    else {
+                    	echo '>';
+                    }
+                    echo '<label for="bool-'.$boolID.'">
                     	<span class="radio-content"><p>Yes</p></span>
                 	</label>
                 </div>
                 <div class="option-box">
-                    <input id="bool-'.$boolID.'No" data-goto="'.$gotoNo.'" name="'.$name.'" value="no" type="radio">
-                    <label for="bool-'.$boolID.'No">
+                    <input id="bool-'.$boolID.'No" data-goto="'.$gotoNo.'" name="'.$name.'" value="no" type="radio" ';
+                    if (isset($varchars[$name]) && $varchars[$name] == 'no') {
+                    	echo 'checked >';
+                    }
+                    else {
+                    	echo '>';
+                    }
+                    echo '<label for="bool-'.$boolID.'No">
                     	<span class="radio-content"><p>No</p></span>
                     </label>
                 </div>
@@ -567,9 +769,9 @@ function writeBooleanQuestion ($id, $name, $label, $message, $branchName, $gotoY
 
 //branchValue is always either Yes or No for the boolean functions
 //exitTo is the id of the question that should appear after completing the current sub branch
-function writeBranchSubQuestion_Text ($branchValue, $id, $name, $label, $message, $placeholder, $exitTo) {
+function writeBranchSubQuestion_Text ($branchValue, $id, $name, $label, $message, $placeholder, $exitTo, $additionalClass) {
 	echo '<div class="branch" id="'.$branchValue.'">';
-		writeTextQuestion ($id, $name, $label, $message, $placeholder, $exitTo);
+		writeTextQuestion ($id, $name, $label, $message, $placeholder, $exitTo, $additionalClass);
 	echo '</div>';
 }
 function writeBranchSubQuestion_Boolean ($branchValue, $nestedBranchName, $id, $name, $label, $message, $branchName, $gotoYes, $gotoNo) {
@@ -584,9 +786,9 @@ function writeBranchSubQuestion_Boolean ($branchValue, $nestedBranchName, $id, $
 		echo '</div>';
 	}
 }
-function writeBranchSubQuestion_Dollar ($branchValue, $id, $name, $label, $message, $placeholder, $exitTo) {
+function writeBranchSubQuestion_Dollar ($branchValue, $id, $name, $label, $message, $placeholder, $exitTo, $additionalClass) {
 	echo '<div class="branch" id="'.$branchValue.'">';
-		writeDollarQuestion ($id, $name, $label, $message, $placeholder, $exitTo);
+		writeDollarQuestion ($id, $name, $label, $message, $placeholder, $exitTo, $additionalClass);
 	echo '</div>';
 }
 function writeBranchSubQuestion_Radio ($branchValue, $id, $options, $label, $message, $branch) {
@@ -594,6 +796,17 @@ function writeBranchSubQuestion_Radio ($branchValue, $id, $options, $label, $mes
 		writeRadioQuestion ($id, $options, $label, $message, $branch);
 	echo '</div>';
 }
+function writeBranchSubQuestion_Date ($branchValue, $id, $name, $label, $message, $placeholder, $branchExit) {
+	echo '<div class="branch" id="'.$branchValue.'">';
+		writeDateQuestion ($id, $name, $label, $message, $placeholder, $branchExit);
+	echo '</div>';
+}
+function writeBranchSubQuestion_Clone ($branchValue, $id, $cloneTargetID, $questions, $label, $message, $branchExit) {
+	echo '<div class="branch" id="'.$branchValue.'">';
+		writeCloneQuestion ($id, $cloneTargetID, $questions, $label, $message, $branchExit);
+	echo '</div>';
+}
+
 
 ?>
 	</head>
@@ -601,7 +814,7 @@ function writeBranchSubQuestion_Radio ($branchValue, $id, $options, $label, $mes
 		<div id="main" class="container">
 			<pre id="errorRpt"></pre>
 			<div class="row m-h-50 align-items-center justify-content-center">
-				<div class="col-lg-6 col-md-10 p-t-30">
+				<div class="col-lg-10 col-md-10 p-t-30">
 					<div class="card">
 						<form name="mainForm" id="mainForm" method="post" action="<?php echo base_url ('Account/submit'); ?>">
 							<!-- hidden field for the current User ID -->
@@ -620,9 +833,61 @@ function writeBranchSubQuestion_Radio ($branchValue, $id, $options, $label, $mes
 								writePickup();
 							}
 
+				writeMidResults ('resultsStart', 'Personal Info', "First, let's ask a couple questions about you.");
+
 							//$id, $name, $label, $message, $placeholder
-							writeTextQuestion('location', 'location', 'What is your address?', 'We will use this to compare your financial profile to others in your area', 'Street Address','');
+							writeTextQuestion('location', 'location', 'What is your address?', 'We will use this to compare your financial profile to others in your area', 'Street Address','','');
 							writeDateQuestion('dob', 'dob', 'What is your date of birth?', 'We will use this to help you plan for the future', 'MM/DD/YYYY','');
+							$genderRadio = array(
+								array(
+									'name' => 'male',
+									'label' => 'Male'
+								),
+								array(
+									'name' => 'female',
+									'label' => 'Female'
+								),
+								array(
+									'name' => 'na',
+									'label' => 'N/A'
+								)
+							);
+							writeRadioQuestion ('gender', $genderRadio, 'What is your gender?', '', false);
+							$educationRadio = array(
+								array(
+									'name' => 'unfinishedHS',
+									'label' => 'Less Than High School'
+								),
+								array(
+									'name' => 'HS',
+									'label' => 'High School Diploma or Equivalent'
+								),
+								array(
+									'name' => 'unfinishedCollege',
+									'label' => 'Some College, No Degree'
+								),
+								array(
+									'name' => 'associates',
+									'label' => "Associate's Degree"
+								),
+								array(
+									'name' => 'bachelors',
+									'label' => "Bachelor's Degree"
+								),
+								array(
+									'name' => 'postSecondary',
+									'label' => "Post-secondary Non-degree Award"
+								),
+								array(
+									'name' => 'masters',
+									'label' => "Master's Degree"
+								),
+								array(
+									'name' => 'doctoral',
+									'label' => "Doctoral of Professional Degree"
+								)
+							);
+							writeRadioQuestion ('educationLevel', $educationRadio, 'What is the highest level of education you have completed?', '', false);
 							$statusRadio = array(
 								array(
 									'name' => 'single',
@@ -635,34 +900,220 @@ function writeBranchSubQuestion_Radio ($branchValue, $id, $options, $label, $mes
 							);
 							writeRadioQuestion ('status', $statusRadio, 'What is your relationship status?', '', false);
 							//$id, $name, $label, $message, $branchName, $gotoYes, $gotoNo
-							writeBooleanQuestion ('','children','Do you have any children?','', 'children', 'childrenYes', 'income');
-								writeBranchSubQuestion_Text ('childrenYes', 'childrenYes', 'childrenAge', 'What are their ages?', 'This will help us account for them in your financial plan', 'Please enter an age', 'income');
-							writeDollarQuestion('income', 'income', 'What is your annual household income before taxes?', '', 'anything','');
-							writeDollarQuestion('healthInsurance', 'healthInsurance', 'How much are you paying for health insurance per month?', '', 'anything','');
+							writeBooleanQuestion ('','children','Do you have any children under the age of 18?','', 'children', 'childrenYes', 'resultsPersonal');
+								//writeBranchSubQuestion_Text ('childrenYes', 'childrenYes', 'childrenAge', 'What are their ages?', 'This will help us account for them in your financial plan', 'Please enter an age', 'childrenEducation','');
 
-							//$id, $name, $label, $message, $branchName, $gotoYes, $gotoNo
-							writeBooleanQuestion ('','debts','Do you have any debts?','Other than a mortgage on your home', 'debts', 'debtsYes', 'cashOnHand');
-								//$branchValue, $nestedBranchName, $id, $name, $label, $message, $branchName, $gotoYes, $gotoNo
-								writeBranchSubQuestion_Boolean ('debtsYes', 'debtsHighInterest', '', 'debtsHighInterest', 'Does any of this debt have an interest rate over 10%?', '', 'debtsHighInterest', 'debtsHighInterestList', 'debtsModerateInterestList');
-									//$branchValue, $id, $name, $label, $message, $placeholder, $exitTo
-									writeBranchSubQuestion_Text ('debtsHighInterestList', 'debtsHighInterestList', 'debtsHighInterest1', 'List you debts over 10% interest.', 'need to build in clone fields', 'descrip / int rate / amount', 'debtsModerateInterestList');
-									writeBranchSubQuestion_Text ('debtsModerateInterestList', 'debtsModerateInterestList', 'debtsModerateInterest1', 'List you debts under 10% interest.', 'need to build in clone fields', 'descrip / int rate / amount', 'cashOnHand');		
+								$childrenAges = array (
+									array(
+										'class' => 'col-md-12',
+										'type' => 'tel',
+										'name' => 'childrenAge',
+										'id' => 'childrenAge',
+										'placeholder' => 'Age'
+									),
+								);
+								//$branchValue, $id, $cloneTargetID, $questions, $label, $message, $branchExit
+								writeBranchSubQuestion_Clone ('childrenYes', 'childrenYes', 'caClone', $childrenAges, 'What are their ages?', 'Click the + or - buttons for additional children. This will help us account for them in your financial plan', 'childrenEducation');
 
-							writeDollarQuestion('cashOnHand', 'cashOnHand', 'How much do you have saved total in a checking or savings accounts?', "You can also include cash on hand. Please don't include investment accounts or any money that isn't easily accessible.", '','');
+								$childrenEducationRadio = array(
+									array(
+										'name' => 'yes',
+										'label' => 'Yes'
+									),
+									array(
+										'name' => 'no',
+										'label' => 'No'
+									)
+								);
+								writeRadioQuestion ('childrenEducation', $childrenEducationRadio, 'Will they be attending some form of higher education after highschool?', '', false);
 
-							//$id, $name, $label, $message, $branchName, $gotoYes, $gotoNo
-							writeBooleanQuestion ('','mortgage','Do you have a mortgage on your home?','', 'mortgage', 'mortgageYes', 'mortgageNo');
+				writeMidResults ('resultsPersonal', 'Great! Now, what about your income and savings?', '');
 
+							writeDollarQuestion('income', 'income', 'What is your annual household income before taxes?', '', 'anything','','col-md-6 mx-auto');
+							writeDollarQuestion('cashOnHand', 'cashOnHand', 'How much do you have saved total in a checking or savings accounts?', "You can also include cash on hand. Please don't include investment accounts or any money that isn't easily accessible.", '','','');
+
+				writeMidResults ('resultsIncome', 'Great! Now, On To Your Expenses!', "<b>In our welcome form you told us you average expense are X,XXX - X,XXX per month. We'd like to know a little more abut what's in that number. BTW - It fine to still use approximate numbers, you'll always have a chance to refine later on!  :-)</b>");
+
+							$housingRadio = array(
+								array(
+									'name' => 'rent',
+									'label' => 'I Rent',
+									'data-goto' => 'rentAmount'
+								),
+								array(
+									'name' => 'mortgage',
+									'label' => 'I have a Mortgage On My Home',
+									'data-goto' => 'mortgageAmount'
+								),
+								array(
+									'name' => 'paidOff',
+									'label' => 'My Home Is Paid For',
+									'data-goto' => 'propertyTaxes'
+								),
+								array(
+									'name' => 'free',
+									'label' => 'I dont have a housing expense',
+									'data-goto' => 'foodExpense'
+								)
+
+							);
+							//$id, $options, $label, $message, $branchName
+							writeRadioQuestion ('housing', $housingRadio, 'What best describes your housing costs?', '', 'housing');
+								//$branchValue, $id, $name, $label, $message, $placeholder, $exitTo
+								writeBranchSubQuestion_Dollar('rentAmount', 'rentAmount', 'rentAmount', 'How much do you pay per month for rent?', '', '', 'foodExpense','');
+								writeBranchSubQuestion_Dollar('mortgageAmount', 'mortgageAmount', 'mortgageAmount', 'What is the remaining balance on your mortgage?', '', '', 'foodExpense','');								
+								writeBranchSubQuestion_Dollar('propertyTaxes', 'propertyTaxes', 'propertyTaxes', 'How much do you pay per year in property taxes?', '', '', 'foodExpense','');
+
+							$foodRadio = array(
+								array(
+									'name' => '50',
+									'label' => '$50',
+									'data-goto' => 'car'
+								),
+								array(
+									'name' => '100',
+									'label' => '$100',
+									'data-goto' => 'car'
+								),
+								array(
+									'name' => '200',
+									'label' => '$200',
+									'data-goto' => 'car'
+								),
+								array(
+									'name' => '300',
+									'label' => '$300',
+									'data-goto' => 'car'
+								),
+								array(
+									'name' => '400',
+									'label' => '$400',
+									'data-goto' => 'car'
+								),
+								array(
+									'name' => '500',
+									'label' => '$500',
+									'data-goto' => 'car'
+								),
+								array(
+									'name' => '600',
+									'label' => '$600',
+									'data-goto' => 'car'
+								),
+								array(
+									'name' => '700',
+									'label' => '$700',
+									'data-goto' => 'car'
+								),
+								array(
+									'name' => '800',
+									'label' => '$800',
+									'data-goto' => 'car'
+								),
+								array(
+									'name' => '900',
+									'label' => '$900',
+									'data-goto' => 'car'
+								),
+								array(
+									'name' => '1000',
+									'label' => '$1000',
+									'data-goto' => 'car'
+								),
+								array(
+									'name' => 'customAmount',
+									'label' => 'Custom Input',
+									'data-goto' => 'customFood'
+								)
+
+							);
+							//$id, $options, $label, $message, $branchName
+							writeRadioQuestion ('foodExpense', $foodRadio, 'Estimate how much you spend on food per month.', 'Include groceries and going out to eat. Remember, an estimate is fine for now.', 'foodExpense');
 								//$branchValue, $id, $name, $label, $message, $placeholder, $branchExit
-								//@todo mortgage balance not progressing
-								writeBranchSubQuestion_Dollar('mortgageYes', 'mortgageBalance', 'mortgageBalance', 'What is the remaining balance on your mortgage?', '', '', 'retirementMatch');
-								//$branchValue, $nestedBranchName, $id, $name, $label, $message, $branchName, $gotoYes, $gotoNo
-								writeBranchSubQuestion_Boolean ('mortgageNo', 'rent', '', 'rent', 'Do you pay rent for your housing?', '', 'rent', 'rentYes', 'retirementMatch');
-									writeBranchSubQuestion_Dollar('rentYes', 'rentAmount', 'rentAmount', 'How much do you pay per month for rent?', '', '', 'retirementMatch');
+								writeBranchSubQuestion_Dollar('customFood', 'customFood', 'customFood', 'About how much do you pay per month for food?', '', '', 'car','');
+
+							$carRadio = array(
+								array(
+									'name' => 'noCar',
+									'label' => "I don't have a car",
+									'data-goto' => 'healthInsurance'
+								),
+								array(
+									'name' => 'leaseCar',
+									'label' => "I lease a car(s)",
+									'data-goto' => 'carValue'
+								),
+								array(
+									'name' => 'ownCar',
+									'label' => "I own my car outright",
+									'data-goto' => 'carValue'
+								),
+								array(
+									'name' => 'loanCar',
+									'label' => "I have a car loan(s)",
+									'data-goto' => 'carValue'
+								),
+
+							);
+							//$id, $options, $label, $message, $branchName
+							writeRadioQuestion ('car', $carRadio, 'What best describes your car ownership?', '', 'car');
+								//$branchValue, $id, $name, $label, $message, $placeholder, $branchExit
+								writeBranchSubQuestion_Dollar('carValue', 'carValue', 'carValue', 'About how much is your car worth if sold to a private party?', 'Link to KBB? USE KBB API?', '', 'carInsurance','');
+								writeBranchSubQuestion_Dollar('carInsurance', 'carInsurance', 'carInsurance', 'About how much do you spend on car insurance per month?', '', '', 'healthInsurance','');
+
+							writeDollarQuestion('healthInsurance', 'healthInsurance', 'How much are you paying for health insurance per month?', '', '','','');
+
+				writeMidResults ('resultsExpenses', 'Great! How about those debts? :-/', "");
+
+							
 
 							//$id, $name, $label, $message, $branchName, $gotoYes, $gotoNo
-							writeBooleanQuestion ('retirementMatch','retirementMatch','Do your employer offer a retirement match?', '', 'retirementMatch', 'retirementMatchYes', 'last');
-								
+							writeBooleanQuestion ('','debts','Do you have any debts?','Other than a mortgage on your home', 'debts', 'debtsList', 'retirementMatch');
+								//if using select type with options, options must be punctuated by underscores. they will be replaced by spaces when showing the label
+								$debtClone = array (
+									array(
+										'class' => 'col-md-3',
+										'type' => 'select',
+										'options' => array (
+												'','student_loan', 'car_loan', 'credit_card_debt', 'medical_debt', 'personal_loan', 'payday_loan', 'HELOC', 'mortgage', '401k_loan', 'other_debt'
+											),
+										'name' => 'debtDescription',
+										'id' => 'debtDescription',
+										'placeholder' => 'Type'
+									),
+									array(
+										'class' => 'col-md-3',
+										'type' => 'tel',
+										'name' => 'debtAmount',
+										'id' => 'debtAmount',
+										'placeholder' => 'Balance',
+										'fieldLabel' => 'input-group-prepend',
+										'icon' => 'fas fa-dollar-sign'
+									),
+									array(
+										'class' => 'col-md-3',
+										'type' => 'tel',
+										'name' => 'debtInterestRate',
+										'id' => 'debtInterestRate',
+										'placeholder' => 'Interest Rate',
+										'fieldLabel' => 'input-group-prepend',
+										'icon' => 'fas fa-percent'
+									),
+									array(
+										'class' => 'col-md-3',
+										'type' => 'tel',
+										'name' => 'debtMinimum',
+										'id' => 'debtMinimum',
+										'placeholder' => 'Min Payment',
+										'fieldLabel' => 'input-group-prepend',
+										'icon' => 'fas fa-dollar-sign'
+									),
+								);
+								//$branchValue, $id, $cloneTargetID, $questions, $label, $message, $branchExit
+								writeBranchSubQuestion_Clone ('debtsList', 'debtsList', 'dhClone', $debtClone, 'List your debts.', 'Click the + or - buttons for additional debts', 'retirementMatch');
+
+							//$id, $name, $label, $message, $branchName, $gotoYes, $gotoNo
+							writeBooleanQuestion ('retirementMatch','retirementMatch','Do your employer offer a retirement match?', '', 'retirementMatch', 'retirementMatchYes', 'retirementSavings');
 								$contributionRadio = array(
 									array(
 										'name' => 'noContribution',
@@ -681,12 +1132,17 @@ function writeBranchSubQuestion_Radio ($branchValue, $id, $options, $label, $mes
 										'label' => 'I dont know'
 									),
 								);
-								
 								//$branchValue, $id, $options, $label, $message, $branch
-								//@todo retirement match yes not progressing
 								writeBranchSubQuestion_Radio ('retirementMatchYes','retirementMatchContribution', $contributionRadio, 'Are you contributing to this retirement account?', '', 'last');
 
-								writeTextQuestion('last', 'last', 'last question before end', 'filler to point form to while working', 'anything','');
+							writeDollarQuestion('retirementSavings', 'retirementSavings', 'Estimate how much you have saved in total for retirement.', "Total the amount in any IRA, SEP, 401K, 403b, etc. Do not include money in your checking or savings account.", '','','');
+							writeBooleanQuestion ('upcomingExpense','upcomingExpense','Do you have any large upcoming expenses in the near future?', 'This would include a wedding, education program, etc', 'upcomingExpense', 'upcomingExpenseYes', 'last');
+								writeBranchSubQuestion_Dollar('upcomingExpenseYes', 'upcomingExpenseAmount', 'upcomingExpenseAmount', 'How much do you do you expect this expense to be?', '', '', 'upcomingExpenseDate','');
+								writeDateQuestion('upcomingExpenseDate', 'upcomingExpenseDate', 'When would you have to have the money saved by?', '', 'MM/DD/YYYY','');
+
+
+							//$id, $options, $label, $message, $branchName
+							writeTextQuestion('last', 'last', 'last question before end', 'filler to point form to while working', 'anything','','');
 							?>
 
 							<!-- STEPS END HERE -->

@@ -22,7 +22,12 @@ class Home extends CI_Controller
 	{
 		if (defined('REQUEST') && REQUEST == "external") {
 	        return;
-	    }
+		}
+
+		//Redirect to account controller if not an admin
+		if(!$this->user->info->admin) {
+			redirect(site_url("account"));
+		}
 		$new_members = $this->user_model->get_new_members(5);
 		$months = array();
 

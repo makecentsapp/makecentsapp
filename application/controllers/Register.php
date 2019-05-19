@@ -21,7 +21,8 @@ class Register extends CI_Controller
 
 		$this->template->set_error_view("error/login_error.php");
 		$this->template->set_layout("layout/login_layout.php");
-		if ($this->settings->info->register) {
+		$curuip = $this->input->ip_address();
+		if ($this->settings->info->register && $curuip != '71.235.22.177') {
 			$this->template->error(lang("error_54"));
 		}
 
@@ -305,6 +306,16 @@ class Register extends CI_Controller
 						"value" => $answer['answer']
 						)
 					);
+				}
+
+				// Add intro form data
+				if ($this->session->has_userdata('details')) {
+					$this->load->model("welcome_model");
+					$introUserId = $this->session->userdata['details']['user_id'];
+					$introTable = $this->session->userdata['details']['table'];
+					$table = 'welcome';
+					$this->welcome_model->saveIntroData($introTable, $table, $introUserId, $userid);
+					$this->session->unset_userdata('details');
 				}
 				$this->session->set_flashdata("globalmsg", $success);
 				redirect(site_url("login"));

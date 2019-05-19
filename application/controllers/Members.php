@@ -26,6 +26,10 @@ class Members extends CI_Controller
 	public function index($type=0) 
 	{
 		$type = intval($type);
+		if(!$this->common->has_permissions(array("admin",
+			"admin_members"), $this->user)) {
+			$this->template->error(lang("error_2"));
+		}
 		$this->template->loadContent("members/index.php", array(
 			"type" => $type
 			)

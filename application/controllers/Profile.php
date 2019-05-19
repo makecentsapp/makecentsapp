@@ -29,7 +29,11 @@ class Profile extends CI_Controller
 		$user = $this->user_model->get_user_by_username($username);
 		if($user->num_rows() == 0) $this->template->error(lang("error_52"));
 		$user = $user->row();
-
+		if($this->user->info->ID != $user->ID) {
+			if (!$this->user->info->admin) {
+				$this->template->error(lang("error_2"));
+			}
+		}
 
 		$role = $this->user_model->get_user_role($user->user_role);
 		if($role->num_rows() == 0) {

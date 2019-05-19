@@ -295,6 +295,8 @@
 								</div>
 							</div>
 
+
+
 							<div class="step" id="dob">
 								<div class="form-row section">
 	                				<div class="col-md-12">
