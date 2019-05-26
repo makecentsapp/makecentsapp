@@ -22,16 +22,17 @@
 				$decimals[$CI_vars['translation'][$value['attribute_id']]] = $value['value'];
 			}
 		}
-		$lastStepCompleted = $varchars['mainCurrentStep'];
-		echo '<div class="row"><div class="col-md-4"><pre>';
+		$lastStepCompleted = str_replace('[]', '', $varchars['mainCurrentStep']);
+		var_dump($lastStepCompleted);
+		echo '<div class="row"><div class="col-md-4"><h3>varchars</h3><pre>';
 			var_dump($varchars);
 			//var_dump($transDB);
 		echo '</pre></div>';
-		echo '<div class="col-md-4"><pre>';
+		echo '<div class="col-md-4"><h3>datetimes</h3><pre>';
 			var_dump($datetimes);
 			//var_dump($transDB);
 		echo '</pre></div>';
-		echo '<div class="col-md-4"><pre>';
+		echo '<div class="col-md-4"><h3>decimals</h3><pre>';
 			var_dump($decimals);
 			//var_dump($transDB);
 		echo '</pre></div></div>';
@@ -178,7 +179,6 @@
 							//locate the goal branch and define a variable so that we can pass to the next step / validate properly
 							var branch = state.step.find( "[name=retirementMatch]:checked" ).attr('data-goto');
 							if ( !branch ) {
-								console.log('here');
 								form.validate().settings.ignore = ":disabled,:hidden";
         						if( form.valid() == true ){
         							var branch = 'retirementMatch';
@@ -191,7 +191,9 @@
 							var branch = state.step.find( "[name=upcomingExpense]:checked" ).attr('data-goto');
 							if ( !branch ) {
 								form.validate().settings.ignore = ":disabled,:hidden";
-        						return form.valid();
+        						if( form.valid() == true ){
+        							var branch = 'upcomingExpense';
+        						}
 							}
 							return branch;
 						},
@@ -224,7 +226,7 @@
 			   				if (e.keyCode == 13) {
 			   					//the two little bits at the end are to stop trigger from firing twice, ala stackoverflow
 					            $('#bottomForward').trigger('click').stopPropagation().preventDefault();
-					            return false; 
+					            return false;
 					        }
 					    });
 						//check if we are on the last step, if so change some elements up to show a the big finale
@@ -289,20 +291,6 @@
 
 					}
 				});
-				//initialize the slider
-				$("#incomeSlider").slider({
-                    min: 0,
-                    max: 100000,
-                    step: 1000,
-                    range: "min",
-                    slide: function(event, ui) {
-                    	//change the next button color if there is any interaction with the slider
-                    	$('#bottomForward').removeClass('btn-primary').addClass('btn-success');  
-                    	//run function to add commas to thousands/millions
-                        //$("#annualIncome").val(addCommas(ui.value));
-                        $("#annualIncome").attr('value', ui.value).val(ui.value);
-                    }
-                });
 				//hide the buttons at the beginning so that we can have a custom button on opening step
                 if (lastStepCompleted.length !== 0) {
 	                $('#bottomForward, #bottomBackward').hide();
@@ -324,6 +312,13 @@
 
                 //change the button color once there is some amount of form interaction, look to the afterselect function for the revert counterpart
                 $('input').on('input', function() {
+                	//for radio questions (which includes boolean), when the user clicks on an option, just go to the next step by clicking the forward button for them
+                	if ($(this).attr('type') == 'radio') {
+						$('#bottomForward').trigger('click');
+						return false;
+                	}
+                	
+                	
 			        $('#bottomForward').removeClass('btn-primary').addClass('btn-success'); 
 				});
 
@@ -350,8 +345,13 @@
 
 	            //find the field that we left off on, pulled in from DB in variable $lastStepCompleted
 	            //if statement checks if something was stored in the DB
+	            
 	            if (lastStepCompleted.length !== 0) {
 	            	var select = $(formDiv).wizard("form").find("[name="+lastStepCompleted+"]").closest(".step");
+	            	//if nothing was found to match on the name field in the input, then look for it under an ID since I used them somewhat interchanably depending on how the input needed to be created. This is particularly relevant on anything that submits as an array, for example clone or checkbox inputs.
+	            	if (select.length == 0) {
+	            		select = $(formDiv).wizard("form").find("[id="+lastStepCompleted+"]").closest(".step");
+	            	}
 	            }
 	            //fire when user clicks the button
 	            $('#pickup').click( function(){
@@ -489,7 +489,7 @@ function writeTextQuestion ($id, $name, $label, $message, $placeholder, $branchE
 	echo '</div></div></div>';
 }
 //branchExit is only used to put an alternative step class on which includes a data-state, only use this if the step is in a branch
-function writeDollarQuestion ($id, $name, $label, $message, $placeholder, $branchExit, $additionalClass) {
+function writeDollarQuestion ($id, $name, $label, $message, $placeholder, $branchExit, $additionalClass, $sliderOptions) {
 	global $decimals;
 	if (!empty($branchExit)) {
 		echo '<div class="step" data-state="'.$branchExit.'">';
@@ -497,29 +497,66 @@ function writeDollarQuestion ($id, $name, $label, $message, $placeholder, $branc
 	else {
 		echo '<div class="step" id="'.$id.'">';
 	}
+	$inputClass = '';
+	if (!empty($additionalClass)) {
+		$inputClass .= ' '. $additionalClass;
+	}
 	echo '<div class="section"><div class="card-header m-b-0">
 			<label for="'.$id.'">'.$label.'</label>
 				<p>'.$message.'</p>
 				<hr class="card-line" align="left">
-		</div><div class="card-body m-b-30">';
-		$inputClass = 'form-control';
-		if (!empty($additionalClass)) {
-			$inputClass = 'form-control '. $additionalClass;
-		}
-			echo '<input type="tel" name="'.$name.'" id="input'.$id.'" class="'.$inputClass.'" placeholder="'.$placeholder.'" data-goto="'.$branchExit.'"';
+		</div>
+		<div class="card-body m-b-30">
+			<div class="input-group '.$inputClass.'">
+				<div class="input-group-prepend">
+					<span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+				</div>
+		';
+			echo '<input type="tel" name="'.$name.'" id="input'.$id.'" class="form-control" placeholder="'.$placeholder.'" data-goto="'.$branchExit.'"';
 			if (isset($decimals[$id])) {
             	echo 'value="'.$decimals[$id].'">';
             }
             else {
             	echo '>';
             }
+        //initialize the slider
+		echo '</div><br><div id="'.$id.'Slider"></div>';
+				
 	echo '</div></div></div>';
 	echo '<script>
 		var cleave'.$id.' = new Cleave("#input'.$id.'", {
-	    prefix: "$",
 	    numeral: true,
     	numeralThousandsGroupStyle: "thousand"
 		});
+
+		$("#'.$id.'Slider").slider({';
+		if (isset($decimals[$id])) {
+			echo 'value: '.$decimals[$id].',';
+		}
+		elseif (isset($sliderOptions['value'])) {
+			echo 'value: '.$sliderOptions['value'].',';
+		}
+		if (isset($sliderOptions['min'])) {
+			echo 'min: '.$sliderOptions['min'].',';
+		}
+		if (isset($sliderOptions['max'])) {
+			echo 'max: '.$sliderOptions['max'].',';
+		}
+		if (isset($sliderOptions['step'])) {
+			echo 'step: '.$sliderOptions['step'].',';
+		}
+	        echo 'range: "min",
+	        slide: function(event, ui) {
+	        	//change the next button color if there is any interaction with the slider
+	        	$("#bottomForward").removeClass("btn-primary").addClass("btn-success");
+	        	$("#input'.$id.'").attr("value", ui.value).val(ui.value);
+	        }
+	    });
+	    //set the textbox attached to the slider, value equal to default slider value
+        $("#input'.$id.'").val($("#'.$id.'Slider").slider("value"));
+        $("#input'.$id.'").blur(function() {
+            $("#'.$id.'Slider").slider("value", $(this).val());
+        });
 	</script>';
 }
 //branchExit is only used to put an alternative step class on which includes a data-state
@@ -603,6 +640,59 @@ function writeRadioQuestion ($id, $options, $label, $message, $branchName) {
 		</div>
 	</div>';
 }
+function writeSelectQuestion ($id, $options, $label, $message, $branchName) {
+	global $varchars;
+	global $selectID;
+	//if both are filled in then this is an offshoot of a branch and is also the beginning of another branch
+	if (!empty($branchName) && !empty($id)) {
+		echo '<div class="step" id="'.$id.'" data-state="'.$branchName.'">';
+	}
+	//this is part of a branch
+	else if (!empty($branchName)) {
+		echo '<div class="step" data-state="'.$branchName.'">';
+	}
+	//this means it is just a regular one off step
+	else {
+		echo '<div class="step" id="'.$id.'">';
+	}
+	echo '<div class="section">
+			<div class="card-header m-b-0">
+				<label>'.$label.'</label>';
+				if (!empty($message)) {
+					echo '<p>'.$message.'</p>';
+				}
+				echo '<hr class="card-line" align="left">
+			</div>
+			<div class="card-body m-b-30">';
+			foreach ($options as $option) {
+				$selectID++;
+				echo '<div class="option-box p-r-10">
+                    <input id="'.$option['name'].'Checkbox'.$selectID.'" name="'.$id.'[]" value="'.$option['name'].'" ';
+
+                    $selectExp = explode(',', $varchars[$id]);
+                    foreach ($selectExp as $v) {
+                    	//check if there is a stored value in the DB for the question and if so, pre-check the selector for that option
+                		if ($v == $option['name']) {
+                    		echo 'checked ';
+                    	}
+                    }
+                    if (isset($option['data-goto'])) {
+                    	echo 'data-goto="'.$option['data-goto'].'" type="checkbox">';
+                    }
+                    else {
+                    	echo 'type="checkbox">';
+                    }
+                    
+                    echo '<label for="'.$option['name'].'Checkbox'.$selectID.'">
+                    	<span class="radio-content"><p>'.$option['label'].'</p></span>
+                	</label>
+                </div>';
+			}
+                
+            echo '</div>
+		</div>
+	</div>';
+}
 //branchExit is only used to put an alternative step class on which includes a data-state
 //clone button not working? make sure all cloneTargetID variables are different
 function writeCloneQuestion ($id, $cloneTargetID, $questions, $label, $message, $branchExit) {
@@ -636,7 +726,7 @@ function writeCloneQuestion ($id, $cloneTargetID, $questions, $label, $message, 
 					$cloneExp = explode(',', $varchars[$question['name']]);
 					$i=0;
 					foreach ($cloneExp as $v) {
-						$cloneRow[$i] = array($question['name'] => $v);
+						$cloneRow[$i][$question['name']] = $v;
 						$i++;
 					}
 				}
@@ -646,11 +736,7 @@ function writeCloneQuestion ($id, $cloneTargetID, $questions, $label, $message, 
 				}
 			}
 			echo '</div>';
-			echo '<pre>';
-			var_dump($cloneRow);
-			echo '</pre>';
 			foreach ($cloneRow as $row) {
-				var_dump($row);
 				echo '<div class="toclone clone-block">
     				<div class="form-row">';
 			foreach ($questions as $question) {
@@ -663,25 +749,35 @@ function writeCloneQuestion ($id, $cloneTargetID, $questions, $label, $message, 
 								</div>';
 						}	 	
 					}
-					if ($question['type'] == 'select') {
-						echo '<select name="'.$question['name'].'[]" id="'.$question['id'].'" class="form-control">';
-						foreach ($question['options'] as $key => $option) {
-							echo '<option value="'.$option.'">'.ucwords(str_replace('_', ' ', $option)).'</option>';
-						}
-						echo '</select>';
-					}
-					else {
-    					echo '<input type="'.$question['type'].'" name="'.$question['name'].'[]" id="'.$question['id'].'" class="form-control" ';
-    					//holy shit this might be a dumpster
+    					//holy shit this might be a dumpster - sorry future pete and ben
+						//first go through the row for each individual stored value, to be used later 
     					foreach ($row as $rkey => $rvalue) {
-    						if (isset($rkey) && $rkey == $question['name']) {
-    							echo 'value="'.$rvalue.'" >';
-	    					}
-	    					else {
-	    						echo '>';
-	    					}
+    						//start with any questions that are select inputs, they needs special handling to select the appropriate value. also match that the question name is the appropriate loop of the row
+    						if ($question['type'] == 'select' && $rkey == $question['name']) {
+								echo '<select name="'.$question['name'].'[]" id="'.$question['id'].'" class="form-control">';
+								//loop through the available options provided in the question function
+								foreach ($question['options'] as $key => $option) {
+									//if we find a match between the option and the stored value, write selected to the HTML option
+									if ($option == $rvalue) {
+										echo '<option value="'.$option.'" selected>'.ucwords(str_replace('_', ' ', $option)).'</option>';
+									}
+									else {
+										echo '<option value="'.$option.'">'.ucwords(str_replace('_', ' ', $option)).'</option>';
+									}
+								}
+								echo '</select>';
+							}
+							//if this is a normal input, match on the question name and write the input with values
+    						else if ($rkey == $question['name']) {
+	    						if (isset($rkey) && !empty($rvalue)) {
+	    							echo '<input type="'.$question['type'].'" name="'.$question['name'].'[]" id="'.$question['id'].'" class="form-control" value="'.$rvalue.'">';
+		    					}
+		    					//if the stored values exist, but at empty, dont write values
+		    					else {
+		    						echo '<input type="'.$question['type'].'" name="'.$question['name'].'[]" id="'.$question['id'].'" class="form-control">';
+		    					}
+		    				}
     					}
-					}
     				if (isset($question['fieldLabel']) && isset($question['icon'])) {
 						if ($question['fieldLabel'] == 'input-group-append') {
 							echo '<div class="'.$question['fieldLabel'].'">
@@ -786,9 +882,9 @@ function writeBranchSubQuestion_Boolean ($branchValue, $nestedBranchName, $id, $
 		echo '</div>';
 	}
 }
-function writeBranchSubQuestion_Dollar ($branchValue, $id, $name, $label, $message, $placeholder, $exitTo, $additionalClass) {
+function writeBranchSubQuestion_Dollar ($branchValue, $id, $name, $label, $message, $placeholder, $exitTo, $additionalClass, $sliderOptions) {
 	echo '<div class="branch" id="'.$branchValue.'">';
-		writeDollarQuestion ($id, $name, $label, $message, $placeholder, $exitTo, $additionalClass);
+		writeDollarQuestion ($id, $name, $label, $message, $placeholder, $exitTo, $additionalClass, $sliderOptions);
 	echo '</div>';
 }
 function writeBranchSubQuestion_Radio ($branchValue, $id, $options, $label, $message, $branch) {
@@ -928,12 +1024,49 @@ function writeBranchSubQuestion_Clone ($branchValue, $id, $cloneTargetID, $quest
 								writeRadioQuestion ('childrenEducation', $childrenEducationRadio, 'Will they be attending some form of higher education after highschool?', '', false);
 
 				writeMidResults ('resultsPersonal', 'Great! Now, what about your income and savings?', '');
-
-							writeDollarQuestion('income', 'income', 'What is your annual household income before taxes?', '', 'anything','','col-md-6 mx-auto');
-							writeDollarQuestion('cashOnHand', 'cashOnHand', 'How much do you have saved total in a checking or savings accounts?', "You can also include cash on hand. Please don't include investment accounts or any money that isn't easily accessible.", '','','');
+							$defaultSliderOptions = array(
+													'min' => 0,
+													'max' => 100000,
+													'step' => 1000,
+													'value' => 0
+													);
+							$smSliderOptions = array(
+													'min' => 0,
+													'max' => 5000,
+													'step' => 50,
+													'value' => 0
+													);
+							$lgSliderOptions = array(
+													'min' => 0,
+													'max' => 5000000,
+													'step' => 10000,
+													'value' => 0
+													);
+							writeDollarQuestion('income', 'income', 'What is your annual household income before taxes?', '', 'anything','','col-md-6 mx-auto', $defaultSliderOptions);
+							writeDollarQuestion('cashOnHand', 'cashOnHand', 'How much do you have saved total in a checking or savings accounts?', "You can also include cash on hand. Please don't include investment accounts or any money that isn't easily accessible.", '','','', $defaultSliderOptions);
 
 				writeMidResults ('resultsIncome', 'Great! Now, On To Your Expenses!', "<b>In our welcome form you told us you average expense are X,XXX - X,XXX per month. We'd like to know a little more abut what's in that number. BTW - It fine to still use approximate numbers, you'll always have a chance to refine later on!  :-)</b>");
 
+							$expensesRadio = array(
+								array(
+									'name' => 'not',
+									'label' => 'I am not able to pay all my expenses'
+								),
+								array(
+									'name' => 'paycheck',
+									'label' => 'I pay all my expenses paycheck-to-paycheck'
+								),
+								array(
+									'name' => 'comfortable',
+									'label' => 'I am able to pay all my expenses comfortably'
+								),
+								array(
+									'name' => 'saving',
+									'label' => 'I am able to pay all my expenses comfortably and save extra money'
+								),
+							);
+							//$id, $options, $label, $message, $branchName
+							writeRadioQuestion ('expenses', $expensesRadio, 'What best describes how you are managing your expenses?', '', '');
 							$housingRadio = array(
 								array(
 									'name' => 'rent',
@@ -960,9 +1093,9 @@ function writeBranchSubQuestion_Clone ($branchValue, $id, $cloneTargetID, $quest
 							//$id, $options, $label, $message, $branchName
 							writeRadioQuestion ('housing', $housingRadio, 'What best describes your housing costs?', '', 'housing');
 								//$branchValue, $id, $name, $label, $message, $placeholder, $exitTo
-								writeBranchSubQuestion_Dollar('rentAmount', 'rentAmount', 'rentAmount', 'How much do you pay per month for rent?', '', '', 'foodExpense','');
-								writeBranchSubQuestion_Dollar('mortgageAmount', 'mortgageAmount', 'mortgageAmount', 'What is the remaining balance on your mortgage?', '', '', 'foodExpense','');								
-								writeBranchSubQuestion_Dollar('propertyTaxes', 'propertyTaxes', 'propertyTaxes', 'How much do you pay per year in property taxes?', '', '', 'foodExpense','');
+								writeBranchSubQuestion_Dollar('rentAmount', 'rentAmount', 'rentAmount', 'How much do you pay per month for rent?', '', '', 'foodExpense','', $smSliderOptions);
+								writeBranchSubQuestion_Dollar('mortgageAmount', 'mortgageAmount', 'mortgageAmount', 'What is the remaining balance on your mortgage?', '', '', 'foodExpense','', $lgSliderOptions);								
+								writeBranchSubQuestion_Dollar('propertyTaxes', 'propertyTaxes', 'propertyTaxes', 'How much do you pay per year in property taxes?', '', '', 'foodExpense','', $defaultSliderOptions);
 
 							$foodRadio = array(
 								array(
@@ -1028,9 +1161,9 @@ function writeBranchSubQuestion_Clone ($branchValue, $id, $cloneTargetID, $quest
 
 							);
 							//$id, $options, $label, $message, $branchName
-							writeRadioQuestion ('foodExpense', $foodRadio, 'Estimate how much you spend on food per month.', 'Include groceries and going out to eat. Remember, an estimate is fine for now.', 'foodExpense');
+							writeRadioQuestion ('foodExpense', $foodRadio, 'Estimate how much you spend on food and groceries per month.', 'Include going out to eat. Remember, an estimate is fine for now.', 'foodExpense');
 								//$branchValue, $id, $name, $label, $message, $placeholder, $branchExit
-								writeBranchSubQuestion_Dollar('customFood', 'customFood', 'customFood', 'About how much do you pay per month for food?', '', '', 'car','');
+								writeBranchSubQuestion_Dollar('customFood', 'customFood', 'customFood', 'About how much do you pay per month for food?', '', '', 'car','', $defaultSliderOptions);
 
 							$carRadio = array(
 								array(
@@ -1058,10 +1191,10 @@ function writeBranchSubQuestion_Clone ($branchValue, $id, $cloneTargetID, $quest
 							//$id, $options, $label, $message, $branchName
 							writeRadioQuestion ('car', $carRadio, 'What best describes your car ownership?', '', 'car');
 								//$branchValue, $id, $name, $label, $message, $placeholder, $branchExit
-								writeBranchSubQuestion_Dollar('carValue', 'carValue', 'carValue', 'About how much is your car worth if sold to a private party?', 'Link to KBB? USE KBB API?', '', 'carInsurance','');
-								writeBranchSubQuestion_Dollar('carInsurance', 'carInsurance', 'carInsurance', 'About how much do you spend on car insurance per month?', '', '', 'healthInsurance','');
-
-							writeDollarQuestion('healthInsurance', 'healthInsurance', 'How much are you paying for health insurance per month?', '', '','','');
+								writeBranchSubQuestion_Dollar('carValue', 'carValue', 'carValue', 'About how much is your car worth if sold to a private party?', 'Link to KBB? USE KBB API?', '', 'carInsurance','', $defaultSliderOptions);
+								writeBranchSubQuestion_Dollar('carInsurance', 'carInsurance', 'carInsurance', 'About how much do you spend on car insurance per month?', '', '', 'healthInsurance','', $smSliderOptions);
+							
+							writeDollarQuestion('healthInsurance', 'healthInsurance', 'How much are you paying for health insurance per month?', '', '','','', $smSliderOptions);
 
 				writeMidResults ('resultsExpenses', 'Great! How about those debts? :-/', "");
 
@@ -1133,16 +1266,52 @@ function writeBranchSubQuestion_Clone ($branchValue, $id, $cloneTargetID, $quest
 									),
 								);
 								//$branchValue, $id, $options, $label, $message, $branch
-								writeBranchSubQuestion_Radio ('retirementMatchYes','retirementMatchContribution', $contributionRadio, 'Are you contributing to this retirement account?', '', 'last');
+								writeBranchSubQuestion_Radio ('retirementMatchYes','retirementMatchContribution', $contributionRadio, 'Are you contributing to this retirement account?', '', 'retirementSavings');
 
-							writeDollarQuestion('retirementSavings', 'retirementSavings', 'Estimate how much you have saved in total for retirement.', "Total the amount in any IRA, SEP, 401K, 403b, etc. Do not include money in your checking or savings account.", '','','');
-							writeBooleanQuestion ('upcomingExpense','upcomingExpense','Do you have any large upcoming expenses in the near future?', 'This would include a wedding, education program, etc', 'upcomingExpense', 'upcomingExpenseYes', 'last');
-								writeBranchSubQuestion_Dollar('upcomingExpenseYes', 'upcomingExpenseAmount', 'upcomingExpenseAmount', 'How much do you do you expect this expense to be?', '', '', 'upcomingExpenseDate','');
+							writeDollarQuestion('retirementSavings', 'retirementSavings', 'Estimate how much you have saved in total for retirement.', "Total the amount in any IRA, SEP, 401K, 403b, etc. Do not include money in your checking or savings account.", '','','', $lgSliderOptions);
+							writeBooleanQuestion ('upcomingExpense','upcomingExpense','Do you have any large upcoming expenses in the near future?', 'This would include a wedding, education program, etc', 'upcomingExpense', 'upcomingExpenseYes', 'goals');
+								writeBranchSubQuestion_Dollar('upcomingExpenseYes', 'upcomingExpenseAmount', 'upcomingExpenseAmount', 'How much do you do you expect this expense to be?', '', '', 'upcomingExpenseDate','', $defaultSliderOptions);
 								writeDateQuestion('upcomingExpenseDate', 'upcomingExpenseDate', 'When would you have to have the money saved by?', '', 'MM/DD/YYYY','');
 
-
+							$goalsRadio = array(
+								array(
+									'name' => 'debt',
+									'label' => "Get out of debt",
+									'data-goto' => 'end'
+								),
+								array(
+									'name' => 'retirement',
+									'label' => "Get on the right path for retirement",
+									'data-goto' => 'end'
+								),
+								array(
+									'name' => 'compare',
+									'label' => "Find out how I compare to others",
+									'data-goto' => 'end'
+								),
+								array(
+									'name' => 'kids',
+									'label' => "Save for my kids education",
+									'data-goto' => 'end'
+								),
+								array(
+									'name' => 'largeExpense',
+									'label' => "To make sure I'm prepared for a large upcoming expense",
+									'data-goto' => 'end'
+								),
+								array(
+									'name' => 'help',
+									'label' => "I have no idea what I'm doing with my money! Anything will help!",
+									'data-goto' => 'end'
+								),
+								array(
+									'name' => 'expense',
+									'label' => "To prepare for an upcoming expense",
+									'data-goto' => 'end'
+								),
+							);
 							//$id, $options, $label, $message, $branchName
-							writeTextQuestion('last', 'last', 'last question before end', 'filler to point form to while working', 'anything','','');
+							writeSelectQuestion ('goals', $goalsRadio, 'What are you financial goals?', '', '');
 							?>
 
 							<!-- STEPS END HERE -->

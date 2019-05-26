@@ -31,191 +31,67 @@ a.node-card>:hover {
 #headingFive, #collapseFive .node .node-bg {background-color: lightseagreen;}
 </style>
 <?php
-$CI_vars = $this->_ci_cached_vars;
-
-$incomeGraphData = '';
-$incomeGraphTimeline = "'";
-if (!empty($CI_vars['decimal'])) {
-	foreach ($CI_vars['decimal'] as $record) {
-		if ($record['attribute_id'] == 2) {
-			$incomeGraphData .= $record['value'] . ',';
-			$incomeGraphTimeline .= date('Y-m-d h:i:s', strtotime($record['date_added'])) . "','";
-			$mostRecentIncome = $record['value'];
-		}
-	}
+$data = $this->_ci_cached_vars;
+$fin = array();
+foreach ($data['fin'] as $row) {
+    $fin[$row['attribute_name']] = $row['value'];
 }
-if (!empty($CI_vars['varchar'])) {
-	foreach ($CI_vars['varchar'] as $key => $value) {
-		$varchars[$CI_vars['translation'][$value['attribute_id']]] = $value['value'];
-	}
+
+if (!empty($fin['dob'])) {
+    $age = date_diff(date_create($fin['dob']), date_create('now'))->y;
 }
-//var_dump($varchars);
+$foodExpense = 0;
+$totalExpenses = 0;
+$totalMinDebtPayment = 0;
+$totalDebt = 0;
+$totalAssets = 0;
+//add up expenses, might need tweaking in the future
+if ($fin['housing'] == 'rent') {
+    $totalExpenses += $fin['rentAmount'];
+}
+if ($fin['foodExpense'] == 'customAmount') {
+    $foodExpense += $fin['customFood'];
+}
+else {
+    $foodExpense += $fin['foodExpense'];
+}
+$totalExpenses += $foodExpense;
+if ($fin['car'] !== 'noCar') {
+    $totalExpenses += $fin['carInsurance'];
+}
+$totalExpenses += $fin['healthInsurance'];
 
-$welcomeFormPercentage = 100;
-$personalFormPercentage = 1;
-$incomeFormPercentage = 50;
-$assetsFormPercentage = 30;
-$expensesFormPercentage = 0;
-$debtsFormPercentage = 0;
-$retirementFormPercentage = 0;
+//add up debts
+if (!empty($fin['debtMinimum'])) {
+    $totalMinDebtPayment = array_sum(explode(',', $fin['debtMinimum']));
+}
+if (!empty($fin['debtAmount'])) {
+    $totalDebt = array_sum(explode(',', $fin['debtAmount']));
+}
 
-$welcomeModalContent = array(
-    'id' => 'welcomeModal', 
-    'style' => 'modal-slide-right', 
-    'title' => 'The welcome form', 
-    'body' => '<p>If you got to this point you already finished it, great job!</p>
-        <div class="alert alert-info" role="alert">
-                                modal-slide-right
-                            </div>'
-    );
-$personalModalContent = array(
-    'id' => 'personalModal', 
-    'style' => 'modal-bottom-right', 
-    'title' => 'Personal details', 
-    'body' => '<p>Age and location are important factors in giving you accurate feedback.</p>
-        <div class="alert alert-info" role="alert">
-                                modal-bottom-right
-                            </div>'
-    );
-$incomeModalContent = array(
-    'id' => 'incomeModal', 
-    'title' => 'Income details', 
-    'body' => '<p>In the welcome questionaire you provided your annual income. To better understand your financial health, we need both pre and post tax amounts so that we know what your weekly take-home pay is.</p>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card m-b-30">
-                    <div class="card-body">
-                        <div id="incomeChart" class="apexcharts-canvas"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="alert alert-info" role="alert">
-                                no style supplied (default)
-                            </div>'
-    );
-$expensesModalContent = array(
-    'id' => 'expensesModal', 
-    'style' => 'modal-top-right', 
-    'img' => '/assets/img/rich-c.jpg', 
-    'body' => '<h4>No need to spend like a baller</h4><p>How much you spend on groceries, essential bills, and income earning expenses.</p>
-        <div class="alert alert-info" role="alert">
-                                modal-top-right
-                            </div>'
-    );
-$healthModalContent = array(
-    'id' => 'healthModal', 
-    'style' => 'modal-lg', 
-    'body' => '<h1>Why is this important?</h1>
-<p>Healthcare costs past retirement age are expensive! In addition to this, unhealthy lifestyles can have a negative effect on your current financial situation. There is already a lot of overlap between personal finance and lifestyle choices, so lets take a look at some immediate improvements you can make for your future.</p>
+//add up assets
+if (!empty($fin['cashOnHand'])) {
+    $totalAssets += $fin['cashOnHand'];
+}
+if ($fin['car'] !== 'noCar') {
+    $totalAssets += $fin['carValue'];
+}
+if (!empty($fin['retirementSavings'])) {
+    $totalAssets += $fin['retirementSavings'];
+}
 
-<h2>Reducing your Risk of Heart Disease (Cost $3,000 - $38,501)</h2>
-<p>Leading a healthy lifestyle is the biggest way to reduct your risk of heart disease. Among these lifestyle choices:</p>
-<ul>
-<li>Not using tobacco (Source 1, Source 2, Source 3)</li>
-
-<li>Being physically active (Same sources as above)</li>
-
-<li>Maintaining a healthy weight (Same sources as above)</li>
-
-<li>Making healthy food choices (Same sources as above)</li>
-
-<li>Stress management (Source)</li>
-</ul>
-<p>Some of the above also have a side effect of immediate financial impact:</p>
-<ul>
-<li>Not using tobacco: $1,610 - $3,750 per year (Source)</li>
-
-<li>Making healthy food choices: comparative savings of $14 per meal (fast food, family of 4) (Source)</li>
-</ul>
-Reducing your Risk of Cancer (Cost $19,901 - $60,885 per annum)
-The lifestyle choices below have been shown to reduce the risk of cancer:
-
-Not using tobacco (Source 1, Source 2, Source 3, Source 4)
-
-Maintaining a healthy weight (Same sources as above)
-
-Limiting alcohol intake (Same sources as above)
-
-Get screened for cancer and/or Hepatitis C (Same sources as above)
-
-Protect yourself from the sun (Same sources as above)
-
-Note that a few of these are carried over from the first section on heart disease! There are some immediate financial impacts of reducing your alcohol intake: You can save about $750 USD per year by going dry.
-
-Reducing chronic lower respiratory diseases (Cost $6,000 more in medical care than those without)
-The lifestyle choices below have been shown to reduce the risk of COPD:
-
-Not smoking (Source 1, Source 2, Source 3)
-
-Avoid respiratory infections and get vaccinated (Same sources as above)
-
-Avoid home and workplace air pollutants, lung irritants, or dust (Same sources as above)
-
-Exercise regularly to improve your breathing
-
-Address allergic conditions'
-    );
-
-function writeNode ($percentage, $title, $text, $interaction) {
+function writeNode ($data, $check, $title, $text, $interaction) {
 	global $counter;
 	$counter++;
     echo '<div class="col-md-4 node m-b-10">';
-        if (isset($interaction['id']) && isset($interaction['body'])) {
-        	//if no style is set at all for the modal, just use a generic center align
-        	if (!isset($interaction['style']) || empty($interaction['style'])) {
-	            $interaction['style'] = '';
-	        }
-            echo '<a href="#" class="card node-card" data-toggle="modal" data-target="#'.$interaction['id'].'">';
-            echo '<div class="modal fade '.$interaction['style'].' show" id="'.$interaction['id'].'" tabindex="-1" role="dialog" aria-labelledby="'.$interaction['id'].'Label" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">';
-                        if (isset($interaction['title'])) {
-                            echo '<div class="modal-header">
-                                <h5 class="modal-title" id="'.$interaction['id'].'Label">'.$interaction['title'].'</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>';
-                        }
-                        else if (isset($interaction['img'])) {
-                            echo '<div>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">×</span>
-                                        </button>
-                                        <img src="'.base_url($interaction['img']).'" class="rounded-top" alt="'.$interaction['id'].'">
-                                    </div>';
-                        }
-                        else {
-                            echo '<div>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">×</span>
-                                    </button>
-                                </div>';
-                        }
-                            echo '<div class="modal-body">
-                                '.$interaction['body'].'
-                                </div>
-                            </div>
-                    </div>
-                </div>';
-        }
-        elseif (!is_array($interaction)) {
-            echo '<a href="'. base_url ($interaction) . '" class="card node-card">';
-        }
-        elseif (empty($interaction)) {
-        	echo '<a href="#" class="card node-card">';
-        }
-            /*if ($percentage > 0) {
-                echo '<div class="node-bg" style="width: '.$percentage.'%"></div>';
-            }*/
+        echo '<a href="#" class="card node-card">';
             echo '<div class="card-body">
 	            	<div class="row">
                         <div class="col-md-8">
                             <p class="fw-600 opacity-75">'.$counter.'</p>
                         </div>';
 	            		
-                if ($percentage == 100) {
+                if ($check == 1) {
                     echo '<div class="col-md-4 my-auto text-right">
                             <div class="avatar avatar-xs m-b-10">
 			                    <div class="avatar-title badge-soft-success rounded-circle">
@@ -233,6 +109,7 @@ function writeNode ($percentage, $title, $text, $interaction) {
                 	<div class="row">
                 		<div class="col-md-12">
                 			<p class="text-muted">'.$text.'</p>
+                            <p>'.$data.'</p>
                 		</div>
                 	</div>
             	</div>';
@@ -331,22 +208,22 @@ jQuery(document).ready(function($){
                 <div class="col-md-6 text-white p-b-30">
                     <div class="media">
                         <div class="avatar avatar mr-3">
-                            <img src="<?php echo base_url()?>uploads/<?php echo $CI_vars['user']->info->avatar; ?>" class="rounded-circle" alt="">
+                            <img src="<?php echo base_url()?>uploads/<?php echo $data['user']->info->avatar; ?>" class="rounded-circle" alt="">
                         </div>
                         <div class="media-body">
-                            <h2><?php echo $CI_vars['user']->info->first_name; ?></h2>
+                            <h2><?php echo $data['user']->info->first_name; ?></h2>
                             <div class="text-overline opacity-75"></div>
                             <div class="row">
                             	<div class="col-md-6">
 		                            <ul>
-		                            	<li><span class="text-overline opacity-75">Welcome Check:</span> <?php if(!empty($CI_vars['decimal'])) {echo 'Yes';} else {echo 'No';} ?></li>
+		                            	<li><span class="text-overline opacity-75">Welcome Check:</span> <?php if(!empty($data['decimal'])) {echo 'Yes';} else {echo 'No';} ?></li>
 		                            	<li><span class="text-overline opacity-75">Net Worth:</span> ?</li>
 		                            </ul>
 		                        </div>
 		                        <div class="col-md-6">
 		                            <ul>
-		                            	<li><span class="text-overline opacity-75">Location:</span> ?</li>
-		                            	<li><span class="text-overline opacity-75">DOB:</span> ?</li>
+		                            	<li><span class="text-overline opacity-75">Location:</span> <?php if(!empty($fin['location'])) {echo $fin['location'];} else {echo '?';} ?></li>
+		                            	<li><span class="text-overline opacity-75">Age:</span> <?php if(!empty($age)) {echo $age;} else {echo '?';} ?></li>
 		                            </ul>
 		                        </div>
 		                    </div>
@@ -376,7 +253,8 @@ jQuery(document).ready(function($){
 		                    </div>
 		                </div>
                     	<p class="text-overline opacity-75">Income</p>
-                    	<h4><?php echo '$'.number_format($mostRecentIncome); ?></h4>
+                    	<h4><?php echo '$'.number_format($fin['income']); ?><small> /yr</small></h4>
+                        <h6><?php echo '$'.number_format($fin['income']*.88); ?><small> /yr after tax</small></h6>
                     </div>
                 </div>
             </div>
@@ -389,7 +267,7 @@ jQuery(document).ready(function($){
 		                    </div>
 		                </div>
                     	<p class="text-overline opacity-75">Expenses</p>
-                    	<h4><?php echo '$'.$varchars['expenses']; ?></h4>
+                    	<h4><?php echo '$'.number_format($totalExpenses*12); ?><small> /yr</small></h4>
                     </div>
                 </div>
             </div>
@@ -402,7 +280,7 @@ jQuery(document).ready(function($){
 		                    </div>
 		                </div>
                     	<p class="text-overline opacity-75">Debts</p>
-                    	<h4><?php echo $varchars['debts']; ?></h4>
+                    	<h4><?php echo '$'.number_format($totalDebt); ?></h4>
                     </div>
                 </div>
             </div>
@@ -415,7 +293,7 @@ jQuery(document).ready(function($){
 		                    </div>
 		                </div>
                     	<p class="text-overline opacity-75">Assets</p>
-                    	<h4><?php echo $varchars['retirement']; ?></h4>
+                    	<h4><?php echo '$'.number_format($totalAssets); ?></h4>
                     </div>
                 </div>
             </div>
@@ -443,14 +321,50 @@ jQuery(document).ready(function($){
                                 </div>
                                 <div id="collapseOne" class="panel-collapse collapse show" aria-labelledby="headingOne" style="">
                                     <div class="card-body row">
-                                        <!-- percentage, title, text, interaction (modal or url) -->
+                                        <!-- $data, $check, $title, $text, $interaction -->
                                         <?php
-                                        writeNode(100,'Pay Rent / Mortgage','Includes renters or homeowners insurance, if required',$welcomeModalContent);
-                                        writeNode(100,'Buy Food / Groceries','Depending on the severity of your situiation and needs, you may wish to prioritize utilities before this node',$personalModalContent);
-                                        writeNode(100,'Pay Essential Utilities and Items','Power, water, heat, toiletries, etc',$expensesModalContent);
-                                        writeNode(100,'Pay Income Earning Expenses','Commute expenses, internet, phone, or anything required to earn income',$expensesModalContent);
-                                        writeNode(0,'Pay Health Care','Health insurance and health care expenses',$healthModalContent);
-                                        writeNode(100,'Make Minimum Payments on all Debts & Loans','Student loans, credit cards, etc.',$expensesModalContent);
+                                        switch ($fin['housing']) {
+                                            case 'rent':
+                                                $housingCost = $fin['rentAmount'];
+                                                break;
+                                            case 'mortgage':
+                                            /**
+                                             * @todo mortgage question needs to be revisisted to understand what the monthly payment amounts are, so then we can evaluate if it fits into a budget
+                                             */
+                                                $housingCost = $fin['mortgageAmount'];
+                                                break;
+                                            case 'paidOff':
+                                                $housingCost = $fin['propertyTaxes'];
+                                                break;
+                                            case 'free':
+                                                $housingCost = 0;
+                                                break;
+                                        }
+                                        if ($fin['expenses'] != 'not') {
+                                            $check = 1;
+                                        }
+                                        else {
+                                            $check = 0;
+                                        }
+
+                                        writeNode('$'.number_format($housingCost), $check, 'Pay Rent / Mortgage','Includes renters or homeowners insurance, if required','');
+                                        writeNode('$'.number_format($foodExpense),$check,'Buy Food / Groceries','Depending on the severity of your situiation and needs, you may wish to prioritize utilities before this node','');
+                                        writeNode('',$check,'Pay Essential Utilities and Items','Power, water, heat, toiletries, etc','');
+                                        writeNode('',$check,'Pay Income Earning Expenses','Commute expenses, internet, phone, or anything required to earn income','');
+                                        if ($fin['healthInsurance'] > 0 && $fin['expenses'] != 'not') {
+                                            $check = 1;
+                                        }
+                                        else {
+                                            $check = 0;
+                                        }
+                                        writeNode('$'.number_format($fin['healthInsurance']),$check,'Pay Health Care','Health insurance and health care expenses','');
+                                        if ($totalMinDebtPayment > 0 && $fin['expenses'] != 'not') {
+                                            $check = 1;
+                                        }
+                                        else {
+                                            $check = 0;
+                                        }
+                                        writeNode('$'.number_format($totalMinDebtPayment),$check,'Make Minimum Payments on all Debts & Loans','Student loans, credit cards, etc.','');
 										?>
                                     </div>
                                 </div>
@@ -467,8 +381,8 @@ jQuery(document).ready(function($){
                                     <div class="card-body row">
                                         <!-- percentage, title, text, interaction (modal or url) -->
                                         <?php
-                                        writeNode(0,'Save $1000 for an emergency fund',"Either $1000 or one months' worth of expenses, whichever is greater",$expensesModalContent);
-                                        writeNode(0,'Pay any non-essential bills in full','Cable, internet, phone, streaming media, etc.',$expensesModalContent);
+                                        writeNode(0,0,'Save $1000 for an emergency fund',"Either $1000 or one months' worth of expenses, whichever is greater",'');
+                                        writeNode(0,0,'Pay any non-essential bills in full','Cable, internet, phone, streaming media, etc.','');
                                         ?>
                                     </div>
                                 </div>
@@ -485,8 +399,8 @@ jQuery(document).ready(function($){
                                     <div class="card-body row">
                                         <!-- percentage, title, text, interaction (modal or url) -->
                                         <?php
-                                        writeNode(0,'Save for Retirement',"Does your employer offer a retirement account with an employer match?",'Account');
-                                        writeNode(0,'Pay Off High Interest Debt','Any debt with an interest rate of 10% or higher.<br><br>Evaluate merits between avalanche and snowball.','');
+                                        writeNode(0,0,'Save for Retirement',"Does your employer offer a retirement account with an employer match?",'Account');
+                                        writeNode(0,0,'Pay Off High Interest Debt','Any debt with an interest rate of 10% or higher.<br><br>Evaluate merits between avalanche and snowball.','');
                                         ?>
                                     </div>
                                 </div>
@@ -503,8 +417,8 @@ jQuery(document).ready(function($){
                                     <div class="card-body row">
                                     	<!-- percentage, title, text, interaction (modal or url) -->
                                         <?php
-                                        writeNode(0,'Increase emergency fund',"Aim for 3-6 months' living expenses",'Account');
-                                        writeNode(0,'Pay Off Moderate Interest Debt','Any debt with an interest rate of 4-5% or higher, excluding mortgage.',$expensesModalContent);
+                                        writeNode(0,0,'Increase emergency fund',"Aim for 3-6 months' living expenses",'Account');
+                                        writeNode(0,0,'Pay Off Moderate Interest Debt','Any debt with an interest rate of 4-5% or higher, excluding mortgage.','');
                                         ?>
                                     </div>
                                 </div>
@@ -541,10 +455,10 @@ jQuery(document).ready(function($){
                     <div class="card-body">
                         <h3>welcome Decimal:</h3>
                         <?php
-                        if (!empty($CI_vars['decimal'])) {
-		                    foreach ($CI_vars['decimal'] as $record) {
+                        if (!empty($data['decimal'])) {
+		                    foreach ($data['decimal'] as $record) {
 		                    	echo '<p class="text-muted">';
-		                    	echo $CI_vars['translation'][$record['attribute_id']] . ' = ' . $record['value'];
+		                    	echo $data['translation'][$record['attribute_id']] . ' = ' . $record['value'];
 		                    	echo '</p>';
 		                    }
 		                }
@@ -558,17 +472,15 @@ jQuery(document).ready(function($){
             <div class="col-md-6">
                 <div class="card m-b-30">
                     <div class="card-body">
-                        <h3>welcome VarChar:</h3>
+                        <h3>main data:</h3>
                         <?php
-                        if (!empty($CI_vars['varchar'])) {
-	                        foreach ($CI_vars['varchar'] as $record) {
-	                        	echo '<p class="text-muted">';
-	                        	echo $CI_vars['translation'][$record['attribute_id']] . ' = ' . $record['value'];
-	                        	echo '</p>';
-	                        }
+                        if (!empty($fin)) {
+	                        echo '<pre>';
+                            var_dump($fin);
+                            echo '</pre>';
 	                    }
 		                else {
-		                	echo 'Go fill out the welcome form';
+		                	echo 'Go fill out the main form';
 		                }
                         ?>
            			</div>

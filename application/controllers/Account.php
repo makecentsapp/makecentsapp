@@ -17,37 +17,20 @@ class Account extends CI_Controller {
 	public function index() {
 	//enabling the profiler to show more data on the view
 	//$this->output->enable_profiler(TRUE);
-	$translationQuery = $this->db
-		->select('*')
-		->from('welcome')
-		->get();
-	foreach ($translationQuery->result_array() as $row) {
-		$translationArray[$row['attribute_id']] = $row['attribute_name'];
-	}
-	$userdata = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
-	$decQuery = $this->db
-		->select('*')
-		->from('welcomeDetails_decimal')
-		->where('user_id', $this->user->info->ID)
-		->order_by('date_added', 'ASC')
-		->get();
-	$vcharQuery = $this->db
-		->select('*')
-		->from('welcomeDetails_varchar')
-		->where('user_id', $this->user->info->ID)
-		->order_by('date_added', 'ASC')
-		->get();
-
-    $array = array(
-		'translation' => $translationArray,
-		'user' => $this->user,
-		'decimal' => $decQuery->result_array(),
-		'varchar' => $vcharQuery->result_array()
-
-		//'userid' => $userdata
-	);
-	$this->template->layout = '/layout/themes/atmos.php';
-	$this->template->loadContent("account/index.php", $array);
+	
+		$userdata = $this->user_model->get_user_by_id($this->session->userdata('user_id'));
+		$findata = $this->db
+			->select('*')
+			->from('main_data_union')
+			->where('user_id', $this->user->info->ID)
+			->order_by('attribute_id', 'ASC')
+			->get();
+		$array = array(
+			'user' => $this->user,
+			'fin' => $findata->result_array()
+		);
+		$this->template->layout = '/layout/themes/atmos.php';
+		$this->template->loadContent("account/index.php", $array);
 	}
 
 	public function welcome() {
