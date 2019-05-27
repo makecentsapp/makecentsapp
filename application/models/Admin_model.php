@@ -352,6 +352,50 @@ class Admin_Model extends CI_Model
 		->join("users", "users.ID = user_logs.userid");
 		return $datatable->get("user_logs");
 	}
+
+
+	public function add_invite($data) 
+	{
+		$this->db->insert("invites", $data);
+	}
+
+	public function get_total_invites() 
+	{
+		return $this->db->from("invites")->count_all_results();
+	}
+
+	public function get_invites($datatable) 
+	{
+		$datatable->db_order();
+
+		$datatable->db_search(array(
+			"users.username",
+			),
+			true // Cache query
+		);
+
+		$this->db->select("invites.ID, invites.code, invites.status, invites.timestamp,
+			invites.expires, invites.email,
+			users.username")
+			->join("users", "users.ID = invites.user_registered", "left outer");
+		
+		return $datatable->get("invites");
+	}
+
+	public function get_invite($id) 
+	{
+		return $this->db->where("ID", $id)->get("invites");
+	}
+
+	public function delete_invite($id) 
+	{
+		$this->db->where("ID", $id)->delete("invites");
+	}
+
+	public function update_invite($id, $data) 
+	{
+		$this->db->where("ID", $id)->update("invites", $data);
+	}
 }
 
 ?>

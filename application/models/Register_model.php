@@ -111,6 +111,16 @@ class Register_Model extends CI_Model
 		$this->db->where("ID", $userid)->update("users", array("username" => $username, "email" => $email));
 	}
 
+	public function get_invite_code($code)
+	{
+		return $this->db->where("code", $code)->get("invites");
+	}
+
+	public function update_invite($id, $data) 
+	{
+		$this->db->where("ID", $id)->update("invites", $data);
+	}
+
 }
 
 ?>

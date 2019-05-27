@@ -48,6 +48,7 @@
                                         <option value="email_activation"><?php echo lang("ctn_405") ?></option>
                                         <option value="forgot_password" <?php if($email_template->hook == "forgot_password") echo "selected" ?>><?php echo lang("ctn_174") ?></option>
                                         <option value="welcome_email" <?php if($email_template->hook == "welcome_email") echo "selected" ?>><?php echo lang("ctn_475") ?></option>
+                        <option value="member_invite" <?php if($email_template->hook == "member_invite") echo "selected" ?>><?php echo lang("ctn_502") ?></option>
                                     </select>
                                     <span class="form-text text-muted small"><?php echo lang("ctn_406") ?></span>
                                 </div>

@@ -159,6 +159,10 @@ class Datatables {
 
 			} elseif($this->search_type == 1) {
 
+				if($cache) {
+					$this->CI->db->start_cache();
+				}
+
 				// Search all colums for likeness for whole string
 				$this->CI->db->group_start();
 				foreach($columns as $field) {

@@ -537,8 +537,32 @@ $lang['ctn_482'] = "Okay, got it!";
 $lang['ctn_483'] = "By using this site, you consent to use of Cookies. For more information, read our";
 $lang['ctn_484'] = "Enable Accept Cookies Notification";
 $lang['ctn_485'] = "If enabled, a notification will show on every page notifying the user about the use of cookies. The user can then click a button to make it disappear.";
-$lang['ctn_486'] = "";
-$lang['ctn_487'] = "";
+
+// 2.1
+$lang['ctn_486'] = "Invites";
+$lang['ctn_487'] = "Status";
+$lang['ctn_488'] = "Code";
+$lang['ctn_489'] = "Registered";
+$lang['ctn_490'] = "Created";
+$lang['ctn_491'] = "Add Invite";
+$lang['ctn_492'] = "Leave blank if you don't want to email this invite to anyone.";
+$lang['ctn_493'] = "Invite Expires (hours)";
+$lang['ctn_494'] = "The amount of hours the invite will expire in (become invalid). Enter 0 for this invite not to expire.";
+$lang['ctn_495'] = "Expire Upon Use";
+$lang['ctn_496'] = "If checked, the invite will become invalid once a user has registered using it.";
+$lang['ctn_497'] = "Bypass Registration Block";
+$lang['ctn_498'] = "If you have registration disabled in the Admin Panel -> Global Settings, check this field to bypass it when using the invite code.";
+$lang['ctn_499'] = "Unused";
+$lang['ctn_500'] = "Used";
+$lang['ctn_501'] = "Expired";
+$lang['ctn_502'] = "Member Invite";
+$lang['ctn_503'] = "";
+$lang['ctn_504'] = "";
+$lang['ctn_505'] = "";
+$lang['ctn_506'] = "";
+$lang['ctn_507'] = "";
+$lang['ctn_508'] = "";
+$lang['ctn_509'] = "";
 
 
 ?>

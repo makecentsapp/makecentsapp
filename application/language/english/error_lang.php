@@ -90,8 +90,10 @@ $lang['error_78'] = "You left a required field empty: ";
 // Version 1.6
 $lang['error_79'] = "Invalid Payment!";
 $lang['error_80'] = "Your card has been declined by the payment gateway (STRIPE).";
-$lang['error_81'] = "";
-$lang['error_82'] = "";
+
+// v2.1
+$lang['error_81'] = "Invalid Invite";
+$lang['error_82'] = "That invite code has expired!";
 $lang['error_83'] = "";
 $lang['error_84'] = "";
 $lang['error_85'] = "";

@@ -37,67 +37,144 @@ foreach ($data['fin'] as $row) {
     $fin[$row['attribute_name']] = $row['value'];
 }
 
+$calcs = array(
+    'totalExpenses' => 0,
+    'foodExpense' => 0,
+    'totalAssets' => 0,
+    );
+
 if (!empty($fin['dob'])) {
-    $age = date_diff(date_create($fin['dob']), date_create('now'))->y;
+    $calcs['age'] = date_diff(date_create($fin['dob']), date_create('now'))->y;
 }
-$foodExpense = 0;
-$totalExpenses = 0;
-$totalMinDebtPayment = 0;
-$totalDebt = 0;
-$totalAssets = 0;
+
 //add up expenses, might need tweaking in the future
+switch ($fin['housing']) {
+    case 'rent':
+        $calcs['housingCost'] = $fin['rentAmount'];
+        break;
+    case 'mortgage':
+    /**
+     * @todo mortgage question needs to be revisisted to understand what the monthly payment amounts are, so then we can evaluate if it fits into a budget
+     */
+        $calcs['housingCost'] = $fin['mortgageAmount'];
+        break;
+    case 'paidOff':
+        $calcs['housingCost'] = $fin['propertyTaxes'];
+        break;
+    case 'free':
+        $calcs['housingCost'] = 0;
+        break;
+}
 if ($fin['housing'] == 'rent') {
-    $totalExpenses += $fin['rentAmount'];
+    $calcs['totalExpenses'] += $fin['rentAmount'];
 }
 if ($fin['foodExpense'] == 'customAmount') {
-    $foodExpense += $fin['customFood'];
+    $calcs['foodExpense'] += $fin['customFood'];
 }
 else {
-    $foodExpense += $fin['foodExpense'];
+    $calcs['foodExpense'] += $fin['foodExpense'];
 }
-$totalExpenses += $foodExpense;
+$calcs['totalExpenses'] += $calcs['foodExpense'];
 if ($fin['car'] !== 'noCar') {
-    $totalExpenses += $fin['carInsurance'];
+    $calcs['totalExpenses'] += $fin['carInsurance'];
 }
-$totalExpenses += $fin['healthInsurance'];
+$calcs['totalExpenses'] += $fin['healthInsurance'];
 
 //add up debts
 if (!empty($fin['debtMinimum'])) {
-    $totalMinDebtPayment = array_sum(explode(',', $fin['debtMinimum']));
+    $calcs['totalMinDebtPayment'] = array_sum(explode(',', $fin['debtMinimum']));
 }
 if (!empty($fin['debtAmount'])) {
-    $totalDebt = array_sum(explode(',', $fin['debtAmount']));
+    $calcs['totalDebt'] = array_sum(explode(',', $fin['debtAmount']));
 }
+//get the debt stuff into a useable format and also classify the risk of the debt
+$countDebt = count(explode(',', $fin['debtAmount']));
+$i = 0;
+$debtDescriptions = explode(',', $fin['debtDescription']);
+$debtAmounts = explode(',', $fin['debtAmount']);
+$debtInterestRates = explode(',', $fin['debtInterestRate']);
+$debtMinimums = explode(',', $fin['debtMinimum']);
+while ($i < $countDebt) {
+    $calcs['debts'][$i]['debtDescription'] = ucwords(str_replace('_', ' ', array_shift($debtDescriptions)));
+    $calcs['debts'][$i]['debtAmount'] = array_shift($debtAmounts);
+    $calcs['debts'][$i]['debtInterestRate'] = array_shift($debtInterestRates);
+    $calcs['debts'][$i]['debtMinimum'] = array_shift($debtMinimums);
+    if ($calcs['debts'][$i]['debtInterestRate'] >= 10) {
+        $calcs['debts'][$i]['debtClassification'] = 'high';
+    }
+    else {
+        $calcs['debts'][$i]['debtClassification'] = 'moderate';
+    }
+    $i++;
+}
+
+
+$calcs['minEmergencyFund'] = $calcs['totalExpenses'] + $calcs['totalMinDebtPayment'];
+if ($calcs['minEmergencyFund'] < 1000) {
+    $calcs['minEmergencyFund'] = 1000;
+}
+$calcs['targetEmergencyFund'] = $calcs['minEmergencyFund'] * 3;
 
 //add up assets
 if (!empty($fin['cashOnHand'])) {
-    $totalAssets += $fin['cashOnHand'];
+    $calcs['totalAssets'] += $fin['cashOnHand'];
 }
 if ($fin['car'] !== 'noCar') {
-    $totalAssets += $fin['carValue'];
+    $calcs['totalAssets'] += $fin['carValue'];
 }
 if (!empty($fin['retirementSavings'])) {
-    $totalAssets += $fin['retirementSavings'];
+    $calcs['totalAssets'] += $fin['retirementSavings'];
 }
 
+//retirement
+switch ($fin['retirementMatchContribution']) {
+    case 'noContribution':
+        $calcs['retirementContribution'] = 'I dont contribute at all';
+        break;
+    case 'contributionMatch':
+        $calcs['retirementContribution'] = 'I contribute up to the employer match';
+        break;
+    case 'contributionAbove':
+        $calcs['retirementContribution'] = 'I contribute above the employer match';
+        break;
+    case 'contributionUnknown':
+        $calcs['retirementContribution'] = 'I dont know';
+        break;
+}
+
+//calculate the appropriate next steps, in line with the generation of the nodes when checks are made
+global $nextSteps;
+$nextSteps = array();
+global $i;
+$i = 0;
+function writeNextStep ($urgency, $type, $message) {
+    global $nextSteps;
+    global $i;
+    $nextSteps[$i]['urgency'] = $urgency;
+    $nextSteps[$i]['type'] = $type;
+    $nextSteps[$i]['message'] = $message;
+    $i++;
+}
+
+
 function writeNode ($data, $check, $title, $text, $interaction) {
-	global $counter;
-	$counter++;
+    global $counter;
+    $counter++;
     echo '<div class="col-md-4 node m-b-10">';
         echo '<a href="#" class="card node-card">';
             echo '<div class="card-body">
-	            	<div class="row">
-                        <div class="col-md-8">
+                    <div class="row">
+                        <div class="col">
                             <p class="fw-600 opacity-75">'.$counter.'</p>
                         </div>';
-	            		
+                        
                 if ($check == 1) {
-                    echo '<div class="col-md-4 my-auto text-right">
+                    echo '<div class="col my-auto text-right">
                             <div class="avatar avatar-xs m-b-10">
-			                    <div class="avatar-title badge-soft-success rounded-circle">
-			                        <i class="mdi mdi-check"></i>
-			                    </div>
-			                </div>
+                                <div class="avatar-title badge-soft-success rounded-circle">
+                                    <i class="mdi mdi-check"></i>
+                                </div>
+                            </div>
                         </div>';
                 }
                 echo '</div>
@@ -106,14 +183,14 @@ function writeNode ($data, $check, $title, $text, $interaction) {
                             <h5 class="fw-600">'.$title.'</h5>
                         </div>
                     </div>
-                	<div class="row">
-                		<div class="col-md-12">
-                			<p class="text-muted">'.$text.'</p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="text-muted">'.$text.'</p>
                             <p>'.$data.'</p>
-                		</div>
-                	</div>
-            	</div>';
-        	echo '</a>';
+                        </div>
+                    </div>
+                </div>';
+            echo '</a>';
     echo '</div>';
 }
 
@@ -223,7 +300,7 @@ jQuery(document).ready(function($){
 		                        <div class="col-md-6">
 		                            <ul>
 		                            	<li><span class="text-overline opacity-75">Location:</span> <?php if(!empty($fin['location'])) {echo $fin['location'];} else {echo '?';} ?></li>
-		                            	<li><span class="text-overline opacity-75">Age:</span> <?php if(!empty($age)) {echo $age;} else {echo '?';} ?></li>
+		                            	<li><span class="text-overline opacity-75">Age:</span> <?php if(!empty($calcs['age'])) {echo $calcs['age'];} else {echo '?';} ?></li>
 		                            </ul>
 		                        </div>
 		                    </div>
@@ -267,7 +344,8 @@ jQuery(document).ready(function($){
 		                    </div>
 		                </div>
                     	<p class="text-overline opacity-75">Expenses</p>
-                    	<h4><?php echo '$'.number_format($totalExpenses*12); ?><small> /yr</small></h4>
+                    	<h4><?php echo '$'.number_format($calcs['totalExpenses']*12); ?><small> /yr</small></h4>
+                        <h6><?php echo round((($calcs['totalExpenses']*12)/($fin['income']*.88))*100,0); ?>%<small> of post tax income</small></h6>
                     </div>
                 </div>
             </div>
@@ -280,7 +358,7 @@ jQuery(document).ready(function($){
 		                    </div>
 		                </div>
                     	<p class="text-overline opacity-75">Debts</p>
-                    	<h4><?php echo '$'.number_format($totalDebt); ?></h4>
+                    	<h4><?php echo '$'.number_format($calcs['totalDebt']); ?></h4>
                     </div>
                 </div>
             </div>
@@ -293,7 +371,7 @@ jQuery(document).ready(function($){
 		                    </div>
 		                </div>
                     	<p class="text-overline opacity-75">Assets</p>
-                    	<h4><?php echo '$'.number_format($totalAssets); ?></h4>
+                    	<h4><?php echo '$'.number_format($calcs['totalAssets']); ?></h4>
                     </div>
                 </div>
             </div>
@@ -323,48 +401,43 @@ jQuery(document).ready(function($){
                                     <div class="card-body row">
                                         <!-- $data, $check, $title, $text, $interaction -->
                                         <?php
-                                        switch ($fin['housing']) {
-                                            case 'rent':
-                                                $housingCost = $fin['rentAmount'];
-                                                break;
-                                            case 'mortgage':
-                                            /**
-                                             * @todo mortgage question needs to be revisisted to understand what the monthly payment amounts are, so then we can evaluate if it fits into a budget
-                                             */
-                                                $housingCost = $fin['mortgageAmount'];
-                                                break;
-                                            case 'paidOff':
-                                                $housingCost = $fin['propertyTaxes'];
-                                                break;
-                                            case 'free':
-                                                $housingCost = 0;
-                                                break;
-                                        }
                                         if ($fin['expenses'] != 'not') {
                                             $check = 1;
                                         }
                                         else {
                                             $check = 0;
+                                            //identify if user is failing to pay essential bills or has a poor income to expense ratio
+                                            writeNextStep('critical', 'expense', 'You are in a financial crisis - Either get income up or expenses down so you can pay your bills');
                                         }
 
-                                        writeNode('$'.number_format($housingCost), $check, 'Pay Rent / Mortgage','Includes renters or homeowners insurance, if required','');
-                                        writeNode('$'.number_format($foodExpense),$check,'Buy Food / Groceries','Depending on the severity of your situiation and needs, you may wish to prioritize utilities before this node','');
+                                        writeNode('$'.number_format($calcs['housingCost']), $check, 'Pay Rent / Mortgage','Includes renters or homeowners insurance, if required','');
+                                        writeNode('$'.number_format($calcs['foodExpense']),$check,'Buy Food / Groceries','Depending on the severity of your situiation and needs, you may wish to prioritize utilities before this node','');
+                                        /**
+                                         * @todo need a question to quantify this step
+                                         */
                                         writeNode('',$check,'Pay Essential Utilities and Items','Power, water, heat, toiletries, etc','');
+                                        /**
+                                         * @todo need a question to qualify and quantify this step
+                                         */
                                         writeNode('',$check,'Pay Income Earning Expenses','Commute expenses, internet, phone, or anything required to earn income','');
-                                        if ($fin['healthInsurance'] > 0 && $fin['expenses'] != 'not') {
+                                        if ($fin['healthInsurance'] > 0) {
                                             $check = 1;
                                         }
                                         else {
                                             $check = 0;
+                                            //identify if user has health care
+                                            writeNextStep('critical', 'expense', 'You need health insurance - the risk of a massive bills due to a unpredicted medical event can be proven with data');
                                         }
                                         writeNode('$'.number_format($fin['healthInsurance']),$check,'Pay Health Care','Health insurance and health care expenses','');
-                                        if ($totalMinDebtPayment > 0 && $fin['expenses'] != 'not') {
+                                        if ($calcs['totalMinDebtPayment'] > 0 && $fin['expenses'] != 'not') {
                                             $check = 1;
                                         }
                                         else {
                                             $check = 0;
+                                            //identify if user is meeting minimum debt payments
+                                            writeNextStep('critical', 'debt', 'You need to make the minimum payments on all your debts');
                                         }
-                                        writeNode('$'.number_format($totalMinDebtPayment),$check,'Make Minimum Payments on all Debts & Loans','Student loans, credit cards, etc.','');
+                                        writeNode('$'.number_format($calcs['totalMinDebtPayment']),$check,'Make Minimum Payments on all Debts & Loans','Student loans, credit cards, etc.','');
 										?>
                                     </div>
                                 </div>
@@ -379,10 +452,26 @@ jQuery(document).ready(function($){
                                 </div>
                                 <div id="collapseTwo" class="panel-collapse collapse show" aria-labelledby="headingTwo" style="">
                                     <div class="card-body row">
-                                        <!-- percentage, title, text, interaction (modal or url) -->
+                                        <!-- $data, $check, $title, $text, $interaction -->
                                         <?php
-                                        writeNode(0,0,'Save $1000 for an emergency fund',"Either $1000 or one months' worth of expenses, whichever is greater",'');
-                                        writeNode(0,0,'Pay any non-essential bills in full','Cable, internet, phone, streaming media, etc.','');
+                                        if ($fin['cashOnHand'] > $calcs['minEmergencyFund']) {
+                                            $check = 1;
+                                        }
+                                        else {
+                                            $check = 0;
+                                            writeNextStep('critical', 'saving', 'Start saving as much money as possible into a checking or savings account to cover small emergencies');
+                                        }
+                                        writeNode('$'.number_format($calcs['minEmergencyFund']),$check,'Save $1000 for an emergency fund',"Either $1000 or one months' worth of expenses, whichever is greater",'');
+                                        if ($fin['expenses'] != 'not') {
+                                            $check = 1;
+                                        }
+                                        else {
+                                            $check = 0;   
+                                        }
+                                        /**
+                                         * @todo need a question to qualify this step
+                                         */
+                                        writeNode('',$check,'Pay any non-essential bills in full','Cable, internet, phone, streaming media, etc.','');
                                         ?>
                                     </div>
                                 </div>
@@ -397,10 +486,42 @@ jQuery(document).ready(function($){
                                 </div>
                                 <div id="collapseThree" class="panel-collapse collapse show" aria-labelledby="headingThree">
                                     <div class="card-body row">
-                                        <!-- percentage, title, text, interaction (modal or url) -->
+                                        <!-- $data, $check, $title, $text, $interaction -->
                                         <?php
-                                        writeNode(0,0,'Save for Retirement',"Does your employer offer a retirement account with an employer match?",'Account');
-                                        writeNode(0,0,'Pay Off High Interest Debt','Any debt with an interest rate of 10% or higher.<br><br>Evaluate merits between avalanche and snowball.','');
+                                        if ($fin['retirementMatch'] == 'yes' && $fin['retirementMatchContribution'] != 'noContribution') {
+                                            $check = 1;
+                                        }
+                                        else {
+                                            $check = 0;
+                                            writeNextStep('critical', 'retirement', 'If your employer offers a retirement match, you should contribute up to it. Essentially a 100% ROI');
+                                        }
+                                        writeNode($calcs['retirementContribution'],$check,'Save for Retirement',"Does your employer offer a retirement account with an employer match?",'Account');
+
+                                        $highDebtString = '';
+                                        $moderateDebtString = '';
+                                        $highDebtCheck = 1;
+                                        $moderateDebtCheck = 1;
+
+                                        foreach ($calcs['debts'] as $debt) {
+                                            if ($debt['debtClassification'] == 'high') {
+                                                $highDebtString .= $debt['debtDescription'] . ' - $' . number_format($debt['debtAmount']) . ' @ ' . $debt['debtInterestRate'] . '%';
+                                                $highDebtCheck = 0;
+                                                
+                                            }
+                                            else if ($debt['debtClassification'] == 'moderate') {
+                                                $moderateDebtString .= $debt['debtDescription'] . ' - $' . number_format($debt['debtAmount']) . ' @ ' . $debt['debtInterestRate'] . '%';
+                                                $moderateDebtCheck = 0;
+                                                
+                                            }
+                                        }
+                                        //need to do these two additions to next steps separatly so that it isnt dependent on the order in which the user input their debts
+                                        if ($highDebtCheck == 0) {
+                                            writeNextStep('critical', 'debt', 'Reduce your high interest debt to $0 as soon as possible.');  
+                                        }
+                                        if ($moderateDebtCheck == 0) {
+                                            writeNextStep('urgent', 'debt', 'Reduce your moderate interest debt to $0 as soon as possible.'); 
+                                        }
+                                        writeNode($highDebtString,$highDebtCheck,'Pay Off High Interest Debt','Any debt with an interest rate of 10% or higher.<br><br>Evaluate merits between avalanche and snowball.','');
                                         ?>
                                     </div>
                                 </div>
@@ -415,10 +536,20 @@ jQuery(document).ready(function($){
                                 </div>
                                 <div id="collapseFour" class="panel-collapse collapse show" aria-labelledby="headingFour">
                                     <div class="card-body row">
-                                    	<!-- percentage, title, text, interaction (modal or url) -->
+                                    	<!-- $data, $check, $title, $text, $interaction -->
                                         <?php
-                                        writeNode(0,0,'Increase emergency fund',"Aim for 3-6 months' living expenses",'Account');
-                                        writeNode(0,0,'Pay Off Moderate Interest Debt','Any debt with an interest rate of 4-5% or higher, excluding mortgage.','');
+                                        if ($fin['cashOnHand'] > $calcs['targetEmergencyFund']) {
+                                            $check = 1;
+                                            $emergencyFundString = '~$' . number_format($calcs['targetEmergencyFund']);
+                                        }
+                                        else {
+                                            $check = 0;
+                                            $emergencyFundString = '$' . number_format($fin['cashOnHand']) . ' / ' . '$' . number_format($calcs['targetEmergencyFund']);
+
+                                            writeNextStep('urgent', 'saving', 'Start saving money into a checking or savings account to cover medium-to-large emergencies');
+                                        }
+                                        writeNode($emergencyFundString,$check,'Increase emergency fund',"Aim for 3-6 months' living expenses",'Account');
+                                        writeNode($moderateDebtString,$moderateDebtCheck,'Pay Off Moderate Interest Debt','Any debt with an interest rate of 4-5% or higher, excluding mortgage.','');
                                         ?>
                                     </div>
                                 </div>
@@ -450,25 +581,6 @@ jQuery(document).ready(function($){
                     </div>
                 </div>
             </div>
-			<div class="col-md-6">
-                <div class="card m-b-30">
-                    <div class="card-body">
-                        <h3>welcome Decimal:</h3>
-                        <?php
-                        if (!empty($data['decimal'])) {
-		                    foreach ($data['decimal'] as $record) {
-		                    	echo '<p class="text-muted">';
-		                    	echo $data['translation'][$record['attribute_id']] . ' = ' . $record['value'];
-		                    	echo '</p>';
-		                    }
-		                }
-		                else {
-		                	echo 'Go fill out the welcome form';
-		                }
-                        ?>
-           			</div>
-               	</div>
-            </div>
             <div class="col-md-6">
                 <div class="card m-b-30">
                     <div class="card-body">
@@ -486,147 +598,60 @@ jQuery(document).ready(function($){
            			</div>
                	</div>
             </div>
+            <div class="col-md-6">
+                <div class="card m-b-30">
+                    <div class="card-body">
+                        <h3>calc'd data:</h3>
+                        <?php
+                        if (!empty($calcs)) {
+                            echo '<pre>';
+                            var_dump($calcs);
+                            echo '</pre>';
+                        }
+                        else {
+                            echo 'Go fill out the main form';
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card m-b-30">
+                    <div class="card-body">
+                        <h3>next steps:</h3>
+                        <?php
+                        if (!empty($nextSteps)) {
+                            echo '<pre>';
+                            var_dump($nextSteps);
+                            echo '</pre>';
+                        }
+                        else {
+                            echo 'no next steps for user';
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card m-b-30">
+                    <div class="card-body">
+                        <h3>welcome Decimal:</h3>
+                        <?php
+                        if (!empty($data['decimal'])) {
+                            foreach ($data['decimal'] as $record) {
+                                echo '<p class="text-muted">';
+                                echo $data['translation'][$record['attribute_id']] . ' = ' . $record['value'];
+                                echo '</p>';
+                            }
+                        }
+                        else {
+                            echo 'Go fill out the welcome form';
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
         </div>
-	    <div class="row m-b-10">
-	        <div class="col-lg-4 col-md-6">
-	            <a href="<?php echo base_url ('Account/personalForm'); ?>" class="card shadow-lg guide-item m-b-30">
-	                <div class="card-header bg-primary text-white">
-	                    <h4 class=" p-t-20 ">Personal Details</h4>
-	                    <p>Some quick info to help us provide you with some perspective.</p>
-	                </div>
-	                <div class="card-body text-center">
-		                <div class="progress" style="height: 10px">
-	                        <div class="progress-bar progress-bar-striped" role="progressbar" style="width: <?php echo $personalFormPercentage; ?>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-	                    </div>
-	                    <p><small><?php echo $personalFormPercentage . '% of questions answered.'; ?></small></p>
-	                    <button type="button" class="btn btn-primary btn-rounded">
-	                    <?php
-	                    if ($personalFormPercentage == 0) {
-	                    	echo 'Start Now';
-	                    }
-	                    else {
-	                    	echo 'Edit Answers';
-	                    }
-	                    ?>
-	                    </button>
-	                </div>
-	            </a>
-	            <a href="<?php echo base_url ('Account/incomeForm'); ?>" class="card shadow-lg guide-item m-b-30">
-	                <div class="card-header bg-warning text-white">
-	                    <h4 class=" p-t-20 ">Expenses</h4>
-	                    <p>What are you buying and why are you paying so much?</p>
-	                </div>
-	                <div class="card-body text-center">
-		                <div class="progress" style="height: 10px">
-	                        <div class="progress-bar bg-warning progress-bar-striped" role="progressbar" style="width: <?php echo $expensesFormPercentage; ?>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-	                    </div>
-	                    <p><small><?php echo $expensesFormPercentage . '% of questions answered.'; ?></small></p>
-	                    <button type="button" class="btn btn-warning btn-rounded">
-	                    <?php
-	                    if ($expensesFormPercentage == 0) {
-	                    	echo 'Start Now';
-	                    }
-	                    else {
-	                    	echo 'Edit Answers';
-	                    }
-	                    ?>
-	                    </button>
-	                </div>
-	            </a>
-	        </div>
-	        <div class="col-lg-4 col-md-6">
-	        	<a href="<?php echo base_url ('Account/incomeForm'); ?>" class="card shadow-lg guide-item m-b-30">
-	                <div class="card-header bg-success text-white">
-	                    <h4 class=" p-t-20 ">Income</h4>
-	                    <p>How much scratch do you bring in to the coffers?</p>
-	                </div>
-	                <div class="card-body text-center" id="incomeBlock">
-		                <div class="progress" style="height: 10px">
-	                        <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: <?php echo $incomeFormPercentage; ?>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-	                    </div>
-	                    <p><small><?php echo $incomeFormPercentage . '% of questions answered.'; ?></small></p>
-	                    <button type="button" class="btn btn-success btn-rounded">
-	                    <?php
-	                    if ($incomeFormPercentage == 0) {
-	                    	echo 'Start Now';
-	                    }
-	                    else {
-	                    	echo 'Edit Answers';
-	                    }
-	                    ?>
-	                    </button>
-	                </div>
-	            </a>
-	            <a href="<?php echo base_url ('Account/incomeForm'); ?>" class="card shadow-lg guide-item m-b-30">
-	                <div class="card-header bg-danger text-white">
-	                    <h4 class=" p-t-20 ">Debts</h4>
-	                    <p>Do you like snowballs or avalanches?</p>
-	                </div>
-	                <div class="card-body text-center" id="debtsBlock">
-		                <div class="progress" style="height: 10px">
-	                        <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: <?php echo $debtsFormPercentage; ?>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-	                    </div>
-	                    <p><small><?php echo $debtsFormPercentage . '% of questions answered.'; ?></small></p>
-	                    <button type="button" class="btn btn-danger btn-rounded">
-	                    <?php
-	                    if ($debtsFormPercentage == 0) {
-	                    	echo 'Start Now';
-	                    }
-	                    else {
-	                    	echo 'Edit Answers';
-	                    }
-	                    ?>
-	                    </button>
-	                </div>
-	            </a>
-	        </div>
-	        <div class="col-lg-4 col-md-6">
-	            <a href="<?php echo base_url ('Account/assetsForm'); ?>" class="card shadow-lg guide-item m-b-30">
-	                <div class="card-header bg-dark text-white">
-	                    <h4 class=" p-t-20 ">Assets</h4>
-	                    <p>House, car, and bank accounts: totaled up.</p>
-	                </div>
-	                <div class="card-body text-center">
-		                <div class="progress" style="height: 10px">
-	                        <div class="progress-bar bg-dark progress-bar-striped" role="progressbar" style="width: <?php echo $assetsFormPercentage; ?>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-	                    </div>
-	                    <p><small><?php echo $assetsFormPercentage . '% of questions answered.'; ?></small></p>
-	                    <button type="button" class="btn btn-dark btn-rounded">
-	                    <?php
-	                    if ($assetsFormPercentage == 0) {
-	                    	echo 'Start Now';
-	                    }
-	                    else {
-	                    	echo 'Edit Answers';
-	                    }
-	                    ?>
-	                    </button>
-	                </div>
-	            </a>
-	            <a href="<?php echo base_url ('Account/assetsForm'); ?>" class="card shadow-lg guide-item m-b-30">
-	                <div class="card-header bg-info text-white">
-	                    <h4 class=" p-t-20 ">Retirement</h4>
-	                    <p>Getting old is expensive and inevitable.</p>
-	                </div>
-	                <div class="card-body text-center">
-		                <div class="progress" style="height: 10px">
-	                        <div class="progress-bar bg-info progress-bar-striped" role="progressbar" style="width: <?php echo $retirementFormPercentage; ?>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-	                    </div>
-	                    <p><small><?php echo $retirementFormPercentage . '% of questions answered.'; ?></small></p>
-	                    <button type="button" class="btn btn-info btn-rounded">
-	                    <?php
-	                    if ($retirementFormPercentage == 0) {
-	                    	echo 'Start Now';
-	                    }
-	                    else {
-	                    	echo 'Edit Answers';
-	                    }
-	                    ?>
-	                    </button>
-	                </div>
-	            </a>
-	        </div>
-	    </div>
         <div class="row">
             <div class="col-lg-4 order-1 order-lg-0 m-b-30">
                 <div class="card m-b-30">

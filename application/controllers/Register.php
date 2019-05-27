@@ -12,7 +12,7 @@ class Register extends CI_Controller
 		$this->load->model("home_model");
 	}
 
-	public function index()
+	public function index($invite_code="")
 	{
 
 		if ($this->user_model->check_block_ip()) {
@@ -22,8 +22,28 @@ class Register extends CI_Controller
 		$this->template->set_error_view("error/login_error.php");
 		$this->template->set_layout("layout/login_layout.php");
 		$curuip = $this->input->ip_address();
-		if ($this->settings->info->register && $curuip != '71.235.22.177') {
+
+
+		if(empty($invite_code)) {
+			$invite_code = $this->input->post("code", true);
+		}
+
+		if(!empty($invite_code)) {
+			$code = $this->register_model->get_invite_code($invite_code);
+			if($code->num_rows() > 0) {
+				$code = $code->row();
+				if( ($code->status == 2 && $code->expire_upon_use) || $code->status == 3) {
+					$this->template->error(lang("error_82"));
+				}
+			}
+
+			if ($this->settings->info->register && !$code->bypass_register) {
 			$this->template->error(lang("error_54"));
+			}
+		} else {
+			if ($this->settings->info->register) {
+				$this->template->error(lang("error_54"));
+			}
 		}
 
 		$this->template->loadExternal(
@@ -292,6 +312,21 @@ class Register extends CI_Controller
 					)
 				);
 
+				if(!empty($invite_code)) {
+
+					if($code->expire_upon_use) {
+						$status = 2;
+					} else {
+						$status = 1;
+					}
+
+					$this->register_model->update_invite($code->ID, array(
+						"status" => $status,
+						"user_registered" => $userid
+						)
+					);
+				}
+
 				// Check for any default user groups
 				$default_groups = $this->user_model->get_default_groups();
 				foreach($default_groups->result() as $r) {
@@ -344,7 +379,8 @@ class Register extends CI_Controller
 			"last_name" => $last_name,
 		    'fail' => $fail,
 		    "username" => $username,
-		    "fields" => $fields
+		    "fields" => $fields,
+		    "code" => $invite_code
 		    )
 		);
 	}
@@ -358,8 +394,24 @@ class Register extends CI_Controller
 			$this->template->jsonError(lang("error_26"));
 		}
 
-		if ($this->settings->info->register) {
-			$this->template->jsonError(lang("error_54"));
+		$invite_code = $data['code'];
+
+		if(!empty($invite_code)) {
+			$code = $this->register_model->get_invite_code($invite_code);
+			if($code->num_rows() > 0) {
+				$code = $code->row();
+				if( ($code->status == 2 && $code->expire_upon_use) || $code->status == 3) {
+					$this->template->jsonError(lang("error_82"));
+				}
+			}
+
+			if ($this->settings->info->register && !$code->bypass_register) {
+				$this->template->jsonError(lang("error_54"));
+			}
+		} else {
+			if ($this->settings->info->register) {
+				$this->template->jsonError(lang("error_54"));
+			}
 		}
 
 		$fields = $this->user_model->get_custom_fields(array("register"=>1));
@@ -375,7 +427,10 @@ class Register extends CI_Controller
 		$email = $data['email'];
 		$pass = $this->common->nohtml($data['password']);
 		$pass2 = $this->common->nohtml($data['password2']);
-		$captcha = $data['captcha'];
+		$captcha = "";
+        	if(isset($data['captcha'])) {
+			$captcha = $data['captcha'];
+        	}
 		$username = $this->common->nohtml($data['username']);
 
 		if (strlen($username) < 3) {

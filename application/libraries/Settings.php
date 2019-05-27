@@ -6,7 +6,7 @@ class Settings
 
 	var $info=array();
 
-	var $version = "2.0";
+	var $version = "2.1";
 
 	public function __construct() 
 	{

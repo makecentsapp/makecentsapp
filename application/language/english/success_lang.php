@@ -59,7 +59,10 @@ $lang['success_44'] = "Payment failed!";
 $lang['success_45'] = "Comment was posted!";
 $lang['success_46'] = "Comment was deleted!";
 $lang['success_47'] = "Your data was updated!";
-$lang['success_48'] = "";
-$lang['success_49'] = "";
+//V2.1
+$lang['success_48'] = "Invite was created!";
+$lang['success_49'] = "Invite was updated!";
+$lang['success_50'] = "Invite was deleted!";
+$lang['success_51'] = "";
 
 ?>

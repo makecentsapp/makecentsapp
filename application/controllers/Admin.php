@@ -27,6 +27,212 @@ class Admin extends CI_Controller
 
 	}
 
+	public function invites() 
+	{	
+		if(!$this->user->info->admin && !$this->user->info->admin_members) {
+			$this->template->error(lang("error_2"));
+		}
+		$this->template->loadData("activeLink", 
+			array("admin" => array("invites" => 1)));
+		$this->template->loadContent("admin/invites.php", array(
+			)
+		);
+
+	}
+
+	public function invite_page() 
+	{
+		$this->load->library("datatables");
+
+		$this->datatables->set_default_order("invites.ID", "desc");
+
+		// Set page ordering options that can be used
+		$this->datatables->ordering(
+			array(
+				 0 => array(
+				 	"invites.email" => 0
+				 ),
+				 1 => array(
+				 	"invites.status" => 0
+				 ),
+				 2 => array(
+				 	"invites.code" => 0
+				 ),
+				 3 => array(
+				 	"users.username" => 0
+				 ),
+				 4 => array(
+				 	"invites.timestamp" => 0
+				 )
+			)
+		);
+
+		$this->datatables->set_total_rows(
+			$this->admin_model
+				->get_total_invites()
+		);
+		$invites = $this->admin_model->get_invites($this->datatables);
+
+		foreach($invites->result() as $r) {
+
+			if($r->status == 0) {
+				$status = lang("ctn_499");
+			} elseif($r->status == 1) {
+				$status = lang("ctn_500");
+			} elseif($r->status == 2) {
+				$status = lang("ctn_501");
+			}
+
+			if($r->expires > 0) {
+				if($r->timestamp + ($r->expires * 3600) < time()) {
+					$status = lang("ctn_501");
+				}
+			}
+			 
+			$this->datatables->data[] = array(
+				$r->email,
+				$status,
+				$r->code,
+				$r->username,
+				date($this->settings->info->date_format, $r->timestamp),
+				'<a href="' . site_url("admin/edit_invite/" . $r->ID) .'" class="btn btn-warning btn-xs" title="'. lang("ctn_55").'"><span class="glyphicon glyphicon-cog"></span></a>  <a href="' . site_url("admin/delete_invite/" . $r->ID . "/" . $this->security->get_csrf_hash()) .'" onclick="return confirm(\'' . lang("ctn_86") . '\')" class="btn btn-danger btn-xs" title="'. lang("ctn_57") .'"><span class="glyphicon glyphicon-trash"></span></a>'
+			);
+		}
+		echo json_encode($this->datatables->process());
+	}
+
+	public function add_invite_pro() 
+	{
+		$this->load->model("home_model");
+		$email = $this->common->nohtml($this->input->post("email"));
+		$expires = intval($this->input->post("expires"));
+		$expire_upon_use = intval($this->input->post("expire_upon_use"));
+		$bypass_registration = intval($this->input->post("bypass_registration"));
+
+		$code = $this->common->randomPassword();
+
+		$this->admin_model->add_invite(array(
+			"email" => $email,
+			"expires" => $expires,
+			"expire_upon_use" => $expire_upon_use,
+			"bypass_register" => $bypass_registration,
+			"timestamp" => time(),
+			"status" => 0,
+			"code" => $code
+			)
+		);
+
+		// email
+		if(!empty($email)) {
+				if(!isset($_COOKIE['language'])) {
+				// Get first language in list as default
+				$lang = $this->config->item("language");
+			} else {
+				$lang = $this->common->nohtml($_COOKIE["language"]);
+			}
+			// Send Email
+			$email_template = $this->home_model
+				->get_email_template_hook("member_invite", $lang);
+			if($email_template->num_rows() == 0) {
+				$this->template->error(lang("error_48"));
+			}
+			$email_template = $email_template->row();
+
+			$email_template->message = $this->common->replace_keywords(array(
+				"[NAME]" => $email,
+				"[SITE_URL]" => site_url("register/index/" . $code),
+				"[SITE_NAME]" =>  $this->settings->info->site_name
+				),
+			$email_template->message);
+
+			$this->common->send_email($email_template->title,
+				 $email_template->message, $email);
+		}
+
+		$this->session->set_flashdata("globalmsg", lang("success_48"));
+		redirect(site_url("admin/invites"));
+	}
+
+	public function edit_invite($id) 
+	{
+		$id = intval($id);
+		$invite = $this->admin_model->get_invite($id);
+		if($invite->num_rows() == 0) {
+			$this->template->error(lang("error_81"));
+		}
+		$invite = $invite->row();
+
+		$this->template->loadData("activeLink", 
+			array("admin" => array("invites" => 1)));
+		$this->template->loadContent("admin/edit_invite.php", array(
+			"invite" => $invite
+			)
+		);
+	}
+
+	public function edit_invite_pro($id) 
+	{
+		$id = intval($id);
+		$invite = $this->admin_model->get_invite($id);
+		if($invite->num_rows() == 0) {
+			$this->template->error(lang("error_81"));
+		}
+		$invite = $invite->row();
+
+		$this->template->loadData("activeLink", 
+			array("admin" => array("invites" => 1)));
+
+		$this->load->model("home_model");
+		$email = $this->common->nohtml($this->input->post("email"));
+		$expires = intval($this->input->post("expires"));
+		$expire_upon_use = intval($this->input->post("expire_upon_use"));
+		$bypass_registration = intval($this->input->post("bypass_registration"));
+
+		$status = intval($this->input->post("status"));
+
+
+		$this->admin_model->update_invite($id, array(
+			"email" => $email,
+			"expires" => $expires,
+			"expire_upon_use" => $expire_upon_use,
+			"bypass_register" => $bypass_registration,
+			"status" => $status
+			)
+		);
+
+		$this->session->set_flashdata("globalmsg", lang("success_49"));
+		redirect(site_url("admin/invites"));
+	}
+
+	public function delete_invite($id, $hash) 
+	{
+		if($hash != $this->security->get_csrf_hash()) {
+			$this->template->error(lang("error_6"));
+		}
+		$id = intval($id);
+		$invite = $this->admin_model->get_invite($id);
+		if($invite->num_rows() == 0) {
+			$this->template->error(lang("error_81"));
+		}
+
+		$this->admin_model->delete_invite($id);
+		$this->session->set_flashdata("globalmsg", lang("success_50"));
+		redirect(site_url("admin/invites"));
+	}
+
+	public function limits() 
+	{	
+		if(!$this->user->info->admin && !$this->user->info->admin_settings) {
+			$this->template->error(lang("error_2"));
+		}
+		$this->template->loadData("activeLink", 
+			array("admin" => array("limits" => 1)));
+		$this->template->loadContent("admin/limits.php", array(
+			)
+		);
+
+	}
+
 	public function user_logs()
 	{
 		if(!$this->common->has_permissions(array("admin",
@@ -981,6 +1187,7 @@ class Admin extends CI_Controller
 		$group = $group->row();
 
 		$usernames = $this->common->nohtml($this->input->post("usernames"));
+		$usernames_o = $usernames;
 		$usernames = explode(",", $usernames);
 
 		$users = array();
@@ -1004,7 +1211,7 @@ class Admin extends CI_Controller
 			"IP" => $_SERVER['REMOTE_ADDR'],
 			"user_agent" => $_SERVER['HTTP_USER_AGENT'],
 			"timestamp" => time(),
-			"message" => lang("ctn_457") . $group->name . " " . lang("ctn_458") . $usernames
+			"message" => lang("ctn_457") . $group->name . " " . lang("ctn_458") . $usernames_o
 			)
 		);
 
