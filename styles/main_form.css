@@ -1,0 +1,74 @@
+#finalmsg {display: none;}​
+.state-error {
+    color: red;
+}
+.card, .card:hover {
+    /* overriding default atmos card styles, aka the giant shadow. this should be written into the css at some point */
+    box-shadow: none;
+}
+.btn {
+    box-shadow: none;
+}
+.navigation {
+    background-color: #4c66fb;
+    border-radius: 0 0 3px 3px;
+}
+.navigation button {
+    padding: 10px 40px;
+}
+.card-header label {
+    font-size: 24px !important;
+}
+.option-box {
+    width: 49%;
+}
+.option-box-grid {
+    width: 100%;
+}
+.option-box-grid label {
+    min-height: 150px;
+}
+.card-body label {
+    font-size: 16px !important;
+    padding-bottom: 5px;
+    width: 100%;
+}
+.card-line {
+    width: 35px;
+    border: 1px solid grey;
+}
+#main {display: none;}
+.hiddenbox {display: none;}
+.ui-slider-range {
+    background-color: #4c66fb;
+}
+.moji {
+  font-size: 60px;
+  text-align: center;
+}
+@media only screen and (max-width: 600px) {
+    .option-box {
+        width: 100%;
+    }
+    .card-body label {
+        width: 100%;
+        padding-left: 25px;
+    }
+}
+.clone-block {
+    position: relative;
+    padding-right: 90px;
+}
+a.delete {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+a.clone {
+    position: absolute;
+    top: 0;
+    right: 45px;
+}
+.bg-custom {
+    background-color: powderblue;
+}

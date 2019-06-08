@@ -55,6 +55,7 @@ echo form_open(site_url("BW/echo_post")); //CSRF TOKEN is auto included with thi
 <div class="alert alert-info" role="alert">
 	<p>The following is every Key Value pair when var-dumping $this.</p>
 </div>
+
 <?php
 	Kint::dump($this);
 ?>

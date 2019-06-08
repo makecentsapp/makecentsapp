@@ -89,6 +89,8 @@ if(!$this->user->loggedin) {
         <!-- Extra Atmos Assets - added by PM 3/2-->
         <script type="text/javascript" src="<?php echo base_url();?>assets/vendor/jquery.bootstrap.wizard/jquery.bootstrap.wizard.min.js"></script>
         <script src="<?php echo base_url();?>assets/vendor/apexchart/apexcharts.min.js"></script>
+        <!-- JS base_url for ajax calls. Sub php method with: 'base_url+"some/other"' -->
+        <script>var base_url = '<?php echo base_url() ?>';</script>
 
         <!-- CODE INCLUDES -->
         <?php echo $cssincludes ?>
